@@ -21,16 +21,28 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/*
+		INPUT
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputMappingContext* ViewMappingContext{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* MoveCameraAction{};
+	void MoveCamera(const struct FInputActionValue& InputValue1);
+
+	/*
 		VIEW
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // SpringArm
-	class USpringArmComponent* SpringArm{};
+	class USpringArmComponent* ViewSpringArm{};
 	void SetupSpringArm();
 
 	const float MaxTargetArmLength{ 2500.0f };
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // Camera
-	class UCameraComponent* Camera{};
+	class UCameraComponent* ViewCamera{};
 	void SetupCamera();
+
+	const float CameraSpeed{ 500.0f };
 
 };

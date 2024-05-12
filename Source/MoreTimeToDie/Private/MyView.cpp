@@ -1,5 +1,8 @@
 #include "MyView.h"
 
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h" 
 
@@ -29,31 +32,36 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AMyView::MoveCamera(const FInputActionValue& InputValue1)
+{
+
+}
+
 void AMyView::SetupSpringArm() // SpringArm
 {
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	if (SpringArm)
+	ViewSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	if (ViewSpringArm)
 	{
-		RootComponent = SpringArm;
+		RootComponent = ViewSpringArm;
 
-		SpringArm->bEnableCameraLag = true;
-		SpringArm->CameraLagSpeed = 5.0f;
-		SpringArm->CameraRotationLagSpeed = 5.0f;
+		ViewSpringArm->bEnableCameraLag = true;
+		ViewSpringArm->CameraLagSpeed = 5.0f;
+		ViewSpringArm->CameraRotationLagSpeed = 5.0f;
 
-		SpringArm->bDoCollisionTest = false;
+		ViewSpringArm->bDoCollisionTest = false;
 
-		SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-		SpringArm->TargetArmLength = MaxTargetArmLength;
+		ViewSpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+		ViewSpringArm->TargetArmLength = MaxTargetArmLength;
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupSpringArm - SpringArm is null.")); }
 }
 
 void AMyView::SetupCamera() // Camera
 {
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	if (Camera)
+	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	if (ViewCamera)
 	{
-		Camera->SetupAttachment(RootComponent);
+		ViewCamera->SetupAttachment(RootComponent);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupCamera - Camera is null.")); }
 }
