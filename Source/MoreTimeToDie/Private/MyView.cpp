@@ -32,21 +32,29 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AMyView::SetupSpringArm() // SpringArm
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	RootComponent = SpringArm;
+	if (SpringArm)
+	{
+		RootComponent = SpringArm;
 
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->CameraLagSpeed = 5.0f;
-	SpringArm->CameraRotationLagSpeed = 5.0f;
+		SpringArm->bEnableCameraLag = true;
+		SpringArm->CameraLagSpeed = 5.0f;
+		SpringArm->CameraRotationLagSpeed = 5.0f;
 
-	SpringArm->bDoCollisionTest = false;
+		SpringArm->bDoCollisionTest = false;
 
-	SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	SpringArm->TargetArmLength = MaxTargetArmLength;
+		SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+		SpringArm->TargetArmLength = MaxTargetArmLength;
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupSpringArm - SpringArm is null.")); }
 }
 
 void AMyView::SetupCamera() // Camera
 {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(RootComponent);
+	if (Camera)
+	{
+		Camera->SetupAttachment(RootComponent);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupCamera - Camera is null.")); }
 }
 
