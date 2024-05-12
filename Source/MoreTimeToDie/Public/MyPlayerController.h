@@ -12,4 +12,11 @@ class MORETIMETODIE_API AMyPlayerController : public APlayerController
 public:
 
 	AMyPlayerController();
+
+private:
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupInputComponent() override;
 };
