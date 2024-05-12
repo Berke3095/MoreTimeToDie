@@ -34,13 +34,13 @@ private:
 		VIEW
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // SpringArm
-	class USpringArmComponent* ViewSpringArm{};
+	class USpringArmComponent* SpringArm{};
 	void SetupSpringArm();
 
 	const float MaxTargetArmLength{ 2500.0f };
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // Camera
-	class UCameraComponent* ViewCamera{};
+	class UCameraComponent* Camera{};
 	void SetupCamera();
 
 	const float CameraSpeed{ 500.0f };
