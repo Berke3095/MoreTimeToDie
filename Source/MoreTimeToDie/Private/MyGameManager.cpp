@@ -2,6 +2,7 @@
 
 #include "MyGameMode.h"
 #include "MyPlayerController.h"
+#include "MyView.h"
 
 AMyGameManager* AMyGameManager::Instance = nullptr;
 

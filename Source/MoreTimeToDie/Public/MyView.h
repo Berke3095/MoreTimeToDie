@@ -21,6 +21,12 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/*
+		REFERENCES
+	*/
+	class AMyGameManager* GameManager{};
+	class AMyPlayerController* PlayerController{};
+
+	/*
 		INPUT
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Input")

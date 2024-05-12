@@ -2,5 +2,5 @@
 
 AMyPlayerController::AMyPlayerController()
 {
-
+	bShowMouseCursor = true;
 }
