@@ -161,7 +161,7 @@ void AMyView::LeftClickStart()
 		if (MyHUD)
 		{
 			AActor* HoveredActor = PlayerController->GetHoveredActor();
-			if (HoveredActor->ActorHasTag("Selectable"))
+			if (HoveredActor && HoveredActor->ActorHasTag("Selectable"))
 			{
 				MyHUD->DeselectAll();
 				MyHUD->Select(HoveredActor);
