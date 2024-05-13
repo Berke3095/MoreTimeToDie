@@ -53,6 +53,12 @@ private:
 	void ZoomCamera(const struct FInputActionValue& InputValue1);
 	float CameraZoomSpeed{ 500.0f };
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* LeftClickAction{};
+	void LeftClickStart();
+	void LeftClickTrigger();
+	void LeftClickEnd();
+
 	/*
 		VIEW
 	*/
@@ -68,7 +74,18 @@ private:
 	void SetupCamera();
 	const float CameraSpeed{ 500.0f };
 
+	/*
+		HUD
+	*/
+	FVector2D StartingRectanglePosition{};
+	FVector2D EndingRectanglePosition{};
+	bool bIsDrawing{};
+
 public:
 
-	const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
+	FORCEINLINE const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
+
+	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
+	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }
+	FORCEINLINE const bool GetbIsDrawing() const { return bIsDrawing; }
 };

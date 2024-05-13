@@ -143,6 +143,39 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::ZoomCamera - PlayerController is null.")); }
 }
+void AMyView::LeftClickStart()
+{
+	if (PlayerController && !bMidMouseHeld)
+	{
+		PlayerController->GetMousePosition(MouseX, MouseY);
+		StartingRectanglePosition = FVector2D(MouseX, MouseY);
+		bIsDrawing = true;
+	}
+	else if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - PlayerController is null."));
+	}
+}
+void AMyView::LeftClickTrigger()
+{
+	if (PlayerController)
+	{
+		PlayerController->GetMousePosition(MouseX, MouseY);
+		EndingRectanglePosition = FVector2D(MouseX, MouseY);
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickTrigger - PlayerController is null.")); }
+}
+void AMyView::LeftClickEnd()
+{
+	if (PlayerController && bIsDrawing)
+	{
+		bIsDrawing = false;
+	}
+	else if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null."));
+	}
+}
 /*
 	VIEW
 */
