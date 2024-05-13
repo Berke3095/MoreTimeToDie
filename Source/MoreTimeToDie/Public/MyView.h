@@ -23,7 +23,6 @@ private:
 	/*
 		REFERENCES
 	*/
-	class AMyGameManager* GameManager{};
 	class AMyPlayerController* PlayerController{};
 	class AMyHUD* MyHUD{};
 

@@ -7,7 +7,7 @@ void AMyHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameManager = AMyGameManager::GetInstance(); // GameManager
+	AMyGameManager* GameManager = AMyGameManager::GetInstance(); // GameManager
 	if (GameManager)
 	{
 		MyView = GameManager->GetMyView(); // MyView
@@ -33,6 +33,9 @@ void AMyHUD::DrawHUD()
 	}
 }
 
+/*
+	DRAW
+*/
 void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D EndingMousePosition1)
 {
 	float Distance = FVector2D::Distance(StartingMousePosition1, EndingMousePosition1);

@@ -23,7 +23,7 @@ void AMyView::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GameManager = AMyGameManager::GetInstance();
+	AMyGameManager* GameManager = AMyGameManager::GetInstance();
 	if (GameManager)
 	{
 		PlayerController = GameManager->GetMyPlayerController();

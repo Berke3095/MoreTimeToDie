@@ -14,13 +14,15 @@ private:
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override; // Override the DrawHUD function, only way to be able to draw
 
+	/*
+		DRAW
+	*/
 	void DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D EndingMousePosition1);
 	const float RectangleThickness{ 2.0f };
 
 	/*
 		REFERENCES
 	*/
-	class AMyGameManager* GameManager{};
 	class AMyView* MyView{};
 
 public:

@@ -23,7 +23,6 @@ private:
 	/*
 		REFERENCES
 	*/
-	class AMyGameManager* GameManager{};
 	class AMyView* MyView{};
 
 	/*

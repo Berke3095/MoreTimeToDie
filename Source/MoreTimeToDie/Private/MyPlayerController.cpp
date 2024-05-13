@@ -14,7 +14,7 @@ void AMyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameManager = AMyGameManager::GetInstance();
+	AMyGameManager* GameManager = AMyGameManager::GetInstance();
 	if (GameManager)
 	{
 		MyView = GameManager->GetMyView();
@@ -33,6 +33,9 @@ void AMyPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 }
 
+/*
+	MOUSE
+*/
 void AMyPlayerController::DrawTraceFromMouse(FHitResult& TraceHitResult1)
 {
 	if (GetWorld() && !MyView->GetbMidMouseHeld())
