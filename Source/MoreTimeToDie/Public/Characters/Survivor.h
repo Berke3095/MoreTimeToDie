@@ -34,4 +34,7 @@ private:
 	class USphereComponent* AvoidanceSphere{};
 	void SetAvoidanceSphere();
 
+public:
+
+	bool bIsSelected{};
 };

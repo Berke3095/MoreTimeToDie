@@ -22,6 +22,11 @@ private:
 	TArray<AActor*> SelectedActors{};
 	TArray<class ASurvivor*> SelectedSurvivors{};
 
+	void Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Highlight Overlays")
+	UMaterialInterface* SurvivorOverlayMat{};
+
 	/*
 		REFERENCES
 	*/

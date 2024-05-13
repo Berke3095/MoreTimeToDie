@@ -71,6 +71,18 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 	}
 }
 
+void AMyHUD::Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1)
+{
+	if (SelectedActor1)
+	{
+		USkeletalMeshComponent* SkeletalMeshComponent = SelectedActor1->FindComponentByClass<USkeletalMeshComponent>();
+		if (SkeletalMeshComponent)
+		{
+			SkeletalMeshComponent->SetOverlayMaterial(SelectedOverlayMat1);
+		}
+	}
+}
+
 void AMyHUD::Select(AActor* Actor1)
 {
 	if (Actor1->ActorHasTag("Selectable"))
@@ -82,6 +94,8 @@ void AMyHUD::Select(AActor* Actor1)
 			ASurvivor* Survivor = Cast<ASurvivor>(Actor1);
 			if (Survivor)
 			{
+				Survivor->bIsSelected = true;
+				Highlight(Survivor, SurvivorOverlayMat);
 				SelectedSurvivors.AddUnique(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
@@ -93,6 +107,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 {
 	if (Actor1->ActorHasTag("Selectable"))
 	{
+		Highlight(Actor1, nullptr);
 		SelectedActors.Remove(Actor1);
 
 		if (Actor1->IsA<ASurvivor>())
@@ -100,6 +115,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 			ASurvivor* Survivor = Cast<ASurvivor>(Actor1);
 			if (Survivor)
 			{
+				Survivor->bIsSelected = false;
 				SelectedSurvivors.Remove(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
@@ -109,6 +125,15 @@ void AMyHUD::Deselect(AActor* Actor1)
 
 void AMyHUD::DeselectAll()
 {
+	for (AActor* Actor : SelectedActors)
+	{
+		Highlight(Actor, nullptr);
+	}
 	SelectedActors.Empty();
+
+	for (ASurvivor* Survivor : SelectedSurvivors)
+	{
+		Survivor->bIsSelected = false;
+	}
 	SelectedSurvivors.Empty();
 }
