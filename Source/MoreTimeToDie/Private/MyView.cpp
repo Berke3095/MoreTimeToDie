@@ -44,8 +44,6 @@ void AMyView::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, CurrentTargetArmLength, DeltaTime, 3.0f);
-
-	DrawTraceFromMouse(HitResult);
 }
 
 /*
@@ -145,45 +143,6 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::ZoomCamera - PlayerController is null.")); }
 }
-
-void AMyView::DrawTraceFromMouse(FHitResult& TraceHitResult1)
-{
-	if (PlayerController && GetWorld() && !bMidMouseHeld)
-	{
-		FVector WorldLocation{}, WorldDirection{};
-		PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
-
-		FVector Start = FVector(WorldLocation.X, WorldLocation.Y, WorldLocation.Z);
-		FVector End = Start + WorldDirection * MaxMouseRange;
-
-		GetWorld()->LineTraceSingleByChannel(
-			TraceHitResult1,
-			Start,
-			End,
-			ECollisionChannel::ECC_GameTraceChannel1 // MouseTrace
-		);
-
-		if (!TraceHitResult1.bBlockingHit)
-		{
-			TraceHitResult1.ImpactPoint = End;
-		}
-		else
-		{
-			DrawDebugSphere(
-				GetWorld(),
-				TraceHitResult1.ImpactPoint,
-				12.0f,
-				12,
-				FColor::Red
-			);
-		}
-	}
-	else if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AMyView::DrawTraceFromMouse - PlayerController is null."));
-	}
-}
-
 /*
 	VIEW
 */

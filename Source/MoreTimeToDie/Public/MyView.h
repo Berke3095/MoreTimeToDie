@@ -54,13 +54,6 @@ private:
 	float CameraZoomSpeed{ 500.0f };
 
 	/*
-		MOUSE
-	*/
-	FHitResult HitResult{};
-	void DrawTraceFromMouse(FHitResult& TraceHitResult1);
-	const float MaxMouseRange{ 10000.0f };
-
-	/*
 		VIEW
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // SpringArm
@@ -74,4 +67,8 @@ private:
 	class UCameraComponent* Camera{};
 	void SetupCamera();
 	const float CameraSpeed{ 500.0f };
+
+public:
+
+	const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
 };

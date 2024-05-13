@@ -19,4 +19,17 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupInputComponent() override;
+
+	/*
+		REFERENCES
+	*/
+	class AMyGameManager* GameManager{};
+	class AMyView* MyView{};
+
+	/*
+		MOUSE
+	*/
+	FHitResult HitResult{};
+	void DrawTraceFromMouse(FHitResult& TraceHitResult1);
+	const float MaxMouseRange{ 10000.0f };
 };
