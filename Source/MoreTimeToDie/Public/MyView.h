@@ -25,6 +25,7 @@ private:
 	*/
 	class AMyGameManager* GameManager{};
 	class AMyPlayerController* PlayerController{};
+	class AMyHUD* MyHUD{};
 
 	/*
 		INPUT
@@ -79,7 +80,7 @@ private:
 	*/
 	FVector2D StartingRectanglePosition{};
 	FVector2D EndingRectanglePosition{};
-	bool bIsDrawing{};
+	bool bCanDraw{};
 
 public:
 
@@ -87,5 +88,5 @@ public:
 
 	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
 	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }
-	FORCEINLINE const bool GetbIsDrawing() const { return bIsDrawing; }
+	FORCEINLINE const bool GetbCanDraw() const { return bCanDraw; }
 };

@@ -26,6 +26,7 @@ private:
 	class AMyGameMode* GameMode{};
 	class AMyPlayerController* PlayerController{};
 	class AMyView* MyView{};
+	class AMyHUD* MyHUD{};
 
 public:
 
@@ -34,5 +35,6 @@ public:
 	class AMyGameMode* GetMyGameMode() const { return GameMode ? GameMode : nullptr; }
 	class AMyPlayerController* GetMyPlayerController() const { return PlayerController ? PlayerController : nullptr; }
 	class AMyView* GetMyView() const { return MyView ? MyView : nullptr; }
+	class AMyHUD* GetMyHUD() const { return MyHUD ? MyHUD : nullptr; }
 };
 

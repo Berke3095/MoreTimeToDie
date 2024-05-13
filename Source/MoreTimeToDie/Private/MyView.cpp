@@ -8,6 +8,7 @@
 
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
+#include "MyHUD.h"
 
 AMyView::AMyView()
 {
@@ -35,6 +36,12 @@ void AMyView::BeginPlay()
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - Enh.InputSubsystem is null.")); }
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PlayerController is null.")); }
+
+		MyHUD = GameManager->GetMyHUD();
+		if (!MyHUD)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null."));
+		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - GameManager is null.")); }
 }
@@ -63,6 +70,10 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(RotateCameraAction, ETriggerEvent::Triggered, this, &AMyView::RotateCamera);
 
 		EnhancedInputComponent->BindAction(ZoomCameraAction, ETriggerEvent::Triggered, this, &AMyView::ZoomCamera);
+
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Started, this, &AMyView::LeftClickStart);
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AMyView::LeftClickTrigger);
+		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this, &AMyView::LeftClickEnd);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -149,7 +160,7 @@ void AMyView::LeftClickStart()
 	{
 		PlayerController->GetMousePosition(MouseX, MouseY);
 		StartingRectanglePosition = FVector2D(MouseX, MouseY);
-		bIsDrawing = true;
+		bCanDraw = true;
 	}
 	else if (!PlayerController)
 	{
@@ -167,13 +178,22 @@ void AMyView::LeftClickTrigger()
 }
 void AMyView::LeftClickEnd()
 {
-	if (PlayerController && bIsDrawing)
+	if (PlayerController && bCanDraw)
 	{
-		bIsDrawing = false;
+		bCanDraw = false;
 	}
 	else if (!PlayerController)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null."));
+	}
+
+	if (MyHUD && MyHUD->bIsDrawing)
+	{
+		MyHUD->bIsDrawing = false;
+	}
+	else if (!MyHUD)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - MyHUD is null."));
 	}
 }
 /*
