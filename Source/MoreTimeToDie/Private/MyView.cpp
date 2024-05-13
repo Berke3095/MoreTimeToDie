@@ -156,16 +156,31 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 }
 void AMyView::LeftClickStart()
 {
-	if (PlayerController && !bMidMouseHeld)
+	if (PlayerController)
 	{
-		PlayerController->GetMousePosition(MouseX, MouseY);
-		StartingRectanglePosition = FVector2D(MouseX, MouseY);
-		bCanDraw = true;
+		if (MyHUD)
+		{
+			AActor* HoveredActor = PlayerController->GetHoveredActor();
+			if (HoveredActor->ActorHasTag("Selectable"))
+			{
+				MyHUD->DeselectAll();
+				MyHUD->Select(HoveredActor);
+			}
+			else
+			{
+				MyHUD->DeselectAll();
+			}
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - MyHUD is null.")); }
+
+		if (!bMidMouseHeld)
+		{
+			PlayerController->GetMousePosition(MouseX, MouseY);
+			StartingRectanglePosition = FVector2D(MouseX, MouseY);
+			bCanDraw = true;
+		}
 	}
-	else if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - PlayerController is null."));
-	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - PlayerController is null.")); }
 }
 void AMyView::LeftClickTrigger()
 {

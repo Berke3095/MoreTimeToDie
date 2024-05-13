@@ -31,4 +31,10 @@ private:
 	FHitResult HitResult{};
 	void DrawTraceFromMouse(FHitResult& TraceHitResult1);
 	const float MaxMouseRange{ 10000.0f };
+
+	AActor* HoveredActor{};
+
+public:
+
+	FORCEINLINE AActor* GetHoveredActor() const { return HoveredActor ? HoveredActor : nullptr; }
 };

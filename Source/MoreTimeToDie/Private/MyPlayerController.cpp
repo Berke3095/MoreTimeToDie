@@ -56,6 +56,7 @@ void AMyPlayerController::DrawTraceFromMouse(FHitResult& TraceHitResult1)
 		if (!TraceHitResult1.bBlockingHit)
 		{
 			TraceHitResult1.ImpactPoint = End;
+			HoveredActor = nullptr;
 		}
 		else
 		{
@@ -66,6 +67,12 @@ void AMyPlayerController::DrawTraceFromMouse(FHitResult& TraceHitResult1)
 				12,
 				FColor::Red
 			);
+
+			AActor* HitActor = TraceHitResult1.GetActor();
+			if (HitActor)
+			{
+				HoveredActor = HitActor;
+			}
 		}
 	}
 }

@@ -32,6 +32,9 @@ void AMyHUD::DrawHUD()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null."));
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Selected Actors: %d"), SelectedActors.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Selected Survivors: %d"), SelectedSurvivors.Num());
 }
 
 /*
@@ -65,11 +68,6 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 				Deselect(Actor);
 			}
 		}
-
-		UE_LOG(LogTemp, Warning, TEXT("TempSelected Actors: %d"), TempSelectedActors.Num());
-		UE_LOG(LogTemp, Warning, TEXT("Selected Actors: %d"), SelectedActors.Num());
-		UE_LOG(LogTemp, Warning, TEXT("Selected Actors(Copy): %d"), SelectedActorsCopy.Num());
-		UE_LOG(LogTemp, Warning, TEXT("Selected Survivors: %d"), SelectedSurvivors.Num());
 	}
 }
 
@@ -107,4 +105,10 @@ void AMyHUD::Deselect(AActor* Actor1)
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
 		}
 	}
+}
+
+void AMyHUD::DeselectAll()
+{
+	SelectedActors.Empty();
+	SelectedSurvivors.Empty();
 }

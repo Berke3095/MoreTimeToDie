@@ -21,11 +21,15 @@ private:
 	const float RectangleThickness{ 2.0f };
 	TArray<AActor*> SelectedActors{};
 	TArray<class ASurvivor*> SelectedSurvivors{};
-	void Select(AActor* Actor1);
-	void Deselect(AActor* Actor1);
 
 	/*
 		REFERENCES
 	*/
 	class AMyView* MyView{};
+
+public:
+
+	void Select(AActor* Actor1);
+	void Deselect(AActor* Actor1);
+	void DeselectAll();
 };
