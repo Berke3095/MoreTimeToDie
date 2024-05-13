@@ -19,13 +19,13 @@ private:
 	*/
 	void DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D EndingMousePosition1);
 	const float RectangleThickness{ 2.0f };
+	TArray<AActor*> SelectedActors{};
+	TArray<class ASurvivor*> SelectedSurvivors{};
+	void Select(AActor* Actor1);
+	void Deselect(AActor* Actor1);
 
 	/*
 		REFERENCES
 	*/
 	class AMyView* MyView{};
-
-public:
-
-	bool bIsDrawing{};
 };

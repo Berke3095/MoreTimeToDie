@@ -186,15 +186,6 @@ void AMyView::LeftClickEnd()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null."));
 	}
-
-	if (MyHUD && MyHUD->bIsDrawing)
-	{
-		MyHUD->bIsDrawing = false;
-	}
-	else if (!MyHUD)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - MyHUD is null."));
-	}
 }
 /*
 	VIEW

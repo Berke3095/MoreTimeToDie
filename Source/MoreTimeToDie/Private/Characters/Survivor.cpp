@@ -8,6 +8,8 @@ ASurvivor::ASurvivor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Tags.Add("Selectable");
+
 	SetCapsuleComponent();
 	SetSkeletalMeshComponent();
 	SetAvoidanceSphere();
