@@ -122,6 +122,8 @@ void AMyHUD::Deselect(AActor* Actor1)
 
 void AMyHUD::DeselectAll()
 {
+	if (MyView && MyView->GetbCtrlHeld()) { return; }
+
 	for (AActor* Actor : SelectedActors)
 	{
 		Highlight(Actor, nullptr);

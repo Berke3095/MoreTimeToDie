@@ -15,6 +15,9 @@ class AMyHUD;
 class USpringArmComponent;
 class UCameraComponent;
 
+const float MinTargetArmLength{ 400.0f };
+const float MaxTargetArmLength{ 2500.0f };
+
 UCLASS()
 class MORETIMETODIE_API AMyView : public APawn
 {
@@ -70,14 +73,17 @@ private:
 	void LeftClickTrigger();
 	void LeftClickEnd();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* CtrlAction{};
+	void CtrlStart();
+	void CtrlEnd();
+	bool bCtrlHeld{};
 	/*
 		VIEW
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // SpringArm
 	USpringArmComponent* SpringArm{};
 	void SetupSpringArm();
-	const float MinTargetArmLength{ 400.0f };
-	const float MaxTargetArmLength{ 2500.0f };
 	float CurrentTargetArmLength{MaxTargetArmLength};
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // Camera
@@ -95,6 +101,7 @@ private:
 public:
 
 	FORCEINLINE const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
+	FORCEINLINE const bool GetbCtrlHeld() const { return bCtrlHeld; }
 
 	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
 	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }

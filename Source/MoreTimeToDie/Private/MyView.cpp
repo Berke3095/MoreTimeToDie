@@ -71,6 +71,9 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Started, this, &AMyView::LeftClickStart);
 		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AMyView::LeftClickTrigger);
 		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this, &AMyView::LeftClickEnd);
+
+		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
+		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -195,6 +198,17 @@ void AMyView::LeftClickEnd()
 		bCanDraw = false;
 	}
 	else if (!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null.")); }
+}
+void AMyView::CtrlStart()
+{
+	bCtrlHeld = true;
+}
+void AMyView::CtrlEnd()
+{
+	if (bCtrlHeld)
+	{
+		bCtrlHeld = false;
+	}
 }
 /*
 	VIEW
