@@ -39,4 +39,5 @@ private:
 public:
 
 	FORCEINLINE AActor* GetHoveredActor() const { return HoveredActor ? HoveredActor : nullptr; }
+	FORCEINLINE const FHitResult& GetHitResult() const { return HitResult; }
 };

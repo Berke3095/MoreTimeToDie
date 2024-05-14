@@ -31,8 +31,8 @@ void AMyHUD::DrawHUD()
 	}
 	else if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null.")); }
 
-	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());
+	/*UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());*/
 }
 
 /*
@@ -69,7 +69,7 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 				}
 			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Number of TempSelected Actors: %d"), TempSelectedActors.Num());
+		/*UE_LOG(LogTemp, Warning, TEXT("Number of TempSelected Actors: %d"), TempSelectedActors.Num());*/
 	}
 }
 

@@ -84,6 +84,11 @@ private:
 	void CtrlStart();
 	void CtrlEnd();
 	bool bCtrlHeld{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* RightClickAction{};
+	void RightClick();
+	FVector Destination{};
 	/*
 		VIEW
 	*/

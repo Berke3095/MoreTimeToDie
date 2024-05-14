@@ -78,6 +78,8 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
 		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
+
+		EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Started, this, &AMyView::RightClick);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -224,6 +226,15 @@ void AMyView::CtrlEnd()
 	{
 		bCtrlHeld = false;
 	}
+}
+void AMyView::RightClick()
+{
+	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
+		PlayerController && PlayerController->GetHoveredActor())
+	{
+		Destination = PlayerController->GetHitResult().ImpactPoint;
+	}
+	else if(!MyHUD || !PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyHUD or PlayerController is null.")); }
 }
 /*
 	VIEW
