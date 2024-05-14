@@ -59,13 +59,17 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 			Select(Actor);
 		}
 
-		for (AActor* Actor : SelectedActorsCopy)
+		if (MyView && !MyView->GetbCtrlHeld())
 		{
-			if (!TempSelectedActors.Contains(Actor))
+			for (AActor* Actor : SelectedActorsCopy)
 			{
-				Deselect(Actor);
+				if (!TempSelectedActors.Contains(Actor))
+				{
+					Deselect(Actor);
+				}
 			}
 		}
+		UE_LOG(LogTemp, Warning, TEXT("Number of TempSelected Actors: %d"), TempSelectedActors.Num());
 	}
 }
 
@@ -78,11 +82,15 @@ void AMyHUD::Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverl
 		{
 			SkeletalMeshComponent->SetOverlayMaterial(SelectedOverlayMat1);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Highlight - SkeletalMeshComponent is null.")); }
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Highlight - Actor is null.")); }
 }
 
 void AMyHUD::Select(AActor* Actor1)
 {
+	if (MyView && MyView->GetbCtrlHeld()) { Deselect(Actor1); return; }
+
 	if (Actor1->ActorHasTag("Selectable"))
 	{
 		SelectedActors.AddUnique(Actor1);
@@ -128,7 +136,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 
 void AMyHUD::DeselectAll()
 {
-	if (MyView && MyView->GetbShiftHeld()) { return; }
+	if (MyView && (MyView->GetbShiftHeld() || MyView->GetbCtrlHeld())) { return; }
 	else if(!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DeselectAll - MyView is null.")); }
 
 	for (AActor* Actor : SelectedActors)

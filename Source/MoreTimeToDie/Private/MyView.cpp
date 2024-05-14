@@ -167,15 +167,6 @@ void AMyView::LeftClickStart()
 			AActor* HoveredActor = PlayerController->GetHoveredActor();
 			if (HoveredActor && HoveredActor->ActorHasTag("Selectable"))
 			{
-				/*if (HoveredActor->IsA<ASurvivor>())
-				{
-					ASurvivor* Survivor = Cast<ASurvivor>(HoveredActor);
-					if (Survivor && Survivor->bIsSelected && bShiftHeld)
-					{
-						MyHUD->Deselect(Survivor);
-						return;
-					}
-				}*/
 				MyHUD->DeselectAll();
 				MyHUD->Select(HoveredActor);
 			}
