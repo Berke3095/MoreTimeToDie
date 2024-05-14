@@ -5,6 +5,8 @@
 #include "Components/Button.h" 
 #include "Components/TextBlock.h" 
 
+#include "Characters/Survivor.h"
+
 void UPortraitWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -35,6 +37,7 @@ void UPortraitWidget::NativeConstruct()
         if (PortraitSlot)
         {
             PortraitSlot->SetVisibility(ESlateVisibility::Hidden);
+            SetTintAlpha(PortraitSlot, AlphaNormal, AlphaHovered, AlphaPressed);
         }
 
         if (NameSlot)
@@ -76,9 +79,29 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
             SetSurvivorPortrait(PortraitSlots[i], PortraitImage1);
             SetSurvivorName(NameSlots[i], SurvivorName1);
 
+            Survivor1->PortraitButton = PortraitSlots[i];
             CurrentSurvivors[i] = Survivor1;
 
             break;
         }
     }
+}
+
+void UPortraitWidget::SetTintAlpha(UButton* PortraitButton1, float Normal1, float Hovered1, float Pressed1)
+{
+    FSlateBrush& NormalBrush = PortraitButton1->WidgetStyle.Normal;
+    FSlateBrush& HoveredBrush = PortraitButton1->WidgetStyle.Hovered;
+    FSlateBrush& PressedBrush = PortraitButton1->WidgetStyle.Pressed;
+
+    FLinearColor TintColorNormal = NormalBrush.TintColor.GetSpecifiedColor();
+    FLinearColor TintColorHovered = HoveredBrush.TintColor.GetSpecifiedColor();
+    FLinearColor TintColorPressed = PressedBrush.TintColor.GetSpecifiedColor();
+
+    TintColorNormal.A = Normal1;
+    TintColorHovered.A = Hovered1;
+    TintColorPressed.A = Pressed1;
+
+    NormalBrush.TintColor = TintColorNormal;
+    HoveredBrush.TintColor = TintColorHovered;
+    PressedBrush.TintColor = TintColorPressed;
 }

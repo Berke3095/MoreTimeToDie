@@ -6,6 +6,8 @@
 
 class AMyView;
 
+class UPortraitWidget;
+
 UCLASS()
 class MORETIMETODIE_API AMyHUD : public AHUD
 {
@@ -33,6 +35,11 @@ private:
 		REFERENCES
 	*/
 	AMyView* MyView{};
+	
+	/*
+		WIDGETS
+	*/
+	UPortraitWidget* PortraitWidget{};
 
 public:
 

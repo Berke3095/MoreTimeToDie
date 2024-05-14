@@ -5,6 +5,7 @@
 #include "Survivor.generated.h"
 
 class UPortraitWidget;
+class UButton;
 
 class USphereComponent;
 
@@ -51,4 +52,5 @@ private:
 public:
 
 	bool bIsSelected{};
+	UButton* PortraitButton{};
 };

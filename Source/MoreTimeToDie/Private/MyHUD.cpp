@@ -15,6 +15,8 @@ void AMyHUD::BeginPlay()
 	{
 		MyView = GameManager->GetMyView(); // MyView
 		if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - MyView is null.")); }
+
+		PortraitWidget = GameManager->GetPortraitWidget();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - GameManager is null.")); }
 }
@@ -89,6 +91,7 @@ void AMyHUD::Select(AActor* Actor1)
 			{
 				Survivor->bIsSelected = true;
 				Highlight(Survivor, SurvivorOverlayMat);
+				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, 1.0f, 1.0f, 1.0f);
 				SelectedSurvivors.AddUnique(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
@@ -109,6 +112,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 			if (Survivor)
 			{
 				Survivor->bIsSelected = false;
+				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 				SelectedSurvivors.Remove(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
@@ -127,6 +131,7 @@ void AMyHUD::DeselectAll()
 	for (ASurvivor* Survivor : SelectedSurvivors)
 	{
 		Survivor->bIsSelected = false;
+		PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 	}
 	SelectedSurvivors.Empty();
 }
