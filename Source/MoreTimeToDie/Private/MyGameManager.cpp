@@ -24,16 +24,10 @@ void AMyGameManager::BeginPlay()
 		if (PlayerController)
 		{
 			MyView = Cast<AMyView>(PlayerController->GetPawn()); // MyView reference
-			if (!MyView)
-			{
-				UE_LOG(LogTemp, Error, TEXT("AMyGameManager::BeginPlay - MyView is null."));
-			}
+			if (!MyView){ UE_LOG(LogTemp, Error, TEXT("AMyGameManager::BeginPlay - MyView is null.")); }
 
 			MyHUD = Cast<AMyHUD>(PlayerController->GetHUD());
-			if (!MyHUD)
-			{
-				UE_LOG(LogTemp, Error, TEXT("AMyGameManager::BeginPlay - MyHUD is null."));
-			}
+			if (!MyHUD){ UE_LOG(LogTemp, Error, TEXT("AMyGameManager::BeginPlay - MyHUD is null.")); }
 		}
 		else { UE_LOG(LogTemp, Error, TEXT("AMyGameManager::BeginPlay - PlayerController is null.")); }
 	}

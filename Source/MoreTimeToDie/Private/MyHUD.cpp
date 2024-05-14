@@ -3,6 +3,9 @@
 #include "MyGameManager.h"
 #include "MyView.h"
 #include "Characters/Survivor.h"
+#include "MyPlayerController.h"
+
+#include "Widgets/PortraitWidget.h"
 
 void AMyHUD::BeginPlay()
 {
@@ -12,12 +15,18 @@ void AMyHUD::BeginPlay()
 	if (GameManager)
 	{
 		MyView = GameManager->GetMyView(); // MyView
-		if (!MyView)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - MyView is null."));
-		}
+		if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - MyView is null.")); }
+
+		PlayerController = GameManager->GetMyPlayerController();
+		if(!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - PlayerController is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - GameManager is null.")); }
+
+	PortraitWidget = CreateWidget<UPortraitWidget>(PlayerController, PortraitWidgetClass);
+	if (PortraitWidget)
+	{
+		PortraitWidget->AddToViewport();
+	}
 }
 
 void AMyHUD::DrawHUD()
@@ -28,10 +37,7 @@ void AMyHUD::DrawHUD()
 	{
 		DrawBoxSelect(MyView->GetStartPointOfRec(), MyView->GetEndingPointOfRec());
 	}
-	else if (!MyView)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null."));
-	}
+	else if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null.")); }
 }
 
 /*

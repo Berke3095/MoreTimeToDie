@@ -38,10 +38,7 @@ void AMyView::BeginPlay()
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PlayerController is null.")); }
 
 		MyHUD = GameManager->GetMyHUD();
-		if (!MyHUD)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null."));
-		}
+		if (!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - GameManager is null.")); }
 }
@@ -197,10 +194,7 @@ void AMyView::LeftClickEnd()
 	{
 		bCanDraw = false;
 	}
-	else if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null."));
-	}
+	else if (!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null.")); }
 }
 /*
 	VIEW

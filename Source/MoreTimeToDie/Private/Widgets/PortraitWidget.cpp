@@ -10,10 +10,7 @@ void UPortraitWidget::NativeConstruct()
 	Super::NativeConstruct();
 
     GameManager = AMyGameManager::GetInstance();
-    if (!GameManager)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - GameManager is null."));
-    }
+    if (!GameManager){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - GameManager is null.")); }
 
     PortraitSlots[0] = Portrait0;
     PortraitSlots[1] = Portrait1;
@@ -31,7 +28,7 @@ void UPortraitWidget::NativeConstruct()
     NameSlots[5] = Name5;
     NameSlots[6] = Name6;
 
-    for (int32 Index = 0; Index < 7; Index++)
+    /*for (int32 Index = 0; Index < 7; Index++)
     {
         UButton* PortraitSlot = PortraitSlots[Index];
         UTextBlock* NameSlot = NameSlots[Index];
@@ -44,5 +41,5 @@ void UPortraitWidget::NativeConstruct()
         {
             NameSlot->SetVisibility(ESlateVisibility::Hidden);
         }
-    }
+    }*/
 }
