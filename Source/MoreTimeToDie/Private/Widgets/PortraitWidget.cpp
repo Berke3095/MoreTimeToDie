@@ -2,6 +2,9 @@
 
 #include "MyGameManager.h"
 
+#include "Components/Button.h" 
+#include "Components/TextBlock.h" 
+
 void UPortraitWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -27,4 +30,19 @@ void UPortraitWidget::NativeConstruct()
     NameSlots[4] = Name4;
     NameSlots[5] = Name5;
     NameSlots[6] = Name6;
+
+    for (int32 Index = 0; Index < 7; Index++)
+    {
+        UButton* PortraitSlot = PortraitSlots[Index];
+        UTextBlock* NameSlot = NameSlots[Index];
+        if (PortraitSlot)
+        {
+            PortraitSlot->SetVisibility(ESlateVisibility::Hidden);
+        }
+
+        if (NameSlot)
+        {
+            NameSlot->SetVisibility(ESlateVisibility::Hidden);
+        }
+    }
 }
