@@ -27,6 +27,7 @@ void AMyHUD::BeginPlay()
 	{
 		PortraitWidget->AddToViewport();
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - PortraitWidget is null.")); }
 }
 
 void AMyHUD::DrawHUD()
