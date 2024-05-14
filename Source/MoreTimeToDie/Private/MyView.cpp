@@ -9,6 +9,7 @@
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
 #include "MyHUD.h"
+//#include "Characters/Survivor.h"
 
 AMyView::AMyView()
 {
@@ -72,8 +73,8 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AMyView::LeftClickTrigger);
 		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this, &AMyView::LeftClickEnd);
 
-		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
-		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
+		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMyView::ShiftStart);
+		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMyView::ShiftEnd);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -163,6 +164,15 @@ void AMyView::LeftClickStart()
 			AActor* HoveredActor = PlayerController->GetHoveredActor();
 			if (HoveredActor && HoveredActor->ActorHasTag("Selectable"))
 			{
+				/*if (HoveredActor->IsA<ASurvivor>())
+				{
+					ASurvivor* Survivor = Cast<ASurvivor>(HoveredActor);
+					if (Survivor && Survivor->bIsSelected && bShiftHeld)
+					{
+						MyHUD->Deselect(Survivor);
+						return;
+					}
+				}*/
 				MyHUD->DeselectAll();
 				MyHUD->Select(HoveredActor);
 			}
@@ -199,15 +209,15 @@ void AMyView::LeftClickEnd()
 	}
 	else if (!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null.")); }
 }
-void AMyView::CtrlStart()
+void AMyView::ShiftStart()
 {
-	bCtrlHeld = true;
+	bShiftHeld = true;
 }
-void AMyView::CtrlEnd()
+void AMyView::ShiftEnd()
 {
-	if (bCtrlHeld)
+	if (bShiftHeld)
 	{
-		bCtrlHeld = false;
+		bShiftHeld = false;
 	}
 }
 /*

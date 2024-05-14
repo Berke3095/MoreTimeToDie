@@ -30,6 +30,9 @@ void AMyHUD::DrawHUD()
 		DrawBoxSelect(MyView->GetStartPointOfRec(), MyView->GetEndingPointOfRec());
 	}
 	else if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null.")); }
+
+	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());
 }
 
 /*
@@ -56,14 +59,11 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 			Select(Actor);
 		}
 
-		if (!MyView->GetbCtrlHeld())
+		for (AActor* Actor : SelectedActorsCopy)
 		{
-			for (AActor* Actor : SelectedActorsCopy)
+			if (!TempSelectedActors.Contains(Actor))
 			{
-				if (!TempSelectedActors.Contains(Actor))
-				{
-					Deselect(Actor);
-				}
+				Deselect(Actor);
 			}
 		}
 	}
@@ -104,6 +104,9 @@ void AMyHUD::Select(AActor* Actor1)
 
 void AMyHUD::Deselect(AActor* Actor1)
 {
+	if (MyView && MyView->GetbShiftHeld()) { return; }
+	else if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - MyView is null.")); }
+
 	if (Actor1->ActorHasTag("Selectable"))
 	{
 		Highlight(Actor1, nullptr);
@@ -125,7 +128,8 @@ void AMyHUD::Deselect(AActor* Actor1)
 
 void AMyHUD::DeselectAll()
 {
-	if (MyView && MyView->GetbCtrlHeld()) { return; }
+	if (MyView && MyView->GetbShiftHeld()) { return; }
+	else if(!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DeselectAll - MyView is null.")); }
 
 	for (AActor* Actor : SelectedActors)
 	{
