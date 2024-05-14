@@ -4,6 +4,11 @@
 #include "GameFramework/Actor.h"
 #include "MyGameManager.generated.h"
 
+class AMyGameMode;
+class AMyPlayerController;
+class AMyView;
+class AMyHUD;
+
 UCLASS()
 class MORETIMETODIE_API AMyGameManager : public AActor
 {
@@ -23,18 +28,18 @@ private:
 	/*
 		REFERENCES
 	*/
-	class AMyGameMode* GameMode{};
-	class AMyPlayerController* PlayerController{};
-	class AMyView* MyView{};
-	class AMyHUD* MyHUD{};
+	AMyGameMode* GameMode{};
+	AMyPlayerController* PlayerController{};
+	AMyView* MyView{};
+	AMyHUD* MyHUD{};
 
 public:
 
 	static AMyGameManager* GetInstance() { return Instance ? Instance : nullptr; }
 
-	class AMyGameMode* GetMyGameMode() const { return GameMode ? GameMode : nullptr; }
-	class AMyPlayerController* GetMyPlayerController() const { return PlayerController ? PlayerController : nullptr; }
-	class AMyView* GetMyView() const { return MyView ? MyView : nullptr; }
-	class AMyHUD* GetMyHUD() const { return MyHUD ? MyHUD : nullptr; }
+	AMyGameMode* GetMyGameMode() const { return GameMode ? GameMode : nullptr; }
+	AMyPlayerController* GetMyPlayerController() const { return PlayerController ? PlayerController : nullptr; }
+	AMyView* GetMyView() const { return MyView ? MyView : nullptr; }
+	AMyHUD* GetMyHUD() const { return MyHUD ? MyHUD : nullptr; }
 };
 

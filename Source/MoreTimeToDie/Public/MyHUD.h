@@ -4,6 +4,8 @@
 #include "GameFramework/HUD.h"
 #include "MyHUD.generated.h"
 
+class AMyView;
+
 UCLASS()
 class MORETIMETODIE_API AMyHUD : public AHUD
 {
@@ -30,7 +32,7 @@ private:
 	/*
 		REFERENCES
 	*/
-	class AMyView* MyView{};
+	AMyView* MyView{};
 
 public:
 

@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "Survivor.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class MORETIMETODIE_API ASurvivor : public ACharacter
 {
@@ -31,7 +33,7 @@ private:
 	void SetCharacterMovement();
 
 	UPROPERTY(EditDefaultsOnly)
-	class USphereComponent* AvoidanceSphere{};
+	USphereComponent* AvoidanceSphere{};
 	void SetAvoidanceSphere();
 
 public:

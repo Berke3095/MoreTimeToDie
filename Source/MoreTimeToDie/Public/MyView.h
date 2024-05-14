@@ -4,6 +4,17 @@
 #include "GameFramework/Pawn.h"
 #include "MyView.generated.h"
 
+struct FInputActionValue;
+
+class UInputMappingContext;
+class UInputAction;
+
+class AMyPlayerController;
+class AMyHUD;
+
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class MORETIMETODIE_API AMyView : public APawn
 {
@@ -18,23 +29,23 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	/*
 		REFERENCES
 	*/
-	class AMyPlayerController* PlayerController{};
-	class AMyHUD* MyHUD{};
+	AMyPlayerController* PlayerController{};
+	AMyHUD* MyHUD{};
 
 	/*
 		INPUT
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	class UInputMappingContext* ViewMappingContext{};
+	UInputMappingContext* ViewMappingContext{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input") // Move camera
-	class UInputAction* MoveCameraAction{};
-	void MoveCamera(const struct FInputActionValue& InputValue1);
+	UInputAction* MoveCameraAction{};
+	void MoveCamera(const FInputActionValue& InputValue1);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input") // MidMouse
 	UInputAction* MidMouseAction{};
@@ -43,14 +54,14 @@ private:
 	bool bMidMouseHeld{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input") // Rotate camera
-	class UInputAction* RotateCameraAction{};
-	void RotateCamera(const struct FInputActionValue& InputValue1);
+	UInputAction* RotateCameraAction{};
+	void RotateCamera(const FInputActionValue& InputValue1);
 	float MouseX{};
 	float MouseY{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input") // Zoom camera
-	class UInputAction* ZoomCameraAction{};
-	void ZoomCamera(const struct FInputActionValue& InputValue1);
+	UInputAction* ZoomCameraAction{};
+	void ZoomCamera(const FInputActionValue& InputValue1);
 	float CameraZoomSpeed{ 500.0f };
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -63,14 +74,14 @@ private:
 		VIEW
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // SpringArm
-	class USpringArmComponent* SpringArm{};
+	USpringArmComponent* SpringArm{};
 	void SetupSpringArm();
 	const float MinTargetArmLength{ 400.0f };
 	const float MaxTargetArmLength{ 2500.0f };
 	float CurrentTargetArmLength{MaxTargetArmLength};
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Settings") // Camera
-	class UCameraComponent* Camera{};
+	UCameraComponent* Camera{};
 	void SetupCamera();
 	const float CameraSpeed{ 500.0f };
 

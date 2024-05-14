@@ -4,6 +4,8 @@
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
+class AMyView;
+
 UCLASS()
 class MORETIMETODIE_API AMyPlayerController : public APlayerController
 {
@@ -23,7 +25,7 @@ private:
 	/*
 		REFERENCES
 	*/
-	class AMyView* MyView{};
+	AMyView* MyView{};
 
 	/*
 		MOUSE
