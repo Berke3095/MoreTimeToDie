@@ -28,10 +28,10 @@ void UPortraitWidget::NativeConstruct()
     NameSlots[5] = Name5;
     NameSlots[6] = Name6;
 
-    /*for (int32 Index = 0; Index < 7; Index++)
+    for (int32 i = 0; i < UE_ARRAY_COUNT(PortraitSlots); i++)
     {
-        UButton* PortraitSlot = PortraitSlots[Index];
-        UTextBlock* NameSlot = NameSlots[Index];
+        UButton* PortraitSlot = PortraitSlots[i];
+        UTextBlock* NameSlot = NameSlots[i];
         if (PortraitSlot)
         {
             PortraitSlot->SetVisibility(ESlateVisibility::Hidden);
@@ -41,5 +41,44 @@ void UPortraitWidget::NativeConstruct()
         {
             NameSlot->SetVisibility(ESlateVisibility::Hidden);
         }
-    }*/
+    }
+}
+
+void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)
+{
+    if (PortraitSlot1 && PortraitImage1)
+    {
+        PortraitSlot1->WidgetStyle.Normal.SetResourceObject(PortraitImage1);
+        PortraitSlot1->WidgetStyle.Hovered.SetResourceObject(PortraitImage1);
+        PortraitSlot1->WidgetStyle.Pressed.SetResourceObject(PortraitImage1);
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::SetSurvivorPortrait - PortraitSlot or PortraitImage is null.")); }
+}
+
+void UPortraitWidget::SetSurvivorName(UTextBlock* NameSlot1, FString SurvivorName1)
+{
+    if (NameSlot1)
+    {
+        NameSlot1->SetText(FText::FromString(SurvivorName1));
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::SetSurvivorPortrait - NameSlot or SurvivorName is null.")); }
+}
+
+void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorName1, ASurvivor* Survivor1)
+{
+    for (int32 i = 0; i < UE_ARRAY_COUNT(PortraitSlots); i++)
+    {
+        if (!PortraitSlots[i]->IsVisible() && !NameSlots[i]->IsVisible())
+        {
+            PortraitSlots[i]->SetVisibility(ESlateVisibility::Visible);
+            NameSlots[i]->SetVisibility(ESlateVisibility::Visible);
+
+            SetSurvivorPortrait(PortraitSlots[i], PortraitImage1);
+            SetSurvivorName(NameSlots[i], SurvivorName1);
+
+            CurrentSurvivors[i] = Survivor1;
+
+            break;
+        }
+    }
 }

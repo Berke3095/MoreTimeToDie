@@ -8,6 +8,7 @@ class AMyGameMode;
 class AMyPlayerController;
 class AMyView;
 class AMyHUD;
+class UPortraitWidget;
 
 UCLASS()
 class MORETIMETODIE_API AMyGameManager : public AActor
@@ -33,6 +34,13 @@ private:
 	AMyView* MyView{};
 	AMyHUD* MyHUD{};
 
+	/*
+		WIDGETS
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = "HUD") // Portraits
+	TSubclassOf<UPortraitWidget> PortraitWidgetClass{};
+	UPortraitWidget* PortraitWidget{};
+
 public:
 
 	static AMyGameManager* GetInstance() { return Instance ? Instance : nullptr; }
@@ -41,5 +49,6 @@ public:
 	AMyPlayerController* GetMyPlayerController() const { return PlayerController ? PlayerController : nullptr; }
 	AMyView* GetMyView() const { return MyView ? MyView : nullptr; }
 	AMyHUD* GetMyHUD() const { return MyHUD ? MyHUD : nullptr; }
+	UPortraitWidget* GetPortraitWidget() const { return PortraitWidget ? PortraitWidget : nullptr; }
 };
 

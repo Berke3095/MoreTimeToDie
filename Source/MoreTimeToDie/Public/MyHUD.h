@@ -5,9 +5,6 @@
 #include "MyHUD.generated.h"
 
 class AMyView;
-class AMyPlayerController;
-
-class UPortraitWidget;
 
 UCLASS()
 class MORETIMETODIE_API AMyHUD : public AHUD
@@ -36,14 +33,6 @@ private:
 		REFERENCES
 	*/
 	AMyView* MyView{};
-	AMyPlayerController* PlayerController{};
-
-	/*
-		WIDGETS
-	*/
-	UPROPERTY(EditDefaultsOnly, Category = "HUD") // Portraits
-	TSubclassOf<UPortraitWidget> PortraitWidgetClass{};
-	UPortraitWidget* PortraitWidget{};
 
 public:
 

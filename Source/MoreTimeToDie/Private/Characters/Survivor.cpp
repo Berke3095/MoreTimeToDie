@@ -1,8 +1,12 @@
 #include "Characters/Survivor.h"
 
+#include "MyGameManager.h" 
+
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
+
+#include "Widgets/PortraitWidget.h"
 
 ASurvivor::ASurvivor()
 {
@@ -18,12 +22,23 @@ ASurvivor::ASurvivor()
 void ASurvivor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AMyGameManager* GameManager = AMyGameManager::GetInstance();
+	if (GameManager)
+	{
+		PortraitWidget = GameManager->GetPortraitWidget();
+		if (PortraitWidget)
+		{
+			PortraitWidget->SetSurvivorHud(Portrait, Name, this);
+		}
+		else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - GameManager is null.")); }
 }
 
 void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 /*

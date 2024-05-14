@@ -8,6 +8,9 @@ class UButton;
 class UTextBlock;
 
 class AMyGameManager;
+class ASurvivor;
+
+const int32 MaxSurvivorCount{ 7 };
 
 UCLASS()
 class MORETIMETODIE_API UPortraitWidget : public UUserWidget
@@ -18,8 +21,10 @@ private:
 
 	virtual void NativeConstruct() override;
 
+	
+
 	// Portraits
-	UButton* PortraitSlots[7]{};
+	UButton* PortraitSlots[MaxSurvivorCount]{};
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Portrait0{};
@@ -37,7 +42,7 @@ private:
 	UButton* Portrait6{};
 
 	// Names
-	UTextBlock* NameSlots[7]{};
+	UTextBlock* NameSlots[MaxSurvivorCount]{};
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Name0{};
@@ -58,4 +63,12 @@ private:
 		REFERENCES
 	*/
 	AMyGameManager* GameManager{};
+	ASurvivor* CurrentSurvivors[MaxSurvivorCount];
+
+	void SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1);
+	void SetSurvivorName(UTextBlock* NameSlot1, FString SurvivorName1);
+
+public:
+
+	void SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorName1, ASurvivor* Survivor1);
 };
