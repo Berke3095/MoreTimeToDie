@@ -5,8 +5,10 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/Button.h" 
 
 #include "Widgets/PortraitWidget.h"
+#include "MyHUD.h"
 
 ASurvivor::ASurvivor()
 {
@@ -26,10 +28,14 @@ void ASurvivor::BeginPlay()
 	AMyGameManager* GameManager = AMyGameManager::GetInstance();
 	if (GameManager)
 	{
+		MyHUD = GameManager->GetMyHUD();
+		if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - MyHUD is null.")); }
+
 		PortraitWidget = GameManager->GetPortraitWidget();
 		if (PortraitWidget)
 		{
 			PortraitWidget->SetSurvivorHud(Portrait, Name, this);
+			PortraitButton->OnClicked.AddDynamic(this, &ASurvivor::OnPortraitClicked);
 		}
 		else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
 	}
@@ -98,5 +104,15 @@ void ASurvivor::SetAvoidanceSphere()
 		AvoidanceSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block); // Pathtrace
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetAvoidanceSphere - AvoidanceSphere is null")); }
+}
+
+void ASurvivor::OnPortraitClicked()
+{
+	if (MyHUD)
+	{
+		MyHUD->DeselectAll();
+		MyHUD->Select(this);
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::OnPortraitClicked - MyHUD is null")); }
 }
 

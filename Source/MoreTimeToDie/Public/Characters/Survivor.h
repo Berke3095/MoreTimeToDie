@@ -5,8 +5,9 @@
 #include "Survivor.generated.h"
 
 class UPortraitWidget;
-class UButton;
+class AMyHUD;
 
+class UButton;
 class USphereComponent;
 
 UCLASS()
@@ -48,6 +49,10 @@ private:
 		REFERENCES
 	*/
 	UPortraitWidget* PortraitWidget{};
+	AMyHUD* MyHUD{};
+
+	UFUNCTION()
+	void OnPortraitClicked();
 
 public:
 
