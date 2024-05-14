@@ -75,6 +75,9 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMyView::ShiftStart);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMyView::ShiftEnd);
+
+		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
+		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -218,6 +221,17 @@ void AMyView::ShiftEnd()
 	if (bShiftHeld)
 	{
 		bShiftHeld = false;
+	}
+}
+void AMyView::CtrlStart()
+{
+	bCtrlHeld = true;
+}
+void AMyView::CtrlEnd()
+{
+	if (bCtrlHeld)
+	{
+		bCtrlHeld = false;
 	}
 }
 /*

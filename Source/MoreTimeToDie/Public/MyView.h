@@ -78,6 +78,12 @@ private:
 	void ShiftStart();
 	void ShiftEnd();
 	bool bShiftHeld{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* CtrlAction{};
+	void CtrlStart();
+	void CtrlEnd();
+	bool bCtrlHeld{};
 	/*
 		VIEW
 	*/
@@ -102,6 +108,7 @@ public:
 
 	FORCEINLINE const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
 	FORCEINLINE const bool GetbShiftHeld() const { return bShiftHeld; }
+	FORCEINLINE const bool GetbCtrlHeld() const { return bCtrlHeld; }
 
 	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
 	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }
