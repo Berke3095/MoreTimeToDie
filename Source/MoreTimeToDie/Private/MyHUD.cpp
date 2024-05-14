@@ -56,11 +56,14 @@ void AMyHUD::DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D En
 			Select(Actor);
 		}
 
-		for (AActor* Actor : SelectedActorsCopy)
+		if (!MyView->GetbCtrlHeld())
 		{
-			if (!TempSelectedActors.Contains(Actor))
+			for (AActor* Actor : SelectedActorsCopy)
 			{
-				Deselect(Actor);
+				if (!TempSelectedActors.Contains(Actor))
+				{
+					Deselect(Actor);
+				}
 			}
 		}
 	}
