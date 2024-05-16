@@ -44,9 +44,9 @@ private:
 
 public:
 
-	FORCEINLINE void Select(AActor* Actor1);
-	FORCEINLINE void Deselect(AActor* Actor1);
-	FORCEINLINE void DeselectAll();
+	void Select(AActor* Actor1);
+	void Deselect(AActor* Actor1);
+	void DeselectAll();
 
 	FORCEINLINE const TArray<ASurvivor*> GetSelectedSurvivors() const { return SelectedSurvivors; }
 };

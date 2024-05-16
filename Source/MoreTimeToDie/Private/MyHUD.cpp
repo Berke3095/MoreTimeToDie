@@ -148,6 +148,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 					if (SelectedSurvivors.Num() == 0)
 					{
 						PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+						PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), false);
 					}
 				}
 				else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - PortraitWidget is null.")); }

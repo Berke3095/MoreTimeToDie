@@ -62,12 +62,12 @@ private:
 
 public:
 
-	FORCEINLINE void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
+	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
 	FORCEINLINE const bool GetbIsSelected() const { return bIsSelected; }
 
-	FORCEINLINE void SetbIsDrafted(bool bIsDrafted1) { bIsDrafted = bIsDrafted1; }
+	void SetbIsDrafted(bool bIsDrafted1) { bIsDrafted = bIsDrafted1; }
 	FORCEINLINE const bool GetbIsDrafted() const { return bIsDrafted; }
 	
 	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
-	FORCEINLINE void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
+	void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
 };
