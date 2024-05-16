@@ -66,15 +66,20 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* UnDraft{};
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* UnDraftAll{};
+
 	UFUNCTION()
 	void OnDraftClicked();
 	UFUNCTION()
 	void OnUnDraftClicked();
+	UFUNCTION()
+	void OnUnDraftAllClicked();
 	/*
 		REFERENCES
 	*/
 	AMyGameManager* GameManager{};
-	ASurvivor* CurrentSurvivors[MaxSurvivorCount];
+	TArray<ASurvivor*> CurrentSurvivors{};
 
 	void SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1);
 	void SetSurvivorName(UTextBlock* NameSlot1, FString SurvivorName1);

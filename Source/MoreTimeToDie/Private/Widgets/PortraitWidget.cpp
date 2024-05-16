@@ -56,13 +56,14 @@ void UPortraitWidget::NativeConstruct()
 
     Draft->OnClicked.AddDynamic(this, &UPortraitWidget::OnDraftClicked);
     UnDraft->OnClicked.AddDynamic(this, &UPortraitWidget::OnUnDraftClicked);
+    UnDraftAll->OnClicked.AddDynamic(this, &UPortraitWidget::OnUnDraftAllClicked);
 }
 
 void UPortraitWidget::OnDraftClicked()
 {
     for (ASurvivor* Survivor : CurrentSurvivors)
     {
-        if (Survivor->GetbIsSelected() == true && Survivor->GetbIsDrafted() == false)
+        if (Survivor->GetbIsSelected() && !Survivor->GetbIsDrafted())
         {
             Survivor->SetbIsDrafted(true);
         }
@@ -73,7 +74,18 @@ void UPortraitWidget::OnUnDraftClicked()
 {
     for (ASurvivor* Survivor : CurrentSurvivors)
     {
-        if (Survivor->GetbIsSelected() == true && Survivor->GetbIsDrafted() == true)
+        if (Survivor->GetbIsSelected() && Survivor->GetbIsDrafted())
+        {
+            Survivor->SetbIsDrafted(false);
+        }
+    }
+}
+
+void UPortraitWidget::OnUnDraftAllClicked()
+{
+    for (ASurvivor* Survivor : CurrentSurvivors)
+    {
+        if (Survivor->GetbIsDrafted())
         {
             Survivor->SetbIsDrafted(false);
         }
@@ -113,7 +125,7 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
             SetSurvivorName(NameSlots[i], SurvivorName1);
 
             Survivor1->SetPortraitButton(PortraitSlots[i]);
-            CurrentSurvivors[i] = Survivor1;
+            CurrentSurvivors.Add(Survivor1);
 
             break;
         }

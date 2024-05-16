@@ -104,7 +104,7 @@ void AMyHUD::Select(AActor* Actor1)
 				Highlight(Survivor, SurvivorOverlayMat);
 				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), 1.0f, 1.0f, 1.0f);
 				PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
-				SelectedSurvivors.AddUnique(Survivor);
+				SelectedSurvivors.Add(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
 		}
