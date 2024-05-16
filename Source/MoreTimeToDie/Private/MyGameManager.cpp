@@ -12,6 +12,7 @@ AMyGameManager::AMyGameManager()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	Instance = this;
+	SetActorHiddenInGame(true);
 }
 
 void AMyGameManager::BeginPlay()
