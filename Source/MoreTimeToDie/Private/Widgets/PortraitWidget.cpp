@@ -11,6 +11,8 @@ void UPortraitWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+    // Also, change IsFocusable to false in the editor
+
     GameManager = AMyGameManager::GetInstance();
     if (!GameManager){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - GameManager is null.")); }
 
