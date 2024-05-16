@@ -47,11 +47,13 @@ void UPortraitWidget::NativeConstruct()
             SetButtonVisibility(PortraitSlot, false);
             SetTintAlpha(PortraitSlot, AlphaNormal, AlphaHovered, AlphaPressed);
         }
+        else{ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - PortraitSlot is null.")); }
 
         if (NameSlot)
         {
             NameSlot->SetVisibility(ESlateVisibility::Hidden);
         }
+        else{ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - NameSlot is null.")); }
     }
 
     SetTintAlpha(Draft, 0.8f, 0.9f, 1.0f);
@@ -91,12 +93,12 @@ void UPortraitWidget::OnUnDraftClicked()
         {
             Survivor->SetbIsDrafted(false);
             SetButtonVisibility(Draft, true);
+            SetButtonVisibility(UnDraft, false);
             DraftedSurvivors.Remove(Survivor);
         }
     }
     if (DraftedSurvivors.Num() == 0)
     {
-        SetButtonVisibility(UnDraft, false);
         SetButtonVisibility(UnDraftAll, false);
     }
 }
@@ -119,10 +121,7 @@ void UPortraitWidget::OnUnDraftAllClicked()
     {
         SetButtonVisibility(Draft, true);
     }
-    else if(!MyHUD)
-    { 
-        UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::OnUnDraftAllClicked - MyHUD is null.")); 
-    }
+    else if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::OnUnDraftAllClicked - MyHUD is null.")); }
 }
 
 void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)

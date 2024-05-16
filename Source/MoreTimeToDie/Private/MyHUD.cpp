@@ -17,6 +17,7 @@ void AMyHUD::BeginPlay()
 		if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - MyView is null.")); }
 
 		PortraitWidget = GameManager->GetPortraitWidget();
+		if(!PortraitWidget){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - PortraitWidget is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::BeginPlay - GameManager is null.")); }
 }
@@ -102,15 +103,20 @@ void AMyHUD::Select(AActor* Actor1)
 			{
 				Survivor->SetbIsSelected(true);
 				Highlight(Survivor, SurvivorOverlayMat);
-				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), 1.0f, 1.0f, 1.0f);
-				if (!Survivor->GetbIsDrafted())
+				if (PortraitWidget)
 				{
-					PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
+					PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), 1.0f, 1.0f, 1.0f);
+					if (!Survivor->GetbIsDrafted())
+					{
+						PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
+					}
+					else
+					{
+						PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), true);
+					}
 				}
-				else
-				{
-					PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), true);
-				}
+				else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - PortraitWidget is null.")); }
+
 				SelectedSurvivors.Add(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
@@ -134,12 +140,17 @@ void AMyHUD::Deselect(AActor* Actor1)
 			if (Survivor)
 			{
 				Survivor->SetbIsSelected(false);
-				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 				SelectedSurvivors.Remove(Survivor);
-				if (SelectedSurvivors.Num() == 0)
+
+				if (PortraitWidget)
 				{
-					PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+					PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
+					if (SelectedSurvivors.Num() == 0)
+					{
+						PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+					}
 				}
+				else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - PortraitWidget is null.")); }
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
 		}
@@ -157,12 +168,17 @@ void AMyHUD::DeselectAll()
 	}
 	SelectedActors.Empty();
 
-	for (ASurvivor* Survivor : SelectedSurvivors)
+	if (PortraitWidget)
 	{
-		Survivor->SetbIsSelected(false);
-		PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
+		for (ASurvivor* Survivor : SelectedSurvivors)
+		{
+			Survivor->SetbIsSelected(false);
+			PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
+		}
+
+		PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+		PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), false);
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DeselectAll - PortraitWidget is null.")); }
 	SelectedSurvivors.Empty();
-	PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
-	PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), false);
 }

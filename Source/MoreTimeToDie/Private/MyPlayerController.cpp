@@ -18,6 +18,7 @@ void AMyPlayerController::BeginPlay()
 	if (GameManager)
 	{
 		MyView = GameManager->GetMyView();
+		if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("AMyPlayerController::BeginPlay - MyView is null.")); }
 	}
 }
 

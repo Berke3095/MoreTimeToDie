@@ -60,26 +60,49 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMyView::MoveCamera);
+		if(MoveCameraAction){ EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMyView::MoveCamera); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - CameraMoveAction is null.")); }
 
-		EnhancedInputComponent->BindAction(MidMouseAction, ETriggerEvent::Started, this, &AMyView::MidMouseStart);
-		EnhancedInputComponent->BindAction(MidMouseAction, ETriggerEvent::Completed, this, &AMyView::MidMouseEnd);
+		if (MidMouseAction)
+		{
+			EnhancedInputComponent->BindAction(MidMouseAction, ETriggerEvent::Started, this, &AMyView::MidMouseStart);
+			EnhancedInputComponent->BindAction(MidMouseAction, ETriggerEvent::Completed, this, &AMyView::MidMouseEnd);
+		}
+		else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - MidMouseAction is null.")); }
 
-		EnhancedInputComponent->BindAction(RotateCameraAction, ETriggerEvent::Triggered, this, &AMyView::RotateCamera);
+		if (RotateCameraAction) { EnhancedInputComponent->BindAction(RotateCameraAction, ETriggerEvent::Triggered, this, &AMyView::RotateCamera); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RotateCameraAction is null.")); }
 
-		EnhancedInputComponent->BindAction(ZoomCameraAction, ETriggerEvent::Triggered, this, &AMyView::ZoomCamera);
+		if(ZoomCameraAction){ EnhancedInputComponent->BindAction(ZoomCameraAction, ETriggerEvent::Triggered, this, &AMyView::ZoomCamera); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - ZoomCameraAction is null.")); }
 
-		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Started, this, &AMyView::LeftClickStart);
-		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AMyView::LeftClickTrigger);
-		EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this, &AMyView::LeftClickEnd);
+		if (LeftClickAction)
+		{
+			EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Started, this, &AMyView::LeftClickStart);
+			EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AMyView::LeftClickTrigger);
+			EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Completed, this, &AMyView::LeftClickEnd);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - LeftClickAction is null.")); }
 
-		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMyView::ShiftStart);
-		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMyView::ShiftEnd);
+		if (ShiftAction)
+		{
+			EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMyView::ShiftStart);
+			EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMyView::ShiftEnd);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - ShiftAction is null.")); }
 
-		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
-		EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
+		if (CtrlAction)
+		{
+			EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Started, this, &AMyView::CtrlStart);
+			EnhancedInputComponent->BindAction(CtrlAction, ETriggerEvent::Completed, this, &AMyView::CtrlEnd);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - CtrlAction is null.")); }
 
-		EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Started, this, &AMyView::RightClick);
+		if (RightClickAction)
+		{
+			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Started, this, &AMyView::RightClick);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
