@@ -103,6 +103,7 @@ void AMyHUD::Select(AActor* Actor1)
 				Survivor->bIsSelected = true;
 				Highlight(Survivor, SurvivorOverlayMat);
 				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, 1.0f, 1.0f, 1.0f);
+				PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
 				SelectedSurvivors.AddUnique(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
@@ -128,6 +129,10 @@ void AMyHUD::Deselect(AActor* Actor1)
 				Survivor->bIsSelected = false;
 				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 				SelectedSurvivors.Remove(Survivor);
+				if (SelectedSurvivors.Num() == 0)
+				{
+					PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+				}
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
 		}
@@ -151,4 +156,5 @@ void AMyHUD::DeselectAll()
 		PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 	}
 	SelectedSurvivors.Empty();
+	PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
 }

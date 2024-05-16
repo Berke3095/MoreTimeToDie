@@ -38,7 +38,7 @@ void UPortraitWidget::NativeConstruct()
         UTextBlock* NameSlot = NameSlots[i];
         if (PortraitSlot)
         {
-            PortraitSlot->SetVisibility(ESlateVisibility::Hidden);
+            SetButtonVisibility(PortraitSlot, false);
             SetTintAlpha(PortraitSlot, AlphaNormal, AlphaHovered, AlphaPressed);
         }
 
@@ -49,10 +49,10 @@ void UPortraitWidget::NativeConstruct()
     }
 
     SetTintAlpha(Draft, 0.8f, 0.9f, 1.0f);
-    Draft->SetVisibility(ESlateVisibility::Hidden);
+    SetButtonVisibility(Draft, false);
 
     SetTintAlpha(UnDraft, 0.8f, 0.9f, 1.0f);
-    UnDraft->SetVisibility(ESlateVisibility::Hidden);
+    SetButtonVisibility(UnDraft, false);
 }
 
 void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)
@@ -81,7 +81,7 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
     {
         if (!PortraitSlots[i]->IsVisible() && !NameSlots[i]->IsVisible())
         {
-            PortraitSlots[i]->SetVisibility(ESlateVisibility::Visible);
+            SetButtonVisibility(PortraitSlots[i], true);
             NameSlots[i]->SetVisibility(ESlateVisibility::Visible);
 
             SetSurvivorPortrait(PortraitSlots[i], PortraitImage1);

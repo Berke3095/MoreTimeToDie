@@ -78,8 +78,8 @@ public:
 
 	void SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorName1, ASurvivor* Survivor1);
 
-	FORCEINLINE bool GetDraftButton() const { return Draft; }
-	FORCEINLINE bool GetUnDraftButton() const { return UnDraft; }
+	FORCEINLINE UButton* GetDraftButton() const { return Draft ? Draft : nullptr; }
+	FORCEINLINE UButton* GetUnDraftButton() const { return UnDraft ? UnDraft : nullptr; }
 	void SetButtonVisibility(UButton* Button1, bool Visibility1);
 
 	// Default alphas for portraits
