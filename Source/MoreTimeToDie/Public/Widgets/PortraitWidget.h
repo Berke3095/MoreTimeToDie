@@ -91,13 +91,13 @@ public:
 	FORCEINLINE UButton* GetDraftButton() const { return Draft ? Draft : nullptr; }
 	FORCEINLINE UButton* GetUnDraftButton() const { return UnDraft ? UnDraft : nullptr; }
 	FORCEINLINE UButton* GetUnDraftAllButton() const { return UnDraftAll ? UnDraftAll : nullptr; }
-	void SetButtonVisibility(UButton* Button1, bool Visibility1);
+	FORCEINLINE void SetButtonVisibility(UButton* Button1, bool Visibility1);
 
 	// Default alphas for portraits
 	const float AlphaNormal = 0.5;
 	const float AlphaHovered = 0.8;
 	const float AlphaPressed = 1.0;
-	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
+	FORCEINLINE void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
 	FORCEINLINE const TArray<ASurvivor*> GetDraftedSurvivors() const { return DraftedSurvivors; }
 };
