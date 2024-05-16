@@ -47,6 +47,12 @@ void UPortraitWidget::NativeConstruct()
             NameSlot->SetVisibility(ESlateVisibility::Hidden);
         }
     }
+
+    SetTintAlpha(Draft, 0.8f, 0.9f, 1.0f);
+    Draft->SetVisibility(ESlateVisibility::Hidden);
+
+    SetTintAlpha(UnDraft, 0.8f, 0.9f, 1.0f);
+    UnDraft->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)
@@ -89,11 +95,27 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
     }
 }
 
-void UPortraitWidget::SetTintAlpha(UButton* PortraitButton1, float Normal1, float Hovered1, float Pressed1)
+void UPortraitWidget::SetButtonVisibility(UButton* Button1, bool Visibility1)
 {
-    FSlateBrush& NormalBrush = PortraitButton1->WidgetStyle.Normal;
-    FSlateBrush& HoveredBrush = PortraitButton1->WidgetStyle.Hovered;
-    FSlateBrush& PressedBrush = PortraitButton1->WidgetStyle.Pressed;
+    if (Button1)
+    {
+        if (Visibility1 && !Button1->IsVisible())
+        {
+            Button1->SetVisibility(ESlateVisibility::Visible);
+        }
+        else if (!Visibility1 && Button1->IsVisible())
+        {
+            Button1->SetVisibility(ESlateVisibility::Hidden);
+        }
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::SetButtonVisibility - Button is null.")); }
+}
+
+void UPortraitWidget::SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1)
+{
+    FSlateBrush& NormalBrush = Button1->WidgetStyle.Normal;
+    FSlateBrush& HoveredBrush = Button1->WidgetStyle.Hovered;
+    FSlateBrush& PressedBrush = Button1->WidgetStyle.Pressed;
 
     FLinearColor TintColorNormal = NormalBrush.TintColor.GetSpecifiedColor();
     FLinearColor TintColorHovered = HoveredBrush.TintColor.GetSpecifiedColor();

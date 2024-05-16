@@ -57,5 +57,6 @@ private:
 public:
 
 	bool bIsSelected{};
+	bool bIsDrafted{};
 	UButton* PortraitButton{};
 };

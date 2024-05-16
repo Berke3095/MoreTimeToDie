@@ -59,6 +59,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Name6{};
 
+	// Draft
+	UPROPERTY(meta = (BindWidget))
+	UButton* Draft{};
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* UnDraft{};
 	/*
 		REFERENCES
 	*/
@@ -72,9 +78,13 @@ public:
 
 	void SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorName1, ASurvivor* Survivor1);
 
+	FORCEINLINE bool GetDraftButton() const { return Draft; }
+	FORCEINLINE bool GetUnDraftButton() const { return UnDraft; }
+	void SetButtonVisibility(UButton* Button1, bool Visibility1);
+
 	// Default alphas for portraits
 	const float AlphaNormal = 0.5;
 	const float AlphaHovered = 0.8;
 	const float AlphaPressed = 1.0;
-	void SetTintAlpha(UButton* PortraitButton1, float Normal1, float Hovered1, float Pressed1);
+	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 };
