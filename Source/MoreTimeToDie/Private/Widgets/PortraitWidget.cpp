@@ -53,6 +53,31 @@ void UPortraitWidget::NativeConstruct()
 
     SetTintAlpha(UnDraft, 0.8f, 0.9f, 1.0f);
     SetButtonVisibility(UnDraft, false);
+
+    Draft->OnClicked.AddDynamic(this, &UPortraitWidget::OnDraftClicked);
+    UnDraft->OnClicked.AddDynamic(this, &UPortraitWidget::OnUnDraftClicked);
+}
+
+void UPortraitWidget::OnDraftClicked()
+{
+    for (ASurvivor* Survivor : CurrentSurvivors)
+    {
+        if (Survivor->GetbIsSelected() == true && Survivor->GetbIsDrafted() == false)
+        {
+            Survivor->SetbIsDrafted(true);
+        }
+    }
+}
+
+void UPortraitWidget::OnUnDraftClicked()
+{
+    for (ASurvivor* Survivor : CurrentSurvivors)
+    {
+        if (Survivor->GetbIsSelected() == true && Survivor->GetbIsDrafted() == true)
+        {
+            Survivor->SetbIsDrafted(false);
+        }
+    }
 }
 
 void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)

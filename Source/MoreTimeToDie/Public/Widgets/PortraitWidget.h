@@ -65,6 +65,11 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* UnDraft{};
+
+	UFUNCTION()
+	void OnDraftClicked();
+	UFUNCTION()
+	void OnUnDraftClicked();
 	/*
 		REFERENCES
 	*/
