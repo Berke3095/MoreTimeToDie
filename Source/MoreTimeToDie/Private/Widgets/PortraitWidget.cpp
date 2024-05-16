@@ -87,7 +87,7 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
             SetSurvivorPortrait(PortraitSlots[i], PortraitImage1);
             SetSurvivorName(NameSlots[i], SurvivorName1);
 
-            Survivor1->PortraitButton = PortraitSlots[i];
+            Survivor1->SetPortraitButton(PortraitSlots[i]);
             CurrentSurvivors[i] = Survivor1;
 
             break;

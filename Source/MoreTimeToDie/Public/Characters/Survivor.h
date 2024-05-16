@@ -51,12 +51,20 @@ private:
 	UPortraitWidget* PortraitWidget{};
 	AMyHUD* MyHUD{};
 
+	/*
+		WIDGETS
+	*/
+	UButton* PortraitButton{};
 	UFUNCTION()
 	void OnPortraitClicked();
+	bool bIsSelected{};
+	bool bIsDrafted{};
 
 public:
 
-	bool bIsSelected{};
-	bool bIsDrafted{};
-	UButton* PortraitButton{};
+	FORCEINLINE void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
+	FORCEINLINE void SetbIsDrafted(bool bIsDrafted1) { bIsDrafted = bIsDrafted1; }
+	
+	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
+	FORCEINLINE void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
 };

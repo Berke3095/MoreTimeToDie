@@ -100,9 +100,9 @@ void AMyHUD::Select(AActor* Actor1)
 			ASurvivor* Survivor = Cast<ASurvivor>(Actor1);
 			if (Survivor)
 			{
-				Survivor->bIsSelected = true;
+				Survivor->SetbIsSelected(true);
 				Highlight(Survivor, SurvivorOverlayMat);
-				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, 1.0f, 1.0f, 1.0f);
+				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), 1.0f, 1.0f, 1.0f);
 				PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
 				SelectedSurvivors.AddUnique(Survivor);
 			}
@@ -126,8 +126,8 @@ void AMyHUD::Deselect(AActor* Actor1)
 			ASurvivor* Survivor = Cast<ASurvivor>(Actor1);
 			if (Survivor)
 			{
-				Survivor->bIsSelected = false;
-				PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
+				Survivor->SetbIsSelected(false);
+				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 				SelectedSurvivors.Remove(Survivor);
 				if (SelectedSurvivors.Num() == 0)
 				{
@@ -152,8 +152,8 @@ void AMyHUD::DeselectAll()
 
 	for (ASurvivor* Survivor : SelectedSurvivors)
 	{
-		Survivor->bIsSelected = false;
-		PortraitWidget->SetTintAlpha(Survivor->PortraitButton, PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
+		Survivor->SetbIsSelected(false);
+		PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
 	}
 	SelectedSurvivors.Empty();
 	PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
