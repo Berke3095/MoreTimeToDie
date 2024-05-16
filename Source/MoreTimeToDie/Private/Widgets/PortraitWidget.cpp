@@ -6,6 +6,7 @@
 #include "Components/TextBlock.h" 
 
 #include "Characters/Survivor.h"
+#include "MyHUD.h"
 
 void UPortraitWidget::NativeConstruct()
 {
@@ -14,7 +15,12 @@ void UPortraitWidget::NativeConstruct()
     // Also, change IsFocusable to false in the editor
 
     GameManager = AMyGameManager::GetInstance();
-    if (!GameManager){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - GameManager is null.")); }
+    if (GameManager)
+    {
+        MyHUD = GameManager->GetMyHUD();
+        if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - MyHUD is null.")); }
+    }
+    else{ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - GameManager is null.")); }
 
     PortraitSlots[0] = Portrait0;
     PortraitSlots[1] = Portrait1;
@@ -54,6 +60,9 @@ void UPortraitWidget::NativeConstruct()
     SetTintAlpha(UnDraft, 0.8f, 0.9f, 1.0f);
     SetButtonVisibility(UnDraft, false);
 
+    SetTintAlpha(UnDraft, 0.8f, 0.9f, 1.0f);
+    SetButtonVisibility(UnDraftAll, false);
+
     Draft->OnClicked.AddDynamic(this, &UPortraitWidget::OnDraftClicked);
     UnDraft->OnClicked.AddDynamic(this, &UPortraitWidget::OnUnDraftClicked);
     UnDraftAll->OnClicked.AddDynamic(this, &UPortraitWidget::OnUnDraftAllClicked);
@@ -66,8 +75,12 @@ void UPortraitWidget::OnDraftClicked()
         if (Survivor->GetbIsSelected() && !Survivor->GetbIsDrafted())
         {
             Survivor->SetbIsDrafted(true);
+            SetButtonVisibility(Draft, false);
+            DraftedSurvivors.Add(Survivor);
         }
     }
+    SetButtonVisibility(UnDraft, true);
+    SetButtonVisibility(UnDraftAll, true);
 }
 
 void UPortraitWidget::OnUnDraftClicked()
@@ -77,7 +90,14 @@ void UPortraitWidget::OnUnDraftClicked()
         if (Survivor->GetbIsSelected() && Survivor->GetbIsDrafted())
         {
             Survivor->SetbIsDrafted(false);
+            SetButtonVisibility(Draft, true);
+            DraftedSurvivors.Remove(Survivor);
         }
+    }
+    if (DraftedSurvivors.Num() == 0)
+    {
+        SetButtonVisibility(UnDraft, false);
+        SetButtonVisibility(UnDraftAll, false);
     }
 }
 
@@ -89,6 +109,19 @@ void UPortraitWidget::OnUnDraftAllClicked()
         {
             Survivor->SetbIsDrafted(false);
         }
+    }
+    DraftedSurvivors.Empty();
+
+    SetButtonVisibility(UnDraft, false);
+    SetButtonVisibility(UnDraftAll, false);
+
+    if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0)
+    {
+        SetButtonVisibility(Draft, true);
+    }
+    else if(!MyHUD)
+    { 
+        UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::OnUnDraftAllClicked - MyHUD is null.")); 
     }
 }
 

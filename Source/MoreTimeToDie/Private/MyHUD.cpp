@@ -103,7 +103,14 @@ void AMyHUD::Select(AActor* Actor1)
 				Survivor->SetbIsSelected(true);
 				Highlight(Survivor, SurvivorOverlayMat);
 				PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), 1.0f, 1.0f, 1.0f);
-				PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
+				if (!Survivor->GetbIsDrafted())
+				{
+					PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), true);
+				}
+				else
+				{
+					PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), true);
+				}
 				SelectedSurvivors.Add(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
@@ -157,4 +164,5 @@ void AMyHUD::DeselectAll()
 	}
 	SelectedSurvivors.Empty();
 	PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
+	PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), false);
 }

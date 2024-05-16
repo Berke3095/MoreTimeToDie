@@ -46,8 +46,13 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("bIsSelected has been set to: %d"), bIsSelected);
-	UE_LOG(LogTemp, Warning, TEXT("bIsDrafted has been set to: %d"), bIsDrafted);
+	//UE_LOG(LogTemp, Warning, TEXT("bIsSelected has been set to: %d"), bIsSelected);
+	//UE_LOG(LogTemp, Warning, TEXT("bIsDrafted has been set to: %d"), bIsDrafted);
+
+	if (PortraitWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DraftedSurvivors: %d"), PortraitWidget->GetDraftedSurvivors().Num());
+	}
 }
 
 /*

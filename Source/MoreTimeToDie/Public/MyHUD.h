@@ -5,6 +5,7 @@
 #include "MyHUD.generated.h"
 
 class AMyView;
+class ASurvivor;
 
 class UPortraitWidget;
 
@@ -24,7 +25,7 @@ private:
 	void DrawBoxSelect(const FVector2D& StartingMousePosition1, FVector2D EndingMousePosition1);
 	const float RectangleThickness{ 2.0f };
 	TArray<AActor*> SelectedActors{};
-	TArray<class ASurvivor*> SelectedSurvivors{};
+	TArray<ASurvivor*> SelectedSurvivors{};
 
 	void Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1);
 

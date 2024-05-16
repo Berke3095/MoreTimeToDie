@@ -8,6 +8,7 @@ class UButton;
 class UTextBlock;
 
 class AMyGameManager;
+class AMyHUD;
 class ASurvivor;
 
 const int32 MaxSurvivorCount{ 7 };
@@ -20,8 +21,6 @@ class MORETIMETODIE_API UPortraitWidget : public UUserWidget
 private:
 
 	virtual void NativeConstruct() override;
-
-	
 
 	// Portraits
 	UButton* PortraitSlots[MaxSurvivorCount]{};
@@ -79,7 +78,8 @@ private:
 		REFERENCES
 	*/
 	AMyGameManager* GameManager{};
-	TArray<ASurvivor*> CurrentSurvivors{};
+	AMyHUD* MyHUD{};
+	TArray<ASurvivor*> CurrentSurvivors{}, DraftedSurvivors{};
 
 	void SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1);
 	void SetSurvivorName(UTextBlock* NameSlot1, FString SurvivorName1);
@@ -90,6 +90,7 @@ public:
 
 	FORCEINLINE UButton* GetDraftButton() const { return Draft ? Draft : nullptr; }
 	FORCEINLINE UButton* GetUnDraftButton() const { return UnDraft ? UnDraft : nullptr; }
+	FORCEINLINE UButton* GetUnDraftAllButton() const { return UnDraftAll ? UnDraftAll : nullptr; }
 	void SetButtonVisibility(UButton* Button1, bool Visibility1);
 
 	// Default alphas for portraits
@@ -97,4 +98,6 @@ public:
 	const float AlphaHovered = 0.8;
 	const float AlphaPressed = 1.0;
 	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
+
+	FORCEINLINE const TArray<ASurvivor*> GetDraftedSurvivors() const { return DraftedSurvivors; }
 };
