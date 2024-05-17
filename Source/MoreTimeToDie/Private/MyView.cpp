@@ -9,7 +9,8 @@
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
 #include "MyHUD.h"
-//#include "Characters/Survivor.h"
+#include "Widgets/PortraitWidget.h"
+#include "Characters/Survivor.h"
 
 AMyView::AMyView()
 {
@@ -40,6 +41,9 @@ void AMyView::BeginPlay()
 
 		MyHUD = GameManager->GetMyHUD();
 		if (!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null.")); }
+
+		PortraitWidget = GameManager->GetPortraitWidget();
+		if (!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PortraitWidget is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - GameManager is null.")); }
 }
@@ -256,6 +260,14 @@ void AMyView::RightClick()
 		PlayerController && PlayerController->GetHoveredActor())
 	{
 		Destination = PlayerController->GetHitResult().ImpactPoint;
+		if (PortraitWidget && PortraitWidget->GetDraftedSurvivors().Num() > 0)
+		{
+			for (ASurvivor* Survivor : PortraitWidget->GetDraftedSurvivors())
+			{
+				Survivor->MoveTo(Destination, Survivor->GetAcceptance());
+			}
+		}
+		else if(!PortraitWidget){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PortraitWidget is null.")); }
 	}
 	else if(!MyHUD || !PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyHUD or PlayerController is null.")); }
 }

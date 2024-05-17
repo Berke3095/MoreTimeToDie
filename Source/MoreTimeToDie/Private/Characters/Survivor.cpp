@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/Button.h" 
+#include "MyAIController.h"
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
@@ -18,6 +19,7 @@ ASurvivor::ASurvivor()
 
 	SetCapsuleComponent();
 	SetSkeletalMeshComponent();
+	SetCharacterMovement();
 	SetAvoidanceSphere();
 }
 
@@ -40,6 +42,17 @@ void ASurvivor::BeginPlay()
 		else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - GameManager is null.")); }
+
+	MyAIController = Cast<AMyAIController>(GetController()); // For some reason newly spawned survivors spawn without AI controllers
+	if (!MyAIController)
+	{
+		MyAIController = GetWorld()->SpawnActor<AMyAIController>(AMyAIController::StaticClass(), GetActorLocation(), FRotator::ZeroRotator);
+		if (MyAIController)
+		{
+			MyAIController->Possess(this);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - MyAIController is null")); }
+	}
 }
 
 void ASurvivor::Tick(float DeltaTime)
@@ -49,10 +62,10 @@ void ASurvivor::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("bIsSelected has been set to: %d"), bIsSelected);
 	//UE_LOG(LogTemp, Warning, TEXT("bIsDrafted has been set to: %d"), bIsDrafted);
 
-	if (PortraitWidget)
+	/*if (PortraitWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("DraftedSurvivors: %d"), PortraitWidget->GetDraftedSurvivors().Num());
-	}
+	}*/
 }
 
 /*
@@ -122,5 +135,16 @@ void ASurvivor::OnPortraitClicked()
 		MyHUD->Select(this);
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::OnPortraitClicked - MyHUD is null")); }
+}
+
+void ASurvivor::MoveTo(const FVector& Destination1, float Acceptance1)
+{
+	if (!bIsDrafted || !bIsSelected) { return; }
+
+	if (MyAIController)
+	{
+		MyAIController->MoveToDestination(Destination1, Acceptance1);
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveTo - MyAIController is null")); }
 }
 

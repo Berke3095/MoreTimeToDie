@@ -6,6 +6,7 @@
 
 class UPortraitWidget;
 class AMyHUD;
+class AMyAIController;
 
 class UButton;
 class USphereComponent;
@@ -60,6 +61,12 @@ private:
 	bool bIsSelected{};
 	bool bIsDrafted{};
 
+	/*
+		MOVEMENT
+	*/
+	AMyAIController* MyAIController{};
+	const float Acceptance{ 100.0f };
+
 public:
 
 	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
@@ -70,4 +77,7 @@ public:
 	
 	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
 	void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
+
+	void MoveTo(const FVector& Destination1, float Acceptance1);
+	FORCEINLINE const float GetAcceptance() const { return Acceptance; }
 };
