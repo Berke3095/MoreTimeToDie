@@ -5,7 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
-#include "Components/Button.h" 
+#include "Components/Button.h"
+#include "Components/Image.h" 
 #include "MyAIController.h"
 
 #include "Widgets/PortraitWidget.h"
@@ -135,6 +136,13 @@ void ASurvivor::OnPortraitClicked()
 		MyHUD->Select(this);
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::OnPortraitClicked - MyHUD is null")); }
+}
+
+void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
+{
+	bIsDrafted = bIsDrafted1;
+	if (bIsDrafted){ DraftedImage->SetVisibility(ESlateVisibility::Visible); }
+	else { DraftedImage->SetVisibility(ESlateVisibility::Hidden); }
 }
 
 void ASurvivor::MoveTo(const FVector& Destination1, float Acceptance1)

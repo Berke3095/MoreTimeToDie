@@ -6,6 +6,7 @@
 
 class UButton;
 class UTextBlock;
+class UImage;
 
 class AMyGameManager;
 class AMyHUD;
@@ -57,6 +58,24 @@ private:
 	UTextBlock* Name5{};
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Name6{};
+
+	// Drafted Image
+	UImage* DraftedImages[MaxSurvivorCount]{};
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted0{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted1{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted2{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted3{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted4{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted5{};
+	UPROPERTY(meta = (BindWidget))
+	UImage* Drafted6{};
 
 	// Draft
 	UPROPERTY(meta = (BindWidget))

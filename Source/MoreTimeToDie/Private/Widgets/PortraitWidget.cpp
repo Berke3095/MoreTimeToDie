@@ -4,6 +4,7 @@
 
 #include "Components/Button.h" 
 #include "Components/TextBlock.h" 
+#include "Components/Image.h" 
 
 #include "Characters/Survivor.h"
 #include "MyHUD.h"
@@ -38,10 +39,20 @@ void UPortraitWidget::NativeConstruct()
     NameSlots[5] = Name5;
     NameSlots[6] = Name6;
 
+    DraftedImages[0] = Drafted0;
+    DraftedImages[1] = Drafted1;
+    DraftedImages[2] = Drafted2;
+    DraftedImages[3] = Drafted3;
+    DraftedImages[4] = Drafted4;
+    DraftedImages[5] = Drafted5;
+    DraftedImages[6] = Drafted6;
+
     for (int32 i = 0; i < UE_ARRAY_COUNT(PortraitSlots); i++)
     {
         UButton* PortraitSlot = PortraitSlots[i];
         UTextBlock* NameSlot = NameSlots[i];
+        UImage* DraftImage = DraftedImages[i];
+
         if (PortraitSlot)
         {
             SetButtonVisibility(PortraitSlot, false);
@@ -54,6 +65,12 @@ void UPortraitWidget::NativeConstruct()
             NameSlot->SetVisibility(ESlateVisibility::Hidden);
         }
         else{ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - NameSlot is null.")); }
+
+        if (DraftImage)
+        {
+            DraftImage->SetVisibility(ESlateVisibility::Hidden);
+        }
+        else { UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::NativeConstruct - DraftImage is null.")); }
     }
 
     SetTintAlpha(Draft, 0.8f, 0.9f, 1.0f);
@@ -157,6 +174,7 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
             SetSurvivorName(NameSlots[i], SurvivorName1);
 
             Survivor1->SetPortraitButton(PortraitSlots[i]);
+            Survivor1->SetDraftedImage(DraftedImages[i]);
             CurrentSurvivors.Add(Survivor1);
 
             break;

@@ -9,6 +9,7 @@ class AMyHUD;
 class AMyAIController;
 
 class UButton;
+class UImage;
 class USphereComponent;
 
 UCLASS()
@@ -56,6 +57,7 @@ private:
 		WIDGETS
 	*/
 	UButton* PortraitButton{};
+	UImage* DraftedImage{};
 	UFUNCTION()
 	void OnPortraitClicked();
 	bool bIsSelected{};
@@ -72,8 +74,9 @@ public:
 	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
 	FORCEINLINE const bool GetbIsSelected() const { return bIsSelected; }
 
-	void SetbIsDrafted(bool bIsDrafted1) { bIsDrafted = bIsDrafted1; }
+	void SetbIsDrafted(bool bIsDrafted1);
 	FORCEINLINE const bool GetbIsDrafted() const { return bIsDrafted; }
+	void SetDraftedImage(UImage* DraftedImage1) { DraftedImage = DraftedImage1; }
 	
 	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
 	void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
