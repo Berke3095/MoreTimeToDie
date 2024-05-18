@@ -145,13 +145,13 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	else { DraftedImage->SetVisibility(ESlateVisibility::Hidden); }
 }
 
-void ASurvivor::MoveTo(const FVector& Destination1, float Acceptance1)
+void ASurvivor::MoveToDestination()
 {
 	if (!bIsDrafted || !bIsSelected) { return; }
 
 	if (MyAIController)
 	{
-		MyAIController->MoveToDestination(Destination1, Acceptance1);
+		MyAIController->MoveToLocation(Destination, Acceptance);
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveTo - MyAIController is null")); }
 }

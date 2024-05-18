@@ -68,6 +68,7 @@ private:
 	*/
 	AMyAIController* MyAIController{};
 	const float Acceptance{ 100.0f };
+	FVector Destination{};
 
 public:
 
@@ -81,6 +82,8 @@ public:
 	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
 	void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
 
-	void MoveTo(const FVector& Destination1, float Acceptance1);
-	FORCEINLINE const float GetAcceptance() const { return Acceptance; }
+	void SetDestination(FVector& Destination1) { Destination = Destination1; }
+	FORCEINLINE const FVector& GetDestination() const { return Destination; }
+
+	void MoveToDestination();
 };

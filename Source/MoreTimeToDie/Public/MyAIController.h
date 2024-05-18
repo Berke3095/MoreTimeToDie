@@ -4,6 +4,8 @@
 #include "AIController.h"
 #include "MyAIController.generated.h"
 
+class ASurvivor;
+
 UCLASS()
 class MORETIMETODIE_API AMyAIController : public AAIController
 {
@@ -14,7 +16,10 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	TArray<ASurvivor*> MoveableSurvivors{};
+	TArray <FVector> FoundDestinations{};
+
 public:
 
-	void MoveToDestination(const FVector& Destination1, float Acceptance1);
+	void SetDestinations(FVector& CenterPoint);
 };

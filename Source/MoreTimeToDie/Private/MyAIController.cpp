@@ -2,6 +2,10 @@
 
 #include "NavigationSystem.h"
 
+#include "MyGameManager.h"
+#include "MyHUD.h"
+#include "Characters/Survivor.h"
+
 void AMyAIController::BeginPlay()
 {
     Super::BeginPlay();
@@ -12,21 +16,50 @@ void AMyAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void AMyAIController::MoveToDestination(const FVector& Destination1, float Acceptance1)
+void AMyAIController::SetDestinations(FVector& CenterPoint)
 {
-    APawn* ControlledPawn = GetPawn();
-    if (!ControlledPawn)
+    AMyGameManager* GameManager = AMyGameManager::GetInstance();
+    if (GameManager)
     {
-        UE_LOG(LogTemp, Warning, TEXT("AMyAIController::MoveToDestination - Controlled pawn is null"));
-        return;
+        AMyHUD* MyHUD = GameManager->GetMyHUD();
+        if (MyHUD)
+        {
+            for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
+            {
+                if (Survivor->GetbIsDrafted())
+                {
+                    MoveableSurvivors.AddUnique(Survivor);
+                }
+            }
+        }
+        else { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::FindDestinations - MyHUD is null.")); }
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::FindDestinations - MyManager is null.")); }
+
+    const TArray<FVector> FormationOffsets = {
+        FVector(0.0f, 0.0f, 0.0f),
+        FVector(125.0f, -125.0f, 0.0f),
+        FVector(-125.0f, -125.0f, 0.0f),
+        FVector(-125.0f, 125.0f, 0.0f),
+        FVector(125.0f, 125.0f, 0.0f),
+        FVector(200.0f, 0.0f, 0.0f),
+        FVector(-200.0f, 0.0f, 0.0f)
+    };
+
+    for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+    {
+        float Randomizer = FMath::RandRange(-50.0f, 50.0f);
+        FVector OffsetVector = FormationOffsets[i];
+        OffsetVector.X += Randomizer;
+        OffsetVector.Y += Randomizer;
+        FoundDestinations.AddUnique(CenterPoint + OffsetVector);
     }
 
-    UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-    if (!NavSystem)
+    for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
-        UE_LOG(LogTemp, Warning, TEXT("AMyAIController::MoveToDestination - Navigation system is null"));
-        return;
+        MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
     }
 
-    MoveToLocation(Destination1, Acceptance1);
+    MoveableSurvivors.Empty();
+    FoundDestinations.Empty();
 }

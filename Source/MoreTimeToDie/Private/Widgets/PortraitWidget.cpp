@@ -95,7 +95,7 @@ void UPortraitWidget::OnDraftClicked()
         {
             Survivor->SetbIsDrafted(true);
             SetButtonVisibility(Draft, false);
-            DraftedSurvivors.Add(Survivor);
+            DraftedSurvivors.AddUnique(Survivor);
         }
     }
     SetButtonVisibility(UnDraft, true);
@@ -175,7 +175,7 @@ void UPortraitWidget::SetSurvivorHud(UTexture* PortraitImage1, FString SurvivorN
 
             Survivor1->SetPortraitButton(PortraitSlots[i]);
             Survivor1->SetDraftedImage(DraftedImages[i]);
-            CurrentSurvivors.Add(Survivor1);
+            CurrentSurvivors.AddUnique(Survivor1);
 
             break;
         }

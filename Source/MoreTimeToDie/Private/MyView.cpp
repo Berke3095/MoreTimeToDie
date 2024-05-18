@@ -11,6 +11,7 @@
 #include "MyHUD.h"
 #include "Widgets/PortraitWidget.h"
 #include "Characters/Survivor.h"
+#include "MyAIController.h"
 
 AMyView::AMyView()
 {
@@ -260,11 +261,18 @@ void AMyView::RightClick()
 		PlayerController && PlayerController->GetHoveredActor())
 	{
 		Destination = PlayerController->GetHitResult().ImpactPoint;
+		AMyAIController* MyAIController = Cast<AMyAIController>(MyHUD->GetSelectedSurvivors()[0]->GetController());
+		if (MyAIController)
+		{
+			MyAIController->SetDestinations(Destination);
+		}
+		else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyAIController is null.")); }
+
 		if (PortraitWidget && PortraitWidget->GetDraftedSurvivors().Num() > 0)
 		{
 			for (ASurvivor* Survivor : PortraitWidget->GetDraftedSurvivors())
 			{
-				Survivor->MoveTo(Destination, Survivor->GetAcceptance());
+				Survivor->MoveToDestination();
 			}
 		}
 		else if(!PortraitWidget){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PortraitWidget is null.")); }

@@ -117,7 +117,7 @@ void AMyHUD::Select(AActor* Actor1)
 				}
 				else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - PortraitWidget is null.")); }
 
-				SelectedSurvivors.Add(Survivor);
+				SelectedSurvivors.AddUnique(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
 		}
