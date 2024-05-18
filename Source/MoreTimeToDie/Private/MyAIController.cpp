@@ -46,13 +46,29 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
         FVector(-200.0f, 0.0f, 0.0f)
     };
 
+    UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+    if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); return; }
+
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
         float Randomizer = FMath::RandRange(-50.0f, 50.0f);
         FVector OffsetVector = FormationOffsets[i];
         OffsetVector.X += Randomizer;
         OffsetVector.Y += Randomizer;
-        FoundDestinations.AddUnique(CenterPoint + OffsetVector);
+        FVector Destination = CenterPoint + OffsetVector;
+
+        FNavLocation ProjectedLocation;
+        if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
+        {
+            FoundDestinations.AddUnique(ProjectedLocation.Location);
+        }
+        else
+        {
+            if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation, FVector(500.0f, 500.0f, 500.0f)))
+            {
+                FoundDestinations.AddUnique(ProjectedLocation.Location);
+            }
+        }
     }
 
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)

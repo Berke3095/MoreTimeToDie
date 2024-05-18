@@ -67,7 +67,7 @@ private:
 		MOVEMENT
 	*/
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 100.0f };
+	const float Acceptance{ 50.0f };
 	FVector Destination{};
 
 public:
