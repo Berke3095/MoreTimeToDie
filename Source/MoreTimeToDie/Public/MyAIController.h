@@ -10,6 +10,10 @@ UCLASS()
 class MORETIMETODIE_API AMyAIController : public AAIController
 {
 	GENERATED_BODY()
+
+public:
+
+	AMyAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
 private:
 

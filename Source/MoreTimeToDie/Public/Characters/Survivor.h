@@ -43,10 +43,6 @@ private:
 	UCharacterMovementComponent* CharMovement{};
 	void SetCharacterMovement();
 
-	UPROPERTY(EditDefaultsOnly)
-	USphereComponent* AvoidanceSphere{};
-	void SetAvoidanceSphere();
-
 	/*
 		REFERENCES
 	*/

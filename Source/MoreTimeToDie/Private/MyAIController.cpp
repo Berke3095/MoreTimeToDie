@@ -1,10 +1,14 @@
 #include "MyAIController.h"
 
 #include "NavigationSystem.h"
+#include "Navigation/CrowdFollowingComponent.h"
 
 #include "MyGameManager.h"
 #include "MyHUD.h"
 #include "Characters/Survivor.h"
+
+AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer) 
+    : Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent"))){}
 
 void AMyAIController::BeginPlay()
 {

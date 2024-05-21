@@ -21,7 +21,6 @@ ASurvivor::ASurvivor()
 	SetCapsuleComponent();
 	SetSkeletalMeshComponent();
 	SetCharacterMovement();
-	SetAvoidanceSphere();
 }
 
 void ASurvivor::BeginPlay()
@@ -110,22 +109,6 @@ void ASurvivor::SetCharacterMovement()
 		CharMovement->bOrientRotationToMovement = true;
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetCharacterMovement - CharMovement is null")); }
-}
-
-void ASurvivor::SetAvoidanceSphere()
-{
-	AvoidanceSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AvoidanceSphere"));
-	if (AvoidanceSphere)
-	{
-		AvoidanceSphere->SetupAttachment(RootComponent);
-		AvoidanceSphere->bUseAttachParentBound = true;
-		AvoidanceSphere->SetGenerateOverlapEvents(false);
-		AvoidanceSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		AvoidanceSphere->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3); // AvoidanceSphere
-		AvoidanceSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		AvoidanceSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block); // Pathtrace
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetAvoidanceSphere - AvoidanceSphere is null")); }
 }
 
 void ASurvivor::OnPortraitClicked()
