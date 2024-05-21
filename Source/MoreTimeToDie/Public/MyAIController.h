@@ -16,9 +16,6 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	TArray<ASurvivor*> MoveableSurvivors{};
-	TArray <FVector> FoundDestinations{};
-
 public:
 
 	void SetDestinations(FVector& CenterPoint);

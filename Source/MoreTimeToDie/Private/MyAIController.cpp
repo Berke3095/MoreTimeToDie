@@ -18,6 +18,9 @@ void AMyAIController::Tick(float DeltaTime)
 
 void AMyAIController::SetDestinations(FVector& CenterPoint)
 {
+    TArray<ASurvivor*> MoveableSurvivors{};
+    TArray <FVector> FoundDestinations{};
+
     AMyGameManager* GameManager = AMyGameManager::GetInstance();
     if (GameManager)
     {
