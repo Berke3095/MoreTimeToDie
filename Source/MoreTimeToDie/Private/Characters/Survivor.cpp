@@ -104,7 +104,7 @@ void ASurvivor::SetCharacterMovement()
 	CharMovement = GetCharacterMovement();
 	if (CharMovement)
 	{
-		CharMovement->MaxWalkSpeed = 600.0f;
+		CharMovement->MaxWalkSpeed = 250.0f;
 		bUseControllerRotationYaw = false;
 		CharMovement->bOrientRotationToMovement = true;
 	}
