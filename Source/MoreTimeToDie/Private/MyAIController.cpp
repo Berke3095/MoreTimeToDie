@@ -54,7 +54,7 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
 
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
-        float Randomizer = FMath::RandRange(-50.0f, 50.0f);
+        float Randomizer = FMath::RandRange(-20.0f, 20.0f);
         FVector OffsetVector = FormationOffsets[i];
         OffsetVector.X += Randomizer;
         OffsetVector.Y += Randomizer;
