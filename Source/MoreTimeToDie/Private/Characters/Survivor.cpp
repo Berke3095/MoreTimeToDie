@@ -126,7 +126,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	else { DraftedImage->SetVisibility(ESlateVisibility::Hidden); }
 }
 
-void ASurvivor::MoveToDestination()
+void ASurvivor::MoveToDestination(FVector Destination1)
 {
 	if (!bIsDrafted || !bIsSelected) { return; }
 
@@ -135,6 +135,5 @@ void ASurvivor::MoveToDestination()
 		MyAIController->MoveToLocation(Destination, Acceptance);
 		MoveState = ESurvivorMoveState::ESMS_Walking;
 	}
-	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
-

@@ -89,7 +89,7 @@ public:
 	void SetDestination(FVector& Destination1) { Destination = Destination1; }
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
-	void MoveToDestination();
+	void MoveToDestination(FVector Destination1);
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }

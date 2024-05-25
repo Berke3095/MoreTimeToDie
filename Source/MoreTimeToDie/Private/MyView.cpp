@@ -281,7 +281,7 @@ void AMyView::RightClick()
 		{
 			for (ASurvivor* Survivor : PortraitWidget->GetDraftedSurvivors())
 			{
-				Survivor->MoveToDestination();
+				Survivor->MoveToDestination(Survivor->GetDestination());
 			}
 		}
 		else if(!PortraitWidget){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PortraitWidget is null.")); }
