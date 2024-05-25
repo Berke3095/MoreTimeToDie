@@ -6,7 +6,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Button.h"
 #include "Components/Image.h" 
+
 #include "MyAIController.h"
+#include "Navigation/PathFollowingComponent.h"
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
@@ -58,6 +60,11 @@ void ASurvivor::BeginPlay()
 void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bMoveOrdered)
+	{
+		MoveToDestination(Destination);
+	}
 }
 
 void ASurvivor::SetCharacterSettings()
@@ -105,6 +112,8 @@ void ASurvivor::SetCharacterMovement()
 		CharMovement->MaxWalkSpeed = 250.0f;
 		bUseControllerRotationYaw = false;
 		CharMovement->bOrientRotationToMovement = true;
+		CharMovement->bUseRVOAvoidance = true;
+		CharMovement->AvoidanceConsiderationRadius = 50.f;
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetCharacterMovement - CharMovement is null")); }
 }
@@ -128,12 +137,25 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 
 void ASurvivor::MoveToDestination(FVector Destination1)
 {
-	if (!bIsDrafted || !bIsSelected) { return; }
-
 	if (MyAIController)
 	{
 		MyAIController->MoveToLocation(Destination, Acceptance);
-		MoveState = ESurvivorMoveState::ESMS_Walking;
+		if (MoveState != ESurvivorMoveState::ESMS_Walking)
+		{
+			MoveState = ESurvivorMoveState::ESMS_Walking;
+		}
+		if (CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(false); }
+
+
+		if (MyAIController && MyAIController->GetPathFollowingComponent()->DidMoveReachGoal())
+		{
+			bMoveOrdered = false;
+			if (MoveState != ESurvivorMoveState::ESMS_NONE)
+			{
+				MoveState = ESurvivorMoveState::ESMS_NONE;
+			}
+			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
+		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }

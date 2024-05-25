@@ -11,7 +11,6 @@ class UInputAction;
 
 class AMyPlayerController;
 class AMyHUD;
-class UPortraitWidget;
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -40,7 +39,6 @@ private:
 	*/
 	AMyPlayerController* PlayerController{};
 	AMyHUD* MyHUD{};
-	UPortraitWidget* PortraitWidget{};
 
 	/*
 		INPUT

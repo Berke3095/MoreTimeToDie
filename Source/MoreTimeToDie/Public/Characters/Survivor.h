@@ -68,7 +68,7 @@ private:
 	AMyAIController* MyAIController{};
 	const float Acceptance{ 25.0f };
 	FVector Destination{};
-
+	bool bMoveOrdered{};
 	/*
 		STATES
 	*/
@@ -93,4 +93,6 @@ public:
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
+
+	void SetbMoveOrdered(bool Value1) { bMoveOrdered = Value1; }
 };

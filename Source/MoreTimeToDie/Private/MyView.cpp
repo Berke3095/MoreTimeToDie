@@ -11,7 +11,6 @@
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
 #include "MyHUD.h"
-#include "Widgets/PortraitWidget.h"
 #include "Characters/Survivor.h"
 #include "MyAIController.h"
 
@@ -44,9 +43,6 @@ void AMyView::BeginPlay()
 
 		MyHUD = GameManager->GetMyHUD();
 		if (!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null.")); }
-
-		PortraitWidget = GameManager->GetPortraitWidget();
-		if (!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PortraitWidget is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - GameManager is null.")); }
 }
@@ -277,14 +273,13 @@ void AMyView::RightClick()
 		}
 		else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyAIController is null.")); }
 
-		if (PortraitWidget && PortraitWidget->GetDraftedSurvivors().Num() > 0)
+		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
 		{
-			for (ASurvivor* Survivor : PortraitWidget->GetDraftedSurvivors())
+			if (Survivor->GetbIsDrafted())
 			{
-				Survivor->MoveToDestination(Survivor->GetDestination());
+				Survivor->SetbMoveOrdered(true);
 			}
 		}
-		else if(!PortraitWidget){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PortraitWidget is null.")); }
 	}
 	else if(!MyHUD || !PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyHUD or PlayerController is null.")); }
 }

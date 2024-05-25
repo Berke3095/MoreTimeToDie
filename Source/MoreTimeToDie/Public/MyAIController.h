@@ -4,8 +4,6 @@
 #include "AIController.h"
 #include "MyAIController.generated.h"
 
-class ASurvivor;
-
 UCLASS()
 class MORETIMETODIE_API AMyAIController : public AAIController
 {
