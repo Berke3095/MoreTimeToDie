@@ -60,7 +60,7 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
         OffsetVector.Y += Randomizer;
         FVector Destination = CenterPoint + OffsetVector;
 
-        FNavLocation ProjectedLocation;
+        FNavLocation ProjectedLocation{};
         if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
         {
             FoundDestinations.AddUnique(ProjectedLocation.Location);

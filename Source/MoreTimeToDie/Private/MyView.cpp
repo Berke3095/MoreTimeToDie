@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h" 
 
+#include "NavigationSystem.h"
+
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
 #include "MyHUD.h"
@@ -257,10 +259,17 @@ void AMyView::CtrlEnd()
 }
 void AMyView::RightClick()
 {
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - Navigation system is null.")); return; }
+
 	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
 		PlayerController && PlayerController->GetHoveredActor())
 	{
 		Destination = PlayerController->GetHitResult().ImpactPoint;
+
+		FNavLocation ProjectedLocation{};
+		if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return; }
+
 		AMyAIController* MyAIController = Cast<AMyAIController>(MyHUD->GetSelectedSurvivors()[0]->GetController());
 		if (MyAIController)
 		{
