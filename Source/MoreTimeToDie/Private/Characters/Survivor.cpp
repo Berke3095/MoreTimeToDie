@@ -4,7 +4,6 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Components/SphereComponent.h"
 #include "Components/Button.h"
 #include "Components/Image.h" 
 #include "MyAIController.h"
@@ -18,6 +17,7 @@ ASurvivor::ASurvivor()
 
 	Tags.Add("Selectable");
 
+	SetCharacterSettings();
 	SetCapsuleComponent();
 	SetSkeletalMeshComponent();
 	SetCharacterMovement();
@@ -60,6 +60,11 @@ void ASurvivor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ASurvivor::SetCharacterSettings()
+{
+	bCanAffectNavigationGeneration = true;
+}
+
 /*
 	COMPONENTS
 */
@@ -74,6 +79,7 @@ void ASurvivor::SetCapsuleComponent()
 		CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 		CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block); // Block mouse
+		CapsuleComponent->SetCanEverAffectNavigation(true);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetCapsuleComponent - CapsuleComponent is null.")); }
 }
@@ -127,7 +133,8 @@ void ASurvivor::MoveToDestination()
 	if (MyAIController)
 	{
 		MyAIController->MoveToLocation(Destination, Acceptance);
+		MoveState = ESurvivorMoveState::ESMS_Walking;
 	}
-	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveTo - MyAIController is null")); }
+	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
 

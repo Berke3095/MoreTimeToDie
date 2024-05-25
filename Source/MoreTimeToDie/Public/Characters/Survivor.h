@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MyEnums/SurvivorEnums.h"
 #include "Survivor.generated.h"
 
 class UPortraitWidget;
@@ -25,6 +26,8 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	void SetCharacterSettings();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character HUD")
 	UTexture* Portrait{};
@@ -63,8 +66,13 @@ private:
 		MOVEMENT
 	*/
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 50.0f };
+	const float Acceptance{ 25.0f };
 	FVector Destination{};
+
+	/*
+		STATES
+	*/
+	ESurvivorMoveState MoveState = ESurvivorMoveState::ESMS_NONE;
 
 public:
 
@@ -82,4 +90,7 @@ public:
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
 	void MoveToDestination();
+
+	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
+	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
 };

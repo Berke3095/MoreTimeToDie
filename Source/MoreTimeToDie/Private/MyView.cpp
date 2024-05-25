@@ -260,7 +260,7 @@ void AMyView::CtrlEnd()
 void AMyView::RightClick()
 {
 	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - Navigation system is null.")); return; }
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - Navigation system is null.")); }
 
 	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
 		PlayerController && PlayerController->GetHoveredActor())

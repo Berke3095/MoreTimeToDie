@@ -50,7 +50,7 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
     };
 
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-    if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); return; }
+    if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); }
 
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
