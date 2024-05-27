@@ -78,12 +78,12 @@ void AMyHUD::Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverl
 {
 	if (SelectedActor1)
 	{
+		UStaticMeshComponent* StaticMeshComponent = SelectedActor1->FindComponentByClass<UStaticMeshComponent>();
 		USkeletalMeshComponent* SkeletalMeshComponent = SelectedActor1->FindComponentByClass<USkeletalMeshComponent>();
-		if (SkeletalMeshComponent)
-		{
-			SkeletalMeshComponent->SetOverlayMaterial(SelectedOverlayMat1);
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Highlight - SkeletalMeshComponent is null.")); }
+
+		if (SkeletalMeshComponent){ SkeletalMeshComponent->SetOverlayMaterial(SelectedOverlayMat1); }
+		else if (StaticMeshComponent) { StaticMeshComponent->SetOverlayMaterial(SelectedOverlayMat1); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Highlight - MeshComponent is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Highlight - Actor is null.")); }
 }

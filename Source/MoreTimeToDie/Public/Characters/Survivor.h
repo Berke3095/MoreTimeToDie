@@ -11,7 +11,6 @@ class AMyAIController;
 
 class UButton;
 class UImage;
-class USphereComponent;
 
 UCLASS()
 class MORETIMETODIE_API ASurvivor : public ACharacter

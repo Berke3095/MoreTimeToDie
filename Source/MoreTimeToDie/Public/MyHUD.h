@@ -32,6 +32,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Highlight Overlays")
 	UMaterialInterface* SurvivorOverlayMat{};
 
+	UPROPERTY(EditDefaultsOnly, Category = "Highlight Overlays")
+	UMaterialInterface* HarvestableOverlayMat{};
+
 	/*
 		REFERENCES
 	*/
