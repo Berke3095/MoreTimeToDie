@@ -3,6 +3,7 @@
 #include "MyGameManager.h"
 #include "MyView.h"
 #include "Characters/Survivor.h"
+#include "Harvestables/Harvestable.h"
 
 #include "Widgets/PortraitWidget.h"
 
@@ -32,8 +33,8 @@ void AMyHUD::DrawHUD()
 	}
 	else if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null.")); }
 
-	/*UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());*/
+	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
+	// UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());
 }
 
 /*
@@ -121,6 +122,16 @@ void AMyHUD::Select(AActor* Actor1)
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
 		}
+		else if (Actor1->IsA<AHarvestable>())
+		{
+			AHarvestable* Harvestable = Cast<AHarvestable>(Actor1);
+			if (Harvestable)
+			{
+				Highlight(Harvestable, HarvestableOverlayMat);
+				SelectedHarvestables.AddUnique(Harvestable);
+			}
+			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Harvestable is null.")); }
+		}
 	}
 }
 
@@ -155,6 +166,15 @@ void AMyHUD::Deselect(AActor* Actor1)
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Survivor is null.")); }
 		}
+		else if (Actor1->IsA<AHarvestable>())
+		{
+			AHarvestable* Harvestable = Cast<AHarvestable>(Actor1);
+			if (Harvestable)
+			{
+				SelectedHarvestables.Remove(Harvestable);
+			}
+			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Harvestable is null.")); }
+		}
 	}
 }
 
@@ -163,23 +183,11 @@ void AMyHUD::DeselectAll()
 	if (MyView && (MyView->GetbShiftHeld() || MyView->GetbCtrlHeld())) { return; }
 	else if(!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DeselectAll - MyView is null.")); }
 
-	for (AActor* Actor : SelectedActors)
-	{
-		Highlight(Actor, nullptr);
-	}
-	SelectedActors.Empty();
+	TArray<AActor*> SelectedActorsCopy = SelectedActors;
 
-	if (PortraitWidget)
+	for (AActor* Actor : SelectedActorsCopy)
 	{
-		for (ASurvivor* Survivor : SelectedSurvivors)
-		{
-			Survivor->SetbIsSelected(false);
-			PortraitWidget->SetTintAlpha(Survivor->GetPortraitButton(), PortraitWidget->AlphaNormal, PortraitWidget->AlphaHovered, PortraitWidget->AlphaPressed);
-		}
-
-		PortraitWidget->SetButtonVisibility(PortraitWidget->GetDraftButton(), false);
-		PortraitWidget->SetButtonVisibility(PortraitWidget->GetUnDraftButton(), false);
+		Deselect(Actor);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DeselectAll - PortraitWidget is null.")); }
-	SelectedSurvivors.Empty();
+	SelectedActorsCopy.Empty();
 }

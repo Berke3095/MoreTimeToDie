@@ -6,6 +6,7 @@
 
 class AMyView;
 class ASurvivor;
+class AHarvestable;
 
 class UPortraitWidget;
 
@@ -26,6 +27,7 @@ private:
 	const float RectangleThickness{ 2.0f };
 	TArray<AActor*> SelectedActors{};
 	TArray<ASurvivor*> SelectedSurvivors{};
+	TArray<AHarvestable*> SelectedHarvestables{};
 
 	void Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1);
 
