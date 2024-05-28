@@ -33,7 +33,7 @@ void AMyHUD::DrawHUD()
 	}
 	else if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyHUD::DrawHUD - MyView is null.")); }
 
-	UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());
+	/*UE_LOG(LogTemp, Warning, TEXT("Number of Selected Actors: %d"), SelectedActors.Num());*/
 	// UE_LOG(LogTemp, Warning, TEXT("Number of Selected Survivors: %d"), SelectedSurvivors.Num());
 }
 
