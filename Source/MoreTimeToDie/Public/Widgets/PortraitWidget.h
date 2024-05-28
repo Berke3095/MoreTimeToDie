@@ -112,7 +112,6 @@ public:
 	FORCEINLINE UButton* GetUnDraftAllButton() const { return UnDraftAll ? UnDraftAll : nullptr; }
 	void SetButtonVisibility(UButton* Button1, bool Visibility1);
 
-	// Default alphas for portraits
 	const float AlphaNormal = 0.5;
 	const float AlphaHovered = 0.8;
 	const float AlphaPressed = 1.0;

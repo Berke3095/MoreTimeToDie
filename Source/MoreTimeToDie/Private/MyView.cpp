@@ -255,13 +255,17 @@ void AMyView::CtrlEnd()
 }
 void AMyView::RightClick()
 {
-	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - Navigation system is null.")); }
-
+	OrderMove();
+}
+void AMyView::OrderMove()
+{
 	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
 		PlayerController && PlayerController->GetHoveredActor())
 	{
 		Destination = PlayerController->GetHitResult().ImpactPoint;
+
+		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - Navigation system is null.")); }
 
 		FNavLocation ProjectedLocation{};
 		if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return; }
@@ -271,7 +275,7 @@ void AMyView::RightClick()
 		{
 			MyAIController->SetDestinations(Destination);
 		}
-		else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyAIController is null.")); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyAIController is null.")); }
 
 		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
 		{
@@ -281,8 +285,9 @@ void AMyView::RightClick()
 			}
 		}
 	}
-	else if(!MyHUD || !PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - MyHUD or PlayerController is null.")); }
+	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
 }
+
 /*
 	VIEW
 */

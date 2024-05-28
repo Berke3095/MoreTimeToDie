@@ -89,6 +89,7 @@ private:
 	UInputAction* RightClickAction{};
 	void RightClick();
 	FVector Destination{};
+	void OrderMove();
 
 	/*
 		VIEW
