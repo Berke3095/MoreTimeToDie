@@ -13,6 +13,7 @@
 #include "MyHUD.h"
 #include "Characters/Survivor.h"
 #include "MyAIController.h"
+#include "Harvestables/Harvestable.h"
 
 AMyView::AMyView()
 {
@@ -255,6 +256,16 @@ void AMyView::CtrlEnd()
 }
 void AMyView::RightClick()
 {
+	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
+	{
+		AHarvestable* HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
+		if (HarvestableActor)
+		{
+			HarvestableActor->CreateWidgetComponent(HarvestableActor->GetHarvestWidgetClass());
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - HarvestableActor is null.")); }
+	}
+	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
 	OrderMove();
 }
 void AMyView::OrderMove()
