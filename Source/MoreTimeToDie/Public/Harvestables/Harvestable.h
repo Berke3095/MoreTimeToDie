@@ -2,10 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Widgets/HarvestWidget.h"
 #include "Harvestable.generated.h"
-
-class UWidgetComponent;
 
 const int32 MaxResource{ 200 };
 
@@ -28,17 +25,8 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* HarvestableMesh{};
 
-	UWidgetComponent* WidgetComponent{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<UHarvestWidget> HarvestWidgetClass{};
-
 public:
 
 	FORCEINLINE const int32 GetCurrentResource() const { return CurrentResource; }
 	void SetCurrentResource(int32 CurrentResource1) { CurrentResource = CurrentResource1; }
-
-	void CreateWidgetComponent(TSubclassOf<UUserWidget> AssignedWidgetClass1);
-
-	FORCEINLINE const TSubclassOf<UHarvestWidget> GetHarvestWidgetClass() const { return HarvestWidgetClass ? HarvestWidgetClass : nullptr; }
 };

@@ -28,7 +28,7 @@ void AMyView::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AMyGameManager* GameManager = AMyGameManager::GetInstance();
+	GameManager = AMyGameManager::GetInstance();
 	if (GameManager)
 	{
 		PlayerController = GameManager->GetMyPlayerController();
@@ -189,6 +189,11 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 }
 void AMyView::LeftClickStart()
 {
+	if (GameManager)
+	{
+		GameManager->DestroyWidgets();
+	}
+
 	if (PlayerController)
 	{
 		if (MyHUD)
@@ -259,11 +264,11 @@ void AMyView::RightClick()
 	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
 	{
 		AHarvestable* HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
-		if (HarvestableActor)
+		if (HarvestableActor && GameManager)
 		{
-			HarvestableActor->CreateWidgetComponent(HarvestableActor->GetHarvestWidgetClass());
+			GameManager->CreateWidgetAtHarvest(HarvestableActor);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - HarvestableActor is null.")); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - HarvestableActor or GameManager is null.")); }
 	}
 	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
 	OrderMove();

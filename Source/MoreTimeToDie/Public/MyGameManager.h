@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Widgets/HarvestWidget.h"
 #include "MyGameManager.generated.h"
 
 class AMyGameMode;
@@ -9,6 +10,7 @@ class AMyPlayerController;
 class AMyView;
 class AMyHUD;
 class UPortraitWidget;
+class UHarvestWidget;
 
 UCLASS()
 class MORETIMETODIE_API AMyGameManager : public AActor
@@ -37,9 +39,13 @@ private:
 	/*
 		WIDGETS
 	*/
-	UPROPERTY(EditDefaultsOnly, Category = "HUD") // Portraits
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<UPortraitWidget> PortraitWidgetClass{};
 	UPortraitWidget* PortraitWidget{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<UHarvestWidget> HarvestWidgetClass{};
+	UHarvestWidget* HarvestWidget{};
 
 public:
 
@@ -50,5 +56,9 @@ public:
 	AMyView* GetMyView() const { return MyView ? MyView : nullptr; }
 	AMyHUD* GetMyHUD() const { return MyHUD ? MyHUD : nullptr; }
 	UPortraitWidget* GetPortraitWidget() const { return PortraitWidget ? PortraitWidget : nullptr; }
+	UHarvestWidget* GetHarvestWidget() const { return HarvestWidget ? HarvestWidget : nullptr; }
+
+	void CreateWidgetAtHarvest(AActor* Harvest1);
+	void DestroyWidgets();
 };
 

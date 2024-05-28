@@ -9,6 +9,7 @@ struct FInputActionValue;
 class UInputMappingContext;
 class UInputAction;
 
+class AMyGameManager;
 class AMyPlayerController;
 class AMyHUD;
 
@@ -37,6 +38,7 @@ private:
 	/*
 		REFERENCES
 	*/
+	AMyGameManager* GameManager{};
 	AMyPlayerController* PlayerController{};
 	AMyHUD* MyHUD{};
 

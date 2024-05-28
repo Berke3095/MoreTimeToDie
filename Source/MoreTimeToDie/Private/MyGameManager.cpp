@@ -5,6 +5,9 @@
 #include "MyView.h"
 #include "MyHUD.h"
 #include "Widgets/PortraitWidget.h"
+#include "Widgets/HarvestWidget.h"
+
+#include "Kismet/GameplayStatics.h"
 
 AMyGameManager* AMyGameManager::Instance = nullptr;
 
@@ -49,3 +52,38 @@ void AMyGameManager::Tick(float DeltaTime)
 
 }
 
+void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
+{
+	if (HarvestWidgetClass)
+	{
+		HarvestWidget = CreateWidget<UHarvestWidget>(GetWorld(), HarvestWidgetClass);
+		if (HarvestWidget)
+		{
+			HarvestWidget->AddToViewport();
+
+			FVector2D ScreenPosition;
+			if (PlayerController && UGameplayStatics::ProjectWorldToScreen(PlayerController, Harvest1->GetActorLocation(), ScreenPosition))
+			{
+				FVector2D ViewportSize{};
+				GEngine->GameViewport->GetViewportSize(ViewportSize);
+
+				ScreenPosition.X = (ScreenPosition.X / ViewportSize.X) * ViewportSize.X;
+				ScreenPosition.Y = (ScreenPosition.Y / ViewportSize.Y) * ViewportSize.Y;
+
+				HarvestWidget->SetPositionInViewport(ScreenPosition);
+			}
+			else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - PlayerController is null.")); }
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - HarvestWidget is null.")); }
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - HarvestWidgetClass is null.")); }
+}
+
+void AMyGameManager::DestroyWidgets()
+{
+	if (HarvestWidget)
+	{
+		HarvestWidget->RemoveFromViewport();
+		HarvestWidget = nullptr;
+	}
+}
