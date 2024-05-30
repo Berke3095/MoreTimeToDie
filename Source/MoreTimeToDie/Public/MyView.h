@@ -89,7 +89,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* RightClickAction{};
-	void RightClick();
+	void RightClickTrigger();
 	FVector Destination{};
 	void OrderMove();
 

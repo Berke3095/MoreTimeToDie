@@ -104,7 +104,7 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		if (RightClickAction)
 		{
-			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Started, this, &AMyView::RightClick);
+			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Triggered, this, &AMyView::RightClickTrigger);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
 	}
@@ -274,7 +274,7 @@ void AMyView::CtrlEnd()
 		bCtrlHeld = false;
 	}
 }
-void AMyView::RightClick()
+void AMyView::RightClickTrigger()
 {
 	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
 	{
