@@ -56,6 +56,8 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 {
 	if (HarvestWidgetClass)
 	{
+		if (HarvestWidget) { DestroyHarvestWidgets(); }
+
 		HarvestWidget = CreateWidget<UHarvestWidget>(GetWorld(), HarvestWidgetClass);
 		if (HarvestWidget)
 		{
@@ -71,6 +73,12 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 				ScreenPosition.Y = (ScreenPosition.Y / ViewportSize.Y) * ViewportSize.Y;
 
 				HarvestWidget->SetPositionInViewport(ScreenPosition);
+
+				AActor* HoveredActor = PlayerController->GetHoveredActor();
+				if (HoveredActor && HoveredActor->Tags.Contains("Stone"))
+				{
+					HarvestWidget->SetButtonText("Mine", "Stop Mining");
+				}
 			}
 			else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - PlayerController is null.")); }
 		}
@@ -79,7 +87,7 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - HarvestWidgetClass is null.")); }
 }
 
-void AMyGameManager::DestroyWidgets()
+void AMyGameManager::DestroyHarvestWidgets()
 {
 	if (HarvestWidget)
 	{

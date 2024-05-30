@@ -59,6 +59,6 @@ public:
 	UHarvestWidget* GetHarvestWidget() const { return HarvestWidget ? HarvestWidget : nullptr; }
 
 	void CreateWidgetAtHarvest(AActor* Harvest1);
-	void DestroyWidgets();
+	void DestroyHarvestWidgets();
 };
 

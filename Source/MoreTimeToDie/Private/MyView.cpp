@@ -115,6 +115,11 @@ void AMyView::MoveCamera(const FInputActionValue& InputValue1)
 {
 	const FVector2D MoveValue = InputValue1.Get<FVector2D>();
 
+	if (GameManager)
+	{
+		GameManager->DestroyHarvestWidgets();
+	}
+
 	if (PlayerController)
 	{
 		const FRotator ControlRotation = Controller->GetControlRotation();
@@ -153,6 +158,11 @@ void AMyView::RotateCamera(const FInputActionValue& InputValue1)
 {
 	const FVector2D RotateValue = InputValue1.Get<FVector2D>();
 
+	if (GameManager)
+	{
+		GameManager->DestroyHarvestWidgets();
+	}
+
 	FVector2D YawValue = RotateValue / 8;
 	FVector2D PitchValue = RotateValue / 3;
 
@@ -176,6 +186,11 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 {
 	const float ZoomValue = InputValue1.Get<float>();
 
+	if (GameManager)
+	{
+		GameManager->DestroyHarvestWidgets();
+	}
+
 	if (PlayerController)
 	{
 		float MinArm = MinTargetArmLength;
@@ -191,7 +206,7 @@ void AMyView::LeftClickStart()
 {
 	if (GameManager)
 	{
-		GameManager->DestroyWidgets();
+		GameManager->DestroyHarvestWidgets();
 	}
 
 	if (PlayerController)
@@ -268,9 +283,13 @@ void AMyView::RightClick()
 		{
 			GameManager->CreateWidgetAtHarvest(HarvestableActor);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - HarvestableActor or GameManager is null.")); }
+		else if(!GameManager){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - GameManager is null.")); }
 	}
 	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
+	else
+	{
+		GameManager->DestroyHarvestWidgets();
+	}
 	OrderMove();
 }
 void AMyView::OrderMove()

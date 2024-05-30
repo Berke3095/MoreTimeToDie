@@ -68,6 +68,7 @@ private:
 	const float Acceptance{ 25.0f };
 	FVector Destination{};
 	bool bMoveOrdered{};
+
 	/*
 		STATES
 	*/
