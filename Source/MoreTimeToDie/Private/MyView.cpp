@@ -105,6 +105,7 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		if (RightClickAction)
 		{
 			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Triggered, this, &AMyView::RightClickTrigger);
+			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Completed, this, &AMyView::RightClickEnd);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
 	}
@@ -276,21 +277,11 @@ void AMyView::CtrlEnd()
 }
 void AMyView::RightClickTrigger()
 {
-	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
-	{
-		AHarvestable* HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
-		if (HarvestableActor && GameManager)
-		{
-			GameManager->CreateWidgetAtHarvest(HarvestableActor);
-		}
-		else if(!GameManager){ UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - GameManager is null.")); }
-	}
-	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
-	else
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
 	OrderMove();
+}
+void AMyView::RightClickEnd()
+{
+	HandleHarvestWidget();
 }
 void AMyView::OrderMove()
 {
@@ -321,6 +312,24 @@ void AMyView::OrderMove()
 		}
 	}
 	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
+}
+
+void AMyView::HandleHarvestWidget()
+{
+	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
+	{
+		AHarvestable* HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
+		if (HarvestableActor && GameManager)
+		{
+			GameManager->CreateWidgetAtHarvest(HarvestableActor);
+		}
+		else if (!GameManager) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - GameManager is null.")); }
+	}
+	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
+	else
+	{
+		GameManager->DestroyHarvestWidgets();
+	}
 }
 
 /*

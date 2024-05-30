@@ -90,8 +90,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* RightClickAction{};
 	void RightClickTrigger();
+	void RightClickEnd();
 	FVector Destination{};
 	void OrderMove();
+	void HandleHarvestWidget();
 
 	/*
 		VIEW
