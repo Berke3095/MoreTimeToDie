@@ -34,6 +34,7 @@ void ASurvivor::BeginPlay()
 	if (PortraitWidget)
 	{
 		PortraitWidget->SetSurvivorHud(Portrait, Name, this);
+		PortraitWidget->AddToUnDrafted(this);
 		PortraitButton->OnClicked.AddDynamic(this, &ASurvivor::OnPortraitClicked);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
@@ -150,7 +151,7 @@ void ASurvivor::MoveToDestination(FVector Destination1)
 {
 	if (MyAIController)
 	{
-		MyAIController->MoveToLocation(Destination, Acceptance);
+		MyAIController->MoveToLocation(Destination1, Acceptance);
 		if (MoveState != ESurvivorMoveState::ESMS_Walking)
 		{
 			MoveState = ESurvivorMoveState::ESMS_Walking;

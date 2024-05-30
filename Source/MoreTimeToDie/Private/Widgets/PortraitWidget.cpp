@@ -93,9 +93,8 @@ void UPortraitWidget::OnDraftClicked()
     {
         if (Survivor->GetbIsSelected() && !Survivor->GetbIsDrafted())
         {
-            Survivor->SetbIsDrafted(true);
             SetButtonVisibility(Draft, false);
-            DraftedSurvivors.AddUnique(Survivor);
+            AddToDrafted(Survivor);
         }
     }
     SetButtonVisibility(UnDraft, true);
@@ -108,10 +107,9 @@ void UPortraitWidget::OnUnDraftClicked()
     {
         if (Survivor->GetbIsSelected() && Survivor->GetbIsDrafted())
         {
-            Survivor->SetbIsDrafted(false);
             SetButtonVisibility(Draft, true);
             SetButtonVisibility(UnDraft, false);
-            DraftedSurvivors.Remove(Survivor);
+            RemoveFromDrafted(Survivor);
         }
     }
     if (DraftedSurvivors.Num() == 0)
@@ -124,10 +122,7 @@ void UPortraitWidget::OnUnDraftAllClicked()
 {
     for (ASurvivor* Survivor : CurrentSurvivors)
     {
-        if (Survivor->GetbIsDrafted())
-        {
-            Survivor->SetbIsDrafted(false);
-        }
+        RemoveFromDrafted(Survivor);
     }
     DraftedSurvivors.Empty();
 
@@ -139,6 +134,26 @@ void UPortraitWidget::OnUnDraftAllClicked()
         SetButtonVisibility(Draft, true);
     }
     else if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("UPortraitWidget::OnUnDraftAllClicked - MyHUD is null.")); }
+}
+
+void UPortraitWidget::AddToDrafted(ASurvivor* Survivor1)
+{
+    DraftedSurvivors.AddUnique(Survivor1);
+    if (UnDraftedSurvivors.Contains(Survivor1))
+    {
+        UnDraftedSurvivors.Remove(Survivor1);
+    }
+    Survivor1->SetbIsDrafted(true);
+}
+
+void UPortraitWidget::RemoveFromDrafted(ASurvivor* Survivor1)
+{
+    UnDraftedSurvivors.AddUnique(Survivor1);
+    if (DraftedSurvivors.Contains(Survivor1))
+    {
+        DraftedSurvivors.Remove(Survivor1);
+    }
+    Survivor1->SetbIsDrafted(false);
 }
 
 void UPortraitWidget::SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1)

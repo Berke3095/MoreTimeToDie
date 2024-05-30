@@ -98,7 +98,10 @@ private:
 	*/
 	AMyGameManager* GameManager{};
 	AMyHUD* MyHUD{};
-	TArray<ASurvivor*> CurrentSurvivors{}, DraftedSurvivors{};
+	TArray<ASurvivor*> CurrentSurvivors{}, DraftedSurvivors{}, UnDraftedSurvivors{};
+
+	void AddToDrafted(ASurvivor* Survivor1);
+	void RemoveFromDrafted(ASurvivor* Survivor1);
 
 	void SetSurvivorPortrait(UButton* PortraitSlot1, UTexture* PortraitImage1);
 	void SetSurvivorName(UTextBlock* NameSlot1, FString SurvivorName1);
@@ -118,4 +121,6 @@ public:
 	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
 	FORCEINLINE const TArray<ASurvivor*> GetDraftedSurvivors() const { return DraftedSurvivors; }
+	FORCEINLINE const TArray<ASurvivor*> GetUnDraftedSurvivors() const { return UnDraftedSurvivors; }
+	void AddToUnDrafted(ASurvivor* Survivor1) { UnDraftedSurvivors.AddUnique(Survivor1); }
 };
