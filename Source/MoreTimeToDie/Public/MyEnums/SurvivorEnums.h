@@ -10,7 +10,7 @@ enum class ESurvivorMoveState : uint8
 UENUM(BlueprintType)
 enum class ESurvivorWorkState : uint8
 {
-	ESWS_Walking UMETA(DisplayName = "Mining"),
+	ESWS_Mining UMETA(DisplayName = "Mining"),
 	ESWS_NONE UMETA(DisplayName = "NONE"),
 };
 
