@@ -28,33 +28,16 @@ ASurvivor::ASurvivor()
 void ASurvivor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AMyGameManager* GameManager = AMyGameManager::GetInstance();
-	if (GameManager)
+	
+	GetReferences();
+	if (PortraitWidget)
 	{
-		MyHUD = GameManager->GetMyHUD();
-		if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - MyHUD is null.")); }
-
-		PortraitWidget = GameManager->GetPortraitWidget();
-		if (PortraitWidget)
-		{
-			PortraitWidget->SetSurvivorHud(Portrait, Name, this);
-			PortraitButton->OnClicked.AddDynamic(this, &ASurvivor::OnPortraitClicked);
-		}
-		else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
+		PortraitWidget->SetSurvivorHud(Portrait, Name, this);
+		PortraitButton->OnClicked.AddDynamic(this, &ASurvivor::OnPortraitClicked);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - GameManager is null.")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - PortraitWidget is null.")); }
 
-	MyAIController = Cast<AMyAIController>(GetController()); // For some reason newly spawned survivors spawn without AI controllers
-	if (!MyAIController)
-	{
-		MyAIController = GetWorld()->SpawnActor<AMyAIController>(AMyAIController::StaticClass(), GetActorLocation(), FRotator::ZeroRotator);
-		if (MyAIController)
-		{
-			MyAIController->Possess(this);
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - MyAIController is null")); }
-	}
+	CreateAIController();
 }
 
 void ASurvivor::Tick(float DeltaTime)
@@ -70,6 +53,19 @@ void ASurvivor::Tick(float DeltaTime)
 void ASurvivor::SetCharacterSettings()
 {
 	bCanAffectNavigationGeneration = true;
+}
+
+void ASurvivor::GetReferences()
+{
+	AMyGameManager* GameManager = AMyGameManager::GetInstance();
+	if (GameManager)
+	{
+		MyHUD = GameManager->GetMyHUD();
+		if (!MyHUD) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - MyHUD is null.")); }
+
+		PortraitWidget = GameManager->GetPortraitWidget();
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - GameManager is null.")); }
 }
 
 /*
@@ -126,6 +122,20 @@ void ASurvivor::OnPortraitClicked()
 		MyHUD->Select(this);
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::OnPortraitClicked - MyHUD is null")); }
+}
+
+void ASurvivor::CreateAIController()
+{
+	MyAIController = Cast<AMyAIController>(GetController()); // For some reason newly spawned survivors spawn without AI controllers
+	if (!MyAIController)
+	{
+		MyAIController = GetWorld()->SpawnActor<AMyAIController>(AMyAIController::StaticClass(), GetActorLocation(), FRotator::ZeroRotator);
+		if (MyAIController)
+		{
+			MyAIController->Possess(this);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::BeginPlay - MyAIController is null")); }
+	}
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)

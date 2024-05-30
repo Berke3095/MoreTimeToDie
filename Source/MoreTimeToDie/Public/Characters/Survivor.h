@@ -27,6 +27,7 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCharacterSettings();
+	void GetReferences();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character HUD")
 	UTexture* Portrait{};
@@ -64,6 +65,7 @@ private:
 	/*
 		MOVEMENT
 	*/
+	void CreateAIController();
 	AMyAIController* MyAIController{};
 	const float Acceptance{ 25.0f };
 	FVector Destination{};

@@ -22,34 +22,40 @@ void AMyGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GameMode = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode()); // GameMode reference
-	if (GameMode)
-	{
-		PlayerController = Cast<AMyPlayerController>(GameMode->GetWorld()->GetFirstPlayerController()); // PlayerController reference
-		if (PlayerController)
-		{
-			MyView = Cast<AMyView>(PlayerController->GetPawn()); // MyView reference
-			if (!MyView){ UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - MyView is null.")); }
+	GetReferences();
 
-			MyHUD = Cast<AMyHUD>(PlayerController->GetHUD());
-			if(!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - MyHUD is null.")); }
-			
-			PortraitWidget = CreateWidget<UPortraitWidget>(PlayerController, PortraitWidgetClass);
-			if (PortraitWidget)
-			{
-				PortraitWidget->AddToViewport();
-			}
-			else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - PortraitWidget is null.")); }
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - PlayerController is null.")); }
+	if (PortraitWidget)
+	{
+		PortraitWidget->AddToViewport();
 	}
-	else{ UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - GameMode is null.")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - PortraitWidget is null.")); }
 }
 
 void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMyGameManager::GetReferences()
+{
+	GameMode = Cast<AMyGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		PlayerController = Cast<AMyPlayerController>(GameMode->GetWorld()->GetFirstPlayerController());
+		if (PlayerController)
+		{
+			MyView = Cast<AMyView>(PlayerController->GetPawn());
+			if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - MyView is null.")); }
+
+			MyHUD = Cast<AMyHUD>(PlayerController->GetHUD());
+			if (!MyHUD) { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - MyHUD is null.")); }
+
+			PortraitWidget = CreateWidget<UPortraitWidget>(PlayerController, PortraitWidgetClass);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - PlayerController is null.")); }
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - GameMode is null.")); }
 }
 
 void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)

@@ -35,6 +35,8 @@ private:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	void GetReferences();
+
 	/*
 		REFERENCES
 	*/

@@ -28,24 +28,15 @@ void AMyView::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GameManager = AMyGameManager::GetInstance();
-	if (GameManager)
+	if (PlayerController)
 	{
-		PlayerController = GameManager->GetMyPlayerController();
-		if (PlayerController)
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-			{
-				Subsystem->AddMappingContext(ViewMappingContext, 0);
-			}
-			else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - Enh.InputSubsystem is null.")); }
+			Subsystem->AddMappingContext(ViewMappingContext, 0);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PlayerController is null.")); }
-
-		MyHUD = GameManager->GetMyHUD();
-		if (!MyHUD){ UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - MyHUD is null.")); }
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - Enh.InputSubsystem is null.")); }
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - GameManager is null.")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PlayerController is null.")); }
 }
 
 void AMyView::Tick(float DeltaTime)
@@ -110,6 +101,19 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
+}
+
+void AMyView::GetReferences()
+{
+	GameManager = AMyGameManager::GetInstance();
+	if (GameManager)
+	{
+		PlayerController = GameManager->GetMyPlayerController();
+
+		MyHUD = GameManager->GetMyHUD();
+		if (!MyHUD) { UE_LOG(LogTemp, Warning, TEXT("AMyView::GetReferences - MyHUD is null.")); }
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::GetReferences - GameManager is null.")); }
 }
 
 void AMyView::MoveCamera(const FInputActionValue& InputValue1)
