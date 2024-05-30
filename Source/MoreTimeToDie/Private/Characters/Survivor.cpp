@@ -30,6 +30,7 @@ void ASurvivor::BeginPlay()
 	Super::BeginPlay();
 	
 	GetReferences();
+
 	if (PortraitWidget)
 	{
 		PortraitWidget->SetSurvivorHud(Portrait, Name, this);

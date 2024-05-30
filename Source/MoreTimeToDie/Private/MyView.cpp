@@ -27,6 +27,8 @@ AMyView::AMyView()
 void AMyView::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetReferences();
 	
 	if (PlayerController)
 	{
