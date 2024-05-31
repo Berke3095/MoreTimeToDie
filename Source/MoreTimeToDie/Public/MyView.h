@@ -12,6 +12,7 @@ class UInputAction;
 class AMyGameManager;
 class AMyPlayerController;
 class AMyHUD;
+class AHarvestable;
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -91,7 +92,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* RightClickAction{};
-	void RightClickTrigger();
+	void RightClickStart();
 	void RightClickEnd();
 	FVector Destination{};
 	void OrderMove();
@@ -117,6 +118,11 @@ private:
 	FVector2D EndingRectanglePosition{};
 	bool bCanDraw{};
 
+	/*
+		TASKS
+	*/
+	AHarvestable* HarvestableActor{};
+
 public:
 
 	FORCEINLINE const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
@@ -126,4 +132,6 @@ public:
 	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
 	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }
 	FORCEINLINE const bool GetbCanDraw() const { return bCanDraw; }
+
+	FORCEINLINE AHarvestable* GetHarvestable() const { return HarvestableActor ? HarvestableActor : nullptr; }
 };

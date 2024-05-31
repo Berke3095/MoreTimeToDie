@@ -8,7 +8,6 @@
 #include "Components/Image.h" 
 
 #include "MyAIController.h"
-#include "Navigation/PathFollowingComponent.h"
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
@@ -46,9 +45,19 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bMoveOrdered)
+	if (bIsDrafted)
 	{
-		MoveToDestination(Destination);
+		if(!Destination.IsNearlyZero(0))
+		{
+			MoveToDestination(Destination);
+		}
+	}
+	else
+	{
+		if (GameManager && GameManager->GetStoneTasks().Num() > 0)
+		{
+			MoveToDestination(TaskDestination);
+		}
 	}
 }
 
@@ -59,7 +68,7 @@ void ASurvivor::SetCharacterSettings()
 
 void ASurvivor::GetReferences()
 {
-	AMyGameManager* GameManager = AMyGameManager::GetInstance();
+	GameManager = AMyGameManager::GetInstance();
 	if (GameManager)
 	{
 		MyHUD = GameManager->GetMyHUD();
@@ -147,27 +156,11 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	else { DraftedImage->SetVisibility(ESlateVisibility::Hidden); }
 }
 
-void ASurvivor::MoveToDestination(FVector Destination1)
+void ASurvivor::MoveToDestination(const FVector& Destination1)
 {
 	if (MyAIController)
 	{
-		MyAIController->MoveToLocation(Destination1, Acceptance);
-		if (MoveState != ESurvivorMoveState::ESMS_Walking)
-		{
-			MoveState = ESurvivorMoveState::ESMS_Walking;
-		}
-		if (CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(false); }
-
-
-		if (MyAIController && MyAIController->GetPathFollowingComponent()->DidMoveReachGoal())
-		{
-			bMoveOrdered = false;
-			if (MoveState != ESurvivorMoveState::ESMS_NONE)
-			{
-				MoveState = ESurvivorMoveState::ESMS_NONE;
-			}
-			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
-		}
+		MyAIController->MoveToLocation(Destination1, Acceptance, false, true, true);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }

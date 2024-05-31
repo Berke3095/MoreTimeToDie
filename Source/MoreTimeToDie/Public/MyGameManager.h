@@ -50,6 +50,9 @@ private:
 	TSubclassOf<UHarvestWidget> HarvestWidgetClass{};
 	UHarvestWidget* HarvestWidget{};
 
+	/*
+		TASKS
+	*/
 	TArray<AHarvestable*> StoneTasks{};
 
 public:
@@ -66,6 +69,7 @@ public:
 	void CreateWidgetAtHarvest(AActor* Harvest1);
 	void DestroyHarvestWidgets();
 
+	FORCEINLINE const TArray<AHarvestable*> GetStoneTasks() const { return StoneTasks; }
 	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); }
 };
 

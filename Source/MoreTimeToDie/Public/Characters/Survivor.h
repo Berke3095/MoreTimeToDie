@@ -5,6 +5,7 @@
 #include "MyEnums/SurvivorEnums.h"
 #include "Survivor.generated.h"
 
+class AMyGameManager;
 class UPortraitWidget;
 class AMyHUD;
 class AMyAIController;
@@ -49,6 +50,7 @@ private:
 	/*
 		REFERENCES
 	*/
+	AMyGameManager* GameManager{};
 	UPortraitWidget* PortraitWidget{};
 	AMyHUD* MyHUD{};
 
@@ -67,14 +69,18 @@ private:
 	*/
 	void CreateAIController();
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 25.0f };
+	const float Acceptance{ 0.0f };
 	FVector Destination{};
-	bool bMoveOrdered{};
 
 	/*
 		STATES
 	*/
 	ESurvivorMoveState MoveState = ESurvivorMoveState::ESMS_NONE;
+
+	/*
+		TASKS
+	*/
+	FVector TaskDestination{};
 
 public:
 
@@ -88,13 +94,11 @@ public:
 	FORCEINLINE UButton* GetPortraitButton() const { return PortraitButton ? PortraitButton : nullptr; }
 	void SetPortraitButton(UButton* PortraitButton1) { PortraitButton = PortraitButton1; }
 
-	void SetDestination(FVector& Destination1) { Destination = Destination1; }
+	void SetDestination(const FVector& Destination1) { Destination = Destination1; }
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
-	void MoveToDestination(FVector Destination1);
+	void MoveToDestination(const FVector& Destination1);
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
-
-	void SetbMoveOrdered(bool Value1) { bMoveOrdered = Value1; }
 };

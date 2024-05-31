@@ -3,6 +3,9 @@
 #include "Components/Button.h" 
 #include "Components/TextBlock.h" 
 
+#include "MyGameManager.h"
+#include "MyView.h"
+
 void UHarvestWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -42,7 +45,17 @@ void UHarvestWidget::SetTintAlpha(UButton* Button1, float Normal1, float Hovered
 
 void UHarvestWidget::OnHarvestButton()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Harvest clicked"));
+    AMyGameManager* GameManager = AMyGameManager::GetInstance();
+    if (GameManager)
+    {
+        AMyView* MyView = GameManager->GetMyView();
+        if (MyView)
+        {
+            GameManager->AddToStoneTasks(MyView->GetHarvestable());
+        }
+        else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - GameManager is null.")); }
 }
 
 void UHarvestWidget::SetButtonText(FString HarvestText1, FString StopHarvestingText1)

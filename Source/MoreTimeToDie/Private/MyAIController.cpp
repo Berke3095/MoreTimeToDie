@@ -41,12 +41,12 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
 
     const TArray<FVector> FormationOffsets = {
         FVector(0.0f, 0.0f, 0.0f),
-        FVector(125.0f, -125.0f, 0.0f),
-        FVector(-125.0f, -125.0f, 0.0f),
-        FVector(-125.0f, 125.0f, 0.0f),
-        FVector(125.0f, 125.0f, 0.0f),
-        FVector(200.0f, 0.0f, 0.0f),
-        FVector(-200.0f, 0.0f, 0.0f)
+        FVector(100.0f, -100.0f, 0.0f),
+        FVector(-100.0f, -100.0f, 0.0f),
+        FVector(-100.0f, 100.0f, 0.0f),
+        FVector(100.0f, 100.0f, 0.0f),
+        FVector(150.0f, 0.0f, 0.0f),
+        FVector(-150.0f, 0.0f, 0.0f)
     };
 
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
@@ -54,29 +54,23 @@ void AMyAIController::SetDestinations(FVector& CenterPoint)
 
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
-        float Randomizer = FMath::RandRange(-20.0f, 20.0f);
         FVector OffsetVector = FormationOffsets[i];
-        OffsetVector.X += Randomizer;
-        OffsetVector.Y += Randomizer;
         FVector Destination = CenterPoint + OffsetVector;
 
         FNavLocation ProjectedLocation{};
-        if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
+        if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
         {
             FoundDestinations.AddUnique(ProjectedLocation.Location);
-        }
-        else
-        {
-            if (NavSys && NavSys->ProjectPointToNavigation(Destination, ProjectedLocation, FVector(500.0f, 500.0f, 500.0f)))
-            {
-                FoundDestinations.AddUnique(ProjectedLocation.Location);
-            }
         }
     }
 
     for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
     {
-        MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
+        if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
+        {
+            MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
+        }
+        else { break; }
     }
 
     MoveableSurvivors.Empty();

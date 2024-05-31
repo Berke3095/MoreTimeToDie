@@ -97,7 +97,7 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		if (RightClickAction)
 		{
-			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Triggered, this, &AMyView::RightClickTrigger);
+			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Started, this, &AMyView::RightClickStart);
 			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Completed, this, &AMyView::RightClickEnd);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
@@ -281,7 +281,7 @@ void AMyView::CtrlEnd()
 		bCtrlHeld = false;
 	}
 }
-void AMyView::RightClickTrigger()
+void AMyView::RightClickStart()
 {
 	OrderMove();
 }
@@ -308,23 +308,15 @@ void AMyView::OrderMove()
 			MyAIController->SetDestinations(Destination);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyAIController is null.")); }
-
-		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
-		{
-			if (Survivor->GetbIsDrafted())
-			{
-				Survivor->SetbMoveOrdered(true);
-			}
-		}
 	}
 	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
 }
 
 void AMyView::HandleHarvestWidget()
 {
-	if (PlayerController && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
+	if (PlayerController && PlayerController->GetHoveredActor() && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
 	{
-		AHarvestable* HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
+		HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
 		if (HarvestableActor && GameManager)
 		{
 			GameManager->CreateWidgetAtHarvest(HarvestableActor);
