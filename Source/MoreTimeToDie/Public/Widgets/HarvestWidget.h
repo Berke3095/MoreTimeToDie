@@ -30,6 +30,9 @@ private:
 
 	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
+	UFUNCTION()
+	void OnHarvestButton();
+
 public:
 
 	void SetButtonText(FString HarvestText1, FString StopHarvestingText1);

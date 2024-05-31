@@ -13,6 +13,8 @@ void UHarvestWidget::NativeConstruct()
 
     SetTintAlpha(HarvestButton, AlphaNormal, AlphaHovered, AlphaPressed);
     SetTintAlpha(StopHarvestingButton, AlphaNormal, AlphaHovered, AlphaPressed);
+
+    HarvestButton->OnClicked.AddDynamic(this, &UHarvestWidget::OnHarvestButton);
 }
 
 void UHarvestWidget::SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1)
@@ -36,6 +38,11 @@ void UHarvestWidget::SetTintAlpha(UButton* Button1, float Normal1, float Hovered
         PressedBrush.TintColor = TintColorPressed;
     }
     else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::SetTintAlpha - Button1 is null.")); }
+}
+
+void UHarvestWidget::OnHarvestButton()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Harvest clicked"));
 }
 
 void UHarvestWidget::SetButtonText(FString HarvestText1, FString StopHarvestingText1)
