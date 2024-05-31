@@ -11,6 +11,7 @@ class AMyView;
 class AMyHUD;
 class UPortraitWidget;
 class UHarvestWidget;
+class AHarvestable;
 
 UCLASS()
 class MORETIMETODIE_API AMyGameManager : public AActor
@@ -49,6 +50,8 @@ private:
 	TSubclassOf<UHarvestWidget> HarvestWidgetClass{};
 	UHarvestWidget* HarvestWidget{};
 
+	TArray<AHarvestable*> StoneTasks{};
+
 public:
 
 	static AMyGameManager* GetInstance() { return Instance ? Instance : nullptr; }
@@ -62,5 +65,7 @@ public:
 
 	void CreateWidgetAtHarvest(AActor* Harvest1);
 	void DestroyHarvestWidgets();
+
+	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); }
 };
 
