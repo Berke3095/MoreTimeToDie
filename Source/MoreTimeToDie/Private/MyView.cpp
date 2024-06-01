@@ -12,7 +12,6 @@
 #include "MyPlayerController.h"
 #include "MyHUD.h"
 #include "Characters/Survivor.h"
-#include "MyAIController.h"
 #include "Harvestables/Harvestable.h"
 
 AMyView::AMyView()
@@ -209,6 +208,7 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::ZoomCamera - PlayerController is null.")); }
 }
+
 void AMyView::LeftClickStart()
 {
 	if (GameManager)
@@ -242,6 +242,7 @@ void AMyView::LeftClickStart()
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - PlayerController is null.")); }
 }
+
 void AMyView::LeftClickTrigger()
 {
 	if (PlayerController)
@@ -251,6 +252,7 @@ void AMyView::LeftClickTrigger()
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickTrigger - PlayerController is null.")); }
 }
+
 void AMyView::LeftClickEnd()
 {
 	if (PlayerController && bCanDraw)
@@ -259,10 +261,12 @@ void AMyView::LeftClickEnd()
 	}
 	else if (!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null.")); }
 }
+
 void AMyView::ShiftStart()
 {
 	bShiftHeld = true;
 }
+
 void AMyView::ShiftEnd()
 {
 	if (bShiftHeld)
@@ -270,10 +274,12 @@ void AMyView::ShiftEnd()
 		bShiftHeld = false;
 	}
 }
+
 void AMyView::CtrlStart()
 {
 	bCtrlHeld = true;
 }
+
 void AMyView::CtrlEnd()
 {
 	if (bCtrlHeld)
@@ -281,14 +287,72 @@ void AMyView::CtrlEnd()
 		bCtrlHeld = false;
 	}
 }
+
 void AMyView::RightClickStart()
 {
 	OrderMove();
 }
+
 void AMyView::RightClickEnd()
 {
 	HandleHarvestWidget();
 }
+
+void AMyView::SetDestinations(FVector& CenterPoint)
+{
+	TArray<ASurvivor*> MoveableSurvivors{};
+	TArray <FVector> FoundDestinations{};
+
+	if (MyHUD)
+	{
+		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
+		{
+			if (Survivor->GetbIsDrafted())
+			{
+				MoveableSurvivors.AddUnique(Survivor);
+			}
+		}
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - MyHUD is null.")); }
+
+	const TArray<FVector> FormationOffsets = {
+		FVector(0.0f, 0.0f, 0.0f),
+		FVector(100.0f, -100.0f, 0.0f),
+		FVector(-100.0f, -100.0f, 0.0f),
+		FVector(-100.0f, 100.0f, 0.0f),
+		FVector(100.0f, 100.0f, 0.0f),
+		FVector(150.0f, 0.0f, 0.0f),
+		FVector(-150.0f, 0.0f, 0.0f)
+	};
+
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); }
+
+	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+	{
+		FVector OffsetVector = FormationOffsets[i];
+		FVector LeaderDestination = CenterPoint + OffsetVector;
+
+		FNavLocation ProjectedLocation{};
+		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
+		{
+			FoundDestinations.AddUnique(ProjectedLocation.Location);
+		}
+	}
+
+	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+	{
+		if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
+		{
+			MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
+		}
+		else { break; }
+	}
+
+	MoveableSurvivors.Empty();
+	FoundDestinations.Empty();
+}
+
 void AMyView::OrderMove()
 {
 	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
@@ -302,12 +366,7 @@ void AMyView::OrderMove()
 		FNavLocation ProjectedLocation{};
 		if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return; }
 
-		AMyAIController* MyAIController = Cast<AMyAIController>(MyHUD->GetSelectedSurvivors()[0]->GetController());
-		if (MyAIController)
-		{
-			MyAIController->SetDestinations(Destination);
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyAIController is null.")); }
+		SetDestinations(Destination);
 	}
 	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
 }

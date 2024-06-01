@@ -80,7 +80,7 @@ private:
 	/*
 		TASKS
 	*/
-	FVector TaskDestination{};
+	AActor* TaskActor{};
 
 public:
 
@@ -98,6 +98,7 @@ public:
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
 	void MoveToDestination(const FVector& Destination1);
+	void MoveToActor(AActor* Actor1);
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }

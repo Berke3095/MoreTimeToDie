@@ -13,8 +13,4 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-public:
-
-	void SetDestinations(FVector& CenterPoint);
 };

@@ -56,7 +56,7 @@ void ASurvivor::Tick(float DeltaTime)
 	{
 		if (GameManager && GameManager->GetStoneTasks().Num() > 0)
 		{
-			MoveToDestination(TaskDestination);
+			MoveToActor(TaskActor);
 		}
 	}
 }
@@ -160,7 +160,16 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 {
 	if (MyAIController)
 	{
-		MyAIController->MoveToLocation(Destination1, Acceptance, false, true, true);
+		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
+}
+
+void ASurvivor::MoveToActor(AActor* Actor1)
+{
+	if (MyAIController)
+	{
+		MyAIController->MoveToActor(Actor1, Acceptance, false, true);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToActor - MyAIController is null")); }
 }
