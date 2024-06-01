@@ -10,6 +10,7 @@ AHarvestable::AHarvestable()
 	RootComponent = HarvestableMesh;
 
 	HarvestableMesh->SetMobility(EComponentMobility::Static);
+	HarvestableMesh->SetCanEverAffectNavigation(false);
 }
 
 void AHarvestable::BeginPlay()

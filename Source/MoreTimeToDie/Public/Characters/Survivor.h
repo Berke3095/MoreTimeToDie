@@ -9,6 +9,7 @@ class AMyGameManager;
 class UPortraitWidget;
 class AMyHUD;
 class AMyAIController;
+class AHarvestable;
 
 class UButton;
 class UImage;
@@ -69,8 +70,10 @@ private:
 	*/
 	void CreateAIController();
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 0.0f };
+	const float Acceptance{ 50.0f };
 	FVector Destination{};
+
+	void MoveToDestination(const FVector& Destination1);
 
 	/*
 		STATES
@@ -80,7 +83,8 @@ private:
 	/*
 		TASKS
 	*/
-	AActor* TaskActor{};
+	float StoneAcceptance{ 130.0f };
+	void MoveToHarvest(AHarvestable* Harvestable1);
 
 public:
 
@@ -96,9 +100,6 @@ public:
 
 	void SetDestination(const FVector& Destination1) { Destination = Destination1; }
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
-
-	void MoveToDestination(const FVector& Destination1);
-	void MoveToActor(AActor* Actor1);
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }

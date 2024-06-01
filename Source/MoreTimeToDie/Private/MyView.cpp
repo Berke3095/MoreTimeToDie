@@ -326,7 +326,7 @@ void AMyView::SetDestinations(FVector& CenterPoint)
 	};
 
 	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); }
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); return; }
 
 	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
 	{
@@ -361,12 +361,13 @@ void AMyView::OrderMove()
 		Destination = PlayerController->GetHitResult().ImpactPoint;
 
 		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - Navigation system is null.")); }
-
-		FNavLocation ProjectedLocation{};
-		if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return; }
-
-		SetDestinations(Destination);
+		if (NavSys)
+		{
+			FNavLocation ProjectedLocation{};
+			if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return;}
+			else { SetDestinations(Destination); }
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - Navigation system is null.")); }
 	}
 	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
 }

@@ -11,6 +11,7 @@
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
+#include "Harvestables/Harvestable.h"
 
 ASurvivor::ASurvivor()
 {
@@ -56,8 +57,12 @@ void ASurvivor::Tick(float DeltaTime)
 	{
 		if (GameManager && GameManager->GetStoneTasks().Num() > 0)
 		{
-			MoveToActor(TaskActor);
+			if (GameManager->GetStoneTasks()[0])
+			{
+				MoveToHarvest(GameManager->GetStoneTasks()[0]);
+			}
 		}
+		else if(!GameManager){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
 }
 
@@ -119,8 +124,8 @@ void ASurvivor::SetCharacterMovement()
 		CharMovement->MaxWalkSpeed = 250.0f;
 		bUseControllerRotationYaw = false;
 		CharMovement->bOrientRotationToMovement = true;
-		CharMovement->bUseRVOAvoidance = true;
-		CharMovement->AvoidanceConsiderationRadius = 50.f;
+		/*CharMovement->bUseRVOAvoidance = true;
+		CharMovement->AvoidanceConsiderationRadius = 50.f;*/
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetCharacterMovement - CharMovement is null")); }
 }
@@ -165,11 +170,11 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
 
-void ASurvivor::MoveToActor(AActor* Actor1)
+void ASurvivor::MoveToHarvest(AHarvestable* Harvestable1)
 {
-	if (MyAIController)
+	if (MyAIController && Harvestable1)
 	{
-		MyAIController->MoveToActor(Actor1, Acceptance, false, true);
+		MyAIController->MoveToActor(Harvestable1, StoneAcceptance, false, true);
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToActor - MyAIController is null")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToHarvest - MyAIController is null")); }
 }
