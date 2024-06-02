@@ -13,6 +13,7 @@
 #include "MyHUD.h"
 #include "Characters/Survivor.h"
 #include "Harvestables/Harvestable.h"
+#include "Widgets/PortraitWidget.h"
 
 AMyView::AMyView()
 {
@@ -301,8 +302,6 @@ void AMyView::RightClickEnd()
 void AMyView::SetDestinations(FVector& CenterPoint)
 {
 	TArray<ASurvivor*> MoveableSurvivors{};
-	TArray <FVector> FoundDestinations{};
-
 	if (MyHUD)
 	{
 		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
@@ -326,8 +325,9 @@ void AMyView::SetDestinations(FVector& CenterPoint)
 	};
 
 	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyAIController::SetDestinations - Navigation system is null.")); return; }
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Navigation system is null.")); return; }
 
+	TArray <FVector> FoundDestinations{};
 	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
 	{
 		FVector OffsetVector = FormationOffsets[i];
@@ -420,9 +420,4 @@ void AMyView::SetupCamera()
 		Camera->SetupAttachment(RootComponent);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupCamera - Camera is null.")); }
-}
-
-void AMyView::SetSurroundDestinations(AHarvestable* Harvestable1)
-{
-
 }

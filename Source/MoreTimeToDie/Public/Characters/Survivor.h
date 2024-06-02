@@ -70,7 +70,7 @@ private:
 	*/
 	void CreateAIController();
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 50.0f };
+	const float Acceptance{ 0.0f };
 	FVector Destination{};
 
 	void MoveToDestination(const FVector& Destination1);
@@ -83,8 +83,7 @@ private:
 	/*
 		TASKS
 	*/
-	float StoneAcceptance{ 130.0f };
-	void MoveToHarvest(AHarvestable* Harvestable1);
+	FVector TaskDestination{};
 
 public:
 
@@ -103,4 +102,6 @@ public:
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
+
+	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
 };

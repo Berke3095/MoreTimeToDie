@@ -6,8 +6,11 @@
 #include "MyHUD.h"
 #include "Widgets/PortraitWidget.h"
 #include "Widgets/HarvestWidget.h"
+#include "Harvestables/Harvestable.h"
+#include "Characters/Survivor.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "NavigationSystem.h"
 
 AMyGameManager* AMyGameManager::Instance = nullptr;
 
@@ -56,6 +59,49 @@ void AMyGameManager::GetReferences()
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - PlayerController is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - GameMode is null.")); }
+}
+
+void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
+{
+	if (Harvestable1)
+	{
+		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetSurroundDestinations - Navigation system is null.")); return; }
+
+		FVector CenterPoint = Harvestable1->GetActorLocation();
+		float Radius = 150.0f;
+		TArray<ASurvivor*> CurrentSurvivors{};
+		if (PortraitWidget)
+		{
+			CurrentSurvivors = PortraitWidget->GetCurrentSurvivors();
+		}
+		TArray<FVector> FoundTaskDestinations{};
+
+		for (int32 i = 0; i < CurrentSurvivors.Num(); ++i)
+		{
+			float Angle = FMath::DegreesToRadians((360.0f / CurrentSurvivors.Num()) * i);
+			FVector Offset = FVector(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius, 0.0f);
+			FVector TaskDestination = CenterPoint + Offset;
+
+			FNavLocation ProjectedLocation;
+			if (NavSys->ProjectPointToNavigation(TaskDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
+			{
+				FoundTaskDestinations.AddUnique(ProjectedLocation.Location);
+			}
+		}
+
+		for (int32 i = 0; i < CurrentSurvivors.Num(); ++i)
+		{
+			if (CurrentSurvivors.IsValidIndex(i) && FoundTaskDestinations.IsValidIndex(i))
+			{
+				CurrentSurvivors[i]->SetTaskDestination(FoundTaskDestinations[i]);
+			}
+			else { break; }
+		}
+
+		CurrentSurvivors.Empty();
+		FoundTaskDestinations.Empty();
+	}
 }
 
 void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)

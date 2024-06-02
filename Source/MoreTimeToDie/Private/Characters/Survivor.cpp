@@ -57,10 +57,7 @@ void ASurvivor::Tick(float DeltaTime)
 	{
 		if (GameManager && GameManager->GetStoneTasks().Num() > 0)
 		{
-			if (GameManager->GetStoneTasks()[0])
-			{
-				MoveToHarvest(GameManager->GetStoneTasks()[0]);
-			}
+			MoveToDestination(TaskDestination);
 		}
 		else if(!GameManager){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
@@ -168,13 +165,4 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
-}
-
-void ASurvivor::MoveToHarvest(AHarvestable* Harvestable1)
-{
-	if (MyAIController && Harvestable1)
-	{
-		MyAIController->MoveToActor(Harvestable1, StoneAcceptance, false, true);
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToHarvest - MyAIController is null")); }
 }

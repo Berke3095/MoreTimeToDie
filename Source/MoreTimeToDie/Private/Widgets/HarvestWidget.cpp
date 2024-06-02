@@ -52,6 +52,7 @@ void UHarvestWidget::OnHarvestButton()
         if (MyView)
         {
             GameManager->AddToStoneTasks(MyView->GetHarvestable());
+            GameManager->SetSurroundDestinations(MyView->GetHarvestable());
         }
         else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
     }

@@ -71,5 +71,7 @@ public:
 
 	FORCEINLINE const TArray<AHarvestable*> GetStoneTasks() const { return StoneTasks; }
 	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); }
+
+	void SetSurroundDestinations(AHarvestable* Harvestable1);
 };
 

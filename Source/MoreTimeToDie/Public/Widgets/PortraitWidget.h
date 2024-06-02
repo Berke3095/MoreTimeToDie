@@ -120,6 +120,7 @@ public:
 	const float AlphaPressed = 1.0;
 	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
+	FORCEINLINE const TArray<ASurvivor*> GetCurrentSurvivors() const { return CurrentSurvivors; }
 	FORCEINLINE const TArray<ASurvivor*> GetDraftedSurvivors() const { return DraftedSurvivors; }
 	FORCEINLINE const TArray<ASurvivor*> GetUnDraftedSurvivors() const { return UnDraftedSurvivors; }
 	void AddToUnDrafted(ASurvivor* Survivor1) { UnDraftedSurvivors.AddUnique(Survivor1); }
