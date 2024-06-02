@@ -11,9 +11,7 @@
 #include "MyGameManager.h"
 #include "MyPlayerController.h"
 #include "MyHUD.h"
-#include "Characters/Survivor.h"
 #include "Harvestables/Harvestable.h"
-#include "Widgets/PortraitWidget.h"
 
 AMyView::AMyView()
 {
@@ -299,60 +297,6 @@ void AMyView::RightClickEnd()
 	HandleHarvestWidget();
 }
 
-void AMyView::SetDestinations(FVector& CenterPoint)
-{
-	TArray<ASurvivor*> MoveableSurvivors{};
-	if (MyHUD)
-	{
-		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
-		{
-			if (Survivor->GetbIsDrafted())
-			{
-				MoveableSurvivors.AddUnique(Survivor);
-			}
-		}
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - MyHUD is null.")); }
-
-	const TArray<FVector> FormationOffsets = {
-		FVector(0.0f, 0.0f, 0.0f),
-		FVector(100.0f, -100.0f, 0.0f),
-		FVector(-100.0f, -100.0f, 0.0f),
-		FVector(-100.0f, 100.0f, 0.0f),
-		FVector(100.0f, 100.0f, 0.0f),
-		FVector(150.0f, 0.0f, 0.0f),
-		FVector(-150.0f, 0.0f, 0.0f)
-	};
-
-	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Navigation system is null.")); return; }
-
-	TArray <FVector> FoundDestinations{};
-	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
-	{
-		FVector OffsetVector = FormationOffsets[i];
-		FVector LeaderDestination = CenterPoint + OffsetVector;
-
-		FNavLocation ProjectedLocation{};
-		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
-		{
-			FoundDestinations.AddUnique(ProjectedLocation.Location);
-		}
-	}
-
-	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
-	{
-		if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
-		{
-			MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
-		}
-		else { break; }
-	}
-
-	MoveableSurvivors.Empty();
-	FoundDestinations.Empty();
-}
-
 void AMyView::OrderMove()
 {
 	if (MyHUD && MyHUD->GetSelectedSurvivors().Num() > 0 &&
@@ -361,11 +305,11 @@ void AMyView::OrderMove()
 		Destination = PlayerController->GetHitResult().ImpactPoint;
 
 		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-		if (NavSys)
+		if (NavSys && GameManager)
 		{
 			FNavLocation ProjectedLocation{};
 			if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return;}
-			else { SetDestinations(Destination); }
+			else { GameManager->SetDestinations(Destination); }
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - Navigation system is null.")); }
 	}

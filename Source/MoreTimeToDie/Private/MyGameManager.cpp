@@ -61,6 +61,60 @@ void AMyGameManager::GetReferences()
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - GameMode is null.")); }
 }
 
+void AMyGameManager::SetDestinations(FVector& CenterPoint)
+{
+	TArray<ASurvivor*> MoveableSurvivors{};
+	if (MyHUD)
+	{
+		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
+		{
+			if (Survivor->GetbIsDrafted())
+			{
+				MoveableSurvivors.AddUnique(Survivor);
+			}
+		}
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - MyHUD is null.")); }
+
+	const TArray<FVector> FormationOffsets = {
+		FVector(0.0f, 0.0f, 0.0f),
+		FVector(100.0f, -100.0f, 0.0f),
+		FVector(-100.0f, -100.0f, 0.0f),
+		FVector(-100.0f, 100.0f, 0.0f),
+		FVector(100.0f, 100.0f, 0.0f),
+		FVector(150.0f, 0.0f, 0.0f),
+		FVector(-150.0f, 0.0f, 0.0f)
+	};
+
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Navigation system is null.")); return; }
+
+	TArray <FVector> FoundDestinations{};
+	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+	{
+		FVector OffsetVector = FormationOffsets[i];
+		FVector LeaderDestination = CenterPoint + OffsetVector;
+
+		FNavLocation ProjectedLocation{};
+		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
+		{
+			FoundDestinations.AddUnique(ProjectedLocation.Location);
+		}
+	}
+
+	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+	{
+		if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
+		{
+			MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
+		}
+		else { break; }
+	}
+
+	MoveableSurvivors.Empty();
+	FoundDestinations.Empty();
+}
+
 void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
 {
 	if (Harvestable1)

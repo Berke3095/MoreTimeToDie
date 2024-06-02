@@ -94,7 +94,6 @@ private:
 	UInputAction* RightClickAction{};
 	void RightClickStart();
 	void RightClickEnd();
-	void SetDestinations(FVector& CenterPoint);
 	FVector Destination{};
 	void OrderMove();
 	void HandleHarvestWidget();
