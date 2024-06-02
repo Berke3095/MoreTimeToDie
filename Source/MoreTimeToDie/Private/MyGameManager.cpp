@@ -90,13 +90,43 @@ void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
 			}
 		}
 
+		TArray<TArray<float>> DistanceMatrix;
+		DistanceMatrix.SetNum(CurrentSurvivors.Num());
+
 		for (int32 i = 0; i < CurrentSurvivors.Num(); ++i)
 		{
-			if (CurrentSurvivors.IsValidIndex(i) && FoundTaskDestinations.IsValidIndex(i))
+			DistanceMatrix[i].SetNum(FoundTaskDestinations.Num());
+			for (int32 j = 0; j < FoundTaskDestinations.Num(); ++j)
 			{
-				CurrentSurvivors[i]->SetTaskDestination(FoundTaskDestinations[i]);
+				DistanceMatrix[i][j] = FVector::Dist(CurrentSurvivors[i]->GetActorLocation(), FoundTaskDestinations[j]);
 			}
-			else { break; }
+		}
+
+		TArray<int32> AssignedDestinations;
+		AssignedDestinations.Init(-1, CurrentSurvivors.Num());
+
+		// Greedy algorithm to assign nearest destination
+		for (int32 i = 0; i < CurrentSurvivors.Num(); ++i)
+		{
+			float MinDistance = FLT_MAX;
+			int32 MinIndex = -1;
+
+			for (int32 j = 0; j < FoundTaskDestinations.Num(); ++j)
+			{
+				if (AssignedDestinations.Contains(j)) continue;
+
+				if (DistanceMatrix[i][j] < MinDistance)
+				{
+					MinDistance = DistanceMatrix[i][j];
+					MinIndex = j;
+				}
+			}
+
+			if (MinIndex != -1)
+			{
+				AssignedDestinations[i] = MinIndex;
+				CurrentSurvivors[i]->SetTaskDestination(FoundTaskDestinations[MinIndex]);
+			}
 		}
 
 		CurrentSurvivors.Empty();
