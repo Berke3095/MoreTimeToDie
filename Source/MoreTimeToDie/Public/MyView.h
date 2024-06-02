@@ -123,6 +123,7 @@ private:
 		TASKS
 	*/
 	AHarvestable* HarvestableActor{};
+	void SetSurroundDestinations(AHarvestable* Harvestable1);
 
 public:
 

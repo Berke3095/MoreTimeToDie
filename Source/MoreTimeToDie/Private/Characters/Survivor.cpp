@@ -124,8 +124,8 @@ void ASurvivor::SetCharacterMovement()
 		CharMovement->MaxWalkSpeed = 250.0f;
 		bUseControllerRotationYaw = false;
 		CharMovement->bOrientRotationToMovement = true;
-		/*CharMovement->bUseRVOAvoidance = true;
-		CharMovement->AvoidanceConsiderationRadius = 50.f;*/
+		CharMovement->bUseRVOAvoidance = true;
+		CharMovement->AvoidanceConsiderationRadius = 50.f;
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetCharacterMovement - CharMovement is null")); }
 }

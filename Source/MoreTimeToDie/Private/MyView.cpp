@@ -422,3 +422,7 @@ void AMyView::SetupCamera()
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupCamera - Camera is null.")); }
 }
 
+void AMyView::SetSurroundDestinations(AHarvestable* Harvestable1)
+{
+
+}
