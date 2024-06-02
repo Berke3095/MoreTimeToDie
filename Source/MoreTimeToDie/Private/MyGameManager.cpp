@@ -96,7 +96,7 @@ void AMyGameManager::SetDestinations(FVector& CenterPoint)
 		FVector LeaderDestination = CenterPoint + OffsetVector;
 
 		FNavLocation ProjectedLocation{};
-		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
+		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation))
 		{
 			FoundDestinations.AddUnique(ProjectedLocation.Location);
 		}
@@ -138,7 +138,7 @@ void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
 			FVector TaskDestination = CenterPoint + Offset;
 
 			FNavLocation ProjectedLocation;
-			if (NavSys->ProjectPointToNavigation(TaskDestination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
+			if (NavSys->ProjectPointToNavigation(TaskDestination, ProjectedLocation))
 			{
 				FoundTaskDestinations.AddUnique(ProjectedLocation.Location);
 			}
