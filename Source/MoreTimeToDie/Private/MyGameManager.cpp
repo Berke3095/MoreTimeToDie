@@ -37,7 +37,6 @@ void AMyGameManager::BeginPlay()
 void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AMyGameManager::GetReferences()

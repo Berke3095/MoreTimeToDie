@@ -78,6 +78,7 @@ private:
 		STATES
 	*/
 	ESurvivorMoveState MoveState = ESurvivorMoveState::ESMS_NONE;
+	ESurvivorWorkState WorkState = ESurvivorWorkState::ESWS_NONE;
 
 	/*
 		TASKS
@@ -101,6 +102,7 @@ public:
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
+	FORCEINLINE const ESurvivorWorkState GetSurvivorWorkState() const { return WorkState; }
 
 	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
 };

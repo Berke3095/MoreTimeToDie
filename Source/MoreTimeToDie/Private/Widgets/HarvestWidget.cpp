@@ -5,6 +5,7 @@
 
 #include "MyGameManager.h"
 #include "MyView.h"
+#include "Harvestables/Harvestable.h"
 
 void UHarvestWidget::NativeConstruct()
 {
@@ -51,8 +52,11 @@ void UHarvestWidget::OnHarvestButton()
         AMyView* MyView = GameManager->GetMyView();
         if (MyView)
         {
-            GameManager->AddToStoneTasks(MyView->GetHarvestable());
             GameManager->SetSurroundDestinations(MyView->GetHarvestable());
+            if (MyView->GetHarvestable()->ActorHasTag("Stone"))
+            {
+                GameManager->AddToStoneTasks(MyView->GetHarvestable());
+            }
         }
         else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
     }

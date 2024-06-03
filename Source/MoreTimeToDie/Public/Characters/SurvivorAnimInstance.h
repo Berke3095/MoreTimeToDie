@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "MyEnums/SurvivorEnums.h"
 #include "SurvivorAnimInstance.generated.h"
 
 class ASurvivor;
@@ -30,4 +31,14 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float SurvivorDirection{};
+
+	/*
+		STATES
+	*/
+
+	UPROPERTY(BlueprintReadOnly, Category = "States")
+	ESurvivorMoveState MoveState{};
+	
+	UPROPERTY(BlueprintReadOnly, Category = "States")
+	ESurvivorWorkState WorkState{};
 };

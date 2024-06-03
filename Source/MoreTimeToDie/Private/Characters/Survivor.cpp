@@ -8,9 +8,11 @@
 #include "Components/Image.h" 
 
 #include "MyAIController.h"
+#include "Navigation/PathFollowingComponent.h"
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
+#include "Harvestables/Harvestable.h"
 
 ASurvivor::ASurvivor()
 {
@@ -54,11 +56,14 @@ void ASurvivor::Tick(float DeltaTime)
 	}
 	else
 	{
-		if (GameManager && GameManager->GetStoneTasks().Num() > 0)
+		if (GameManager)
 		{
-			MoveToDestination(TaskDestination);
+			if (GameManager->GetAllTasks().Num() > 0)
+			{
+				MoveToDestination(TaskDestination);
+			}
 		}
-		else if(!GameManager){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
 }
 
@@ -162,6 +167,30 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 	if (MyAIController)
 	{
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
+
+		if (GameManager)
+		{
+			if (MyAIController->GetPathFollowingComponent()->DidMoveReachGoal() && Destination1 == TaskDestination && GameManager->GetAllTasks().Num() > 0)
+			{
+				if (WorkState != ESurvivorWorkState::ESWS_Mining && GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Survivor started mining"));
+					WorkState = ESurvivorWorkState::ESWS_Mining;
+
+					FVector LookAtDirection = GameManager->GetAllTasks()[0]->GetActorLocation() - GetActorLocation();
+					FRotator LookAtRotation = LookAtDirection.Rotation();
+					SetActorRotation(LookAtRotation);
+				}
+			}
+			else
+			{
+				if (WorkState != ESurvivorWorkState::ESWS_NONE)
+				{
+					WorkState = ESurvivorWorkState::ESWS_NONE;
+				}
+			}
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
