@@ -11,7 +11,6 @@
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
-#include "Harvestables/Harvestable.h"
 
 ASurvivor::ASurvivor()
 {
