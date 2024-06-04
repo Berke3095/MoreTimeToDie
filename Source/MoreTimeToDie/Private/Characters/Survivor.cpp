@@ -49,30 +49,25 @@ void ASurvivor::Tick(float DeltaTime)
 
 	if (bIsDrafted)
 	{
-		if(!Destination.IsNearlyZero(0))
-		{
-			MoveToDestination(Destination);
-		}
+		MoveToDestination(Destination);
 	}
 	else
 	{
-		if (GameManager)
+		if (GameManager && GameManager->GetAllTasks().Num() > 0)
 		{
-			if (GameManager->GetAllTasks().Num() > 0)
+			MoveToDestination(TaskDestination);
+
+			if (bHasReachedToTask)
 			{
-				MoveToDestination(TaskDestination);
-				if (bHasReachedToTask)
+				FRotator Rotation = FMath::RInterpTo(GetActorRotation(), LookAtTaskRotation, DeltaTime, 5.0f);
+				SetActorRotation(Rotation);
+				if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
 				{
-					FRotator Rotation = FMath::RInterpTo(GetActorRotation(), LookAtTaskRotation, DeltaTime, 5.0f);
-					SetActorRotation(Rotation);
-					if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
-					{
-						GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 0.5f, false);
-					}
+					GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 0.3f, false);
 				}
 			}
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
+		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
 }
 
@@ -191,6 +186,8 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	if (bIsDrafted)
 	{
 		DraftedImage->SetVisibility(ESlateVisibility::Visible);
+		SetDestination(FVector(0.0f, 0.0f, 0.0f));
+		if (MyAIController) { MyAIController->StopMovement(); }
 
 		if (WorkState != ESurvivorWorkState::ESWS_NONE)
 		{
@@ -213,6 +210,8 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 
 void ASurvivor::MoveToDestination(const FVector& Destination1)
 {
+	if (Destination1.IsNearlyZero(0)) { return; }
+
 	if (MyAIController)
 	{
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
