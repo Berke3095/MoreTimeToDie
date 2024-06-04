@@ -203,6 +203,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 		if (GameManager && GameManager->GetAllTasks().Num() > 0)
 		{
 			DraftedImage->SetVisibility(ESlateVisibility::Hidden);
+			bCanMove = true;
 		}
 	}
 }
