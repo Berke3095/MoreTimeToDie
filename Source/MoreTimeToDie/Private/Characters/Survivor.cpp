@@ -14,9 +14,6 @@
 #include "MyHUD.h"
 #include "Harvestables/Harvestable.h"
 
-#include "Characters/SurvivorAnimInstance.h"
-#include "Animation/AnimMontage.h"
-
 ASurvivor::ASurvivor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -95,9 +92,6 @@ void ASurvivor::GetReferences()
 		PortraitWidget = GameManager->GetPortraitWidget();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - GameManager is null.")); }
-
-	SurvivorAnimInstance = Cast<USurvivorAnimInstance>(GetMesh()->GetAnimInstance());
-	if(!SurvivorAnimInstance){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - SurvivorAnimInstance is null.")); }
 }
 
 /*
@@ -177,40 +171,16 @@ void ASurvivor::StartDoingTask()
 		GeneralState = ESurvivorGeneralState::ESGS_Tasking;
 		bHasReachedToTask = false;
 		GetWorldTimerManager().ClearTimer(FocusTaskTimer);
-		int32 AnimSelection{};
 		if (GeneralState == ESurvivorGeneralState::ESGS_Tasking)
 		{
 			if (GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Survivor started mining"));
 				if (WorkState != ESurvivorWorkState::ESWS_Mining)
 				{
 					WorkState = ESurvivorWorkState::ESWS_Mining;
-					AnimSelection = 0;
 				}
 			}
 		}
-		
-		if (SurvivorAnimInstance && TaskMontage && GeneralState == ESurvivorGeneralState::ESGS_Tasking)
-		{
-			if (!SurvivorAnimInstance->Montage_IsPlaying(TaskMontage))
-			{
-				SurvivorAnimInstance->Montage_Play(TaskMontage);
-				
-				FName SectionName = FName();
-
-				switch (AnimSelection)
-				{
-				case 0:
-					SectionName = FName("Mining");
-					break;
-				default:
-					break;
-				}
-				SurvivorAnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
-			}
-		}
-		else if (!SurvivorAnimInstance) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::StartDoingTask - SurvivorAnimInstance is null.")); }
 	}	
 }
 

@@ -17,9 +17,6 @@ void USurvivorAnimInstance::NativeInitializeAnimation()
 	{
 		SurvivorMovement = Survivor->GetCharacterMovement();
 		if(!SurvivorMovement) { UE_LOG(LogTemp, Warning, TEXT("USurvivorAnimInstance::NativeInitializeAnimation - SurvivorMovement is null.")); }
-
-		MoveState = Survivor->GetSurvivorMoveState();
-		WorkState = Survivor->GetSurvivorWorkState();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("USurvivorAnimInstance::NativeInitializeAnimation - Survivor is null.")); }
 }
@@ -46,6 +43,10 @@ void USurvivorAnimInstance::NativeUpdateAnimation(float DeltaTime)
 				if (MoveState != ESurvivorMoveState::ESMS_Walking) { Survivor->SetSurvivorMoveState(ESurvivorMoveState::ESMS_Walking); }
 				if (Survivor->GetCapsuleComponent()->CanEverAffectNavigation()) { Survivor->GetCapsuleComponent()->SetCanEverAffectNavigation(false); }
 			}
+
+			MoveState = Survivor->GetSurvivorMoveState();
+			WorkState = Survivor->GetSurvivorWorkState();
+			GeneralState = Survivor->GetSurvivorGeneralState();
 		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("USurvivorAnimInstance::NativeInitializeAnimation - SurvivorMovement is null.")); }

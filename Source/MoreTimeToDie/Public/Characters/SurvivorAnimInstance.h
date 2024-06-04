@@ -36,9 +36,11 @@ protected:
 		STATES
 	*/
 
-	UPROPERTY(BlueprintReadOnly, Category = "States")
 	ESurvivorMoveState MoveState{};
 	
 	UPROPERTY(BlueprintReadOnly, Category = "States")
 	ESurvivorWorkState WorkState{};
+
+	UPROPERTY(BlueprintReadOnly, Category = "States")
+	ESurvivorGeneralState GeneralState{};
 };

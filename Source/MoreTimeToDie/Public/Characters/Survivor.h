@@ -14,7 +14,6 @@ class UButton;
 class UImage;
 
 class USurvivorAnimInstance;
-class UAnimMontage;
 
 UCLASS()
 class MORETIMETODIE_API ASurvivor : public ACharacter
@@ -94,14 +93,6 @@ private:
 	void StartDoingTask();
 	FTimerHandle FocusTaskTimer{};
 
-	/*
-		ANIMATION
-	*/
-	USurvivorAnimInstance* SurvivorAnimInstance{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* TaskMontage{};
-
 public:
 
 	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
@@ -120,6 +111,7 @@ public:
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
 	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
 	FORCEINLINE const ESurvivorWorkState GetSurvivorWorkState() const { return WorkState; }
+	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
 
 	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
 };
