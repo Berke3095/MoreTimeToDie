@@ -103,6 +103,11 @@ void UPortraitWidget::OnDraftClicked()
 
 void UPortraitWidget::OnUnDraftClicked()
 {
+    if (GameManager && GameManager->GetAllTasks().Num() > 0)
+    {
+        GameManager->SetSurroundDestinations(GameManager->GetAllTasks()[0]);
+    }
+
     for (ASurvivor* Survivor : CurrentSurvivors)
     {
         if (Survivor->GetbIsSelected() && Survivor->GetbIsDrafted())
@@ -120,6 +125,11 @@ void UPortraitWidget::OnUnDraftClicked()
 
 void UPortraitWidget::OnUnDraftAllClicked()
 {
+    if (GameManager && GameManager->GetAllTasks().Num() > 0)
+    {
+        GameManager->SetSurroundDestinations(GameManager->GetAllTasks()[0]);
+    }
+
     for (ASurvivor* Survivor : CurrentSurvivors)
     {
         RemoveFromDrafted(Survivor);

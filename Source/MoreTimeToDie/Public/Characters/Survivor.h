@@ -76,6 +76,8 @@ private:
 
 	void MoveToDestination(const FVector& Destination1);
 
+	bool bCanMove{};
+
 	/*
 		STATES
 	*/
@@ -113,4 +115,6 @@ public:
 	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
 
 	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
+
+	void SetbCanMove(bool Value1) { bCanMove = Value1; }
 };

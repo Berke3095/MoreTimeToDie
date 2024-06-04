@@ -106,6 +106,7 @@ void AMyGameManager::SetDestinations(FVector& CenterPoint)
 		if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
 		{
 			MoveableSurvivors[i]->SetDestination(FoundDestinations[i]);
+			MoveableSurvivors[i]->SetbCanMove(true);
 		}
 		else { break; }
 	}
@@ -179,6 +180,7 @@ void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
 			{
 				AssignedDestinations[i] = MinIndex;
 				CurrentSurvivors[i]->SetTaskDestination(FoundTaskDestinations[MinIndex]);
+				CurrentSurvivors[i]->SetbCanMove(true);
 			}
 		}
 
