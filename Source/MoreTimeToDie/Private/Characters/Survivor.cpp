@@ -63,11 +63,11 @@ void ASurvivor::Tick(float DeltaTime)
 				MoveToDestination(TaskDestination);
 				if (bHasReachedToTask)
 				{
-					FRotator Rotation = FMath::RInterpTo(GetActorRotation(), LookAtTaskRotation, DeltaTime, 3.0f);
+					FRotator Rotation = FMath::RInterpTo(GetActorRotation(), LookAtTaskRotation, DeltaTime, 5.0f);
 					SetActorRotation(Rotation);
 					if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
 					{
-						GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 2.0f, false);
+						GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 0.5f, false);
 					}
 				}
 			}
