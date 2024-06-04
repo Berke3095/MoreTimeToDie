@@ -109,7 +109,6 @@ public:
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
 	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
-	void SetSurvivorMoveState(ESurvivorMoveState MoveState1) { MoveState = MoveState1; }
 	FORCEINLINE const ESurvivorWorkState GetSurvivorWorkState() const { return WorkState; }
 	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
 
