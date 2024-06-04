@@ -14,6 +14,9 @@
 #include "MyHUD.h"
 #include "Harvestables/Harvestable.h"
 
+#include "Characters/SurvivorAnimInstance.h"
+#include "Animation/AnimMontage.h"
+
 ASurvivor::ASurvivor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -61,6 +64,15 @@ void ASurvivor::Tick(float DeltaTime)
 			if (GameManager->GetAllTasks().Num() > 0)
 			{
 				MoveToDestination(TaskDestination);
+				if (bHasReachedToTask)
+				{
+					FRotator Rotation = FMath::RInterpTo(GetActorRotation(), LookAtTaskRotation, DeltaTime, 3.0f);
+					SetActorRotation(Rotation);
+					if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
+					{
+						GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 2.0f, false);
+					}
+				}
 			}
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
@@ -83,6 +95,9 @@ void ASurvivor::GetReferences()
 		PortraitWidget = GameManager->GetPortraitWidget();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - GameManager is null.")); }
+
+	SurvivorAnimInstance = Cast<USurvivorAnimInstance>(GetMesh()->GetAnimInstance());
+	if(!SurvivorAnimInstance){ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - SurvivorAnimInstance is null.")); }
 }
 
 /*
@@ -155,6 +170,50 @@ void ASurvivor::CreateAIController()
 	}
 }
 
+void ASurvivor::StartDoingTask()
+{
+	if (GeneralState != ESurvivorGeneralState::ESGS_Tasking)
+	{
+		GeneralState = ESurvivorGeneralState::ESGS_Tasking;
+		bHasReachedToTask = false;
+		GetWorldTimerManager().ClearTimer(FocusTaskTimer);
+		int32 AnimSelection{};
+		if (GeneralState == ESurvivorGeneralState::ESGS_Tasking)
+		{
+			if (GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Survivor started mining"));
+				if (WorkState != ESurvivorWorkState::ESWS_Mining)
+				{
+					WorkState = ESurvivorWorkState::ESWS_Mining;
+					AnimSelection = 0;
+				}
+			}
+		}
+		
+		if (SurvivorAnimInstance && TaskMontage && GeneralState == ESurvivorGeneralState::ESGS_Tasking)
+		{
+			if (!SurvivorAnimInstance->Montage_IsPlaying(TaskMontage))
+			{
+				SurvivorAnimInstance->Montage_Play(TaskMontage);
+				
+				FName SectionName = FName();
+
+				switch (AnimSelection)
+				{
+				case 0:
+					SectionName = FName("Mining");
+					break;
+				default:
+					break;
+				}
+				SurvivorAnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
+			}
+		}
+		else if (!SurvivorAnimInstance) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::StartDoingTask - SurvivorAnimInstance is null.")); }
+	}	
+}
+
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
 	bIsDrafted = bIsDrafted1;
@@ -172,15 +231,10 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 		{
 			if (MyAIController->GetPathFollowingComponent()->DidMoveReachGoal() && Destination1 == TaskDestination && GameManager->GetAllTasks().Num() > 0)
 			{
-				if (WorkState != ESurvivorWorkState::ESWS_Mining && GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Survivor started mining"));
-					WorkState = ESurvivorWorkState::ESWS_Mining;
+				FVector LookAtDirection = GameManager->GetAllTasks()[0]->GetActorLocation() - GetActorLocation();
+				LookAtTaskRotation = LookAtDirection.Rotation();
 
-					FVector LookAtDirection = GameManager->GetAllTasks()[0]->GetActorLocation() - GetActorLocation();
-					FRotator LookAtRotation = LookAtDirection.Rotation();
-					SetActorRotation(LookAtRotation);
-				}
+				bHasReachedToTask = true;
 			}
 			else
 			{

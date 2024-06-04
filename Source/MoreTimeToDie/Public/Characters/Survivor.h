@@ -13,6 +13,9 @@ class AMyAIController;
 class UButton;
 class UImage;
 
+class USurvivorAnimInstance;
+class UAnimMontage;
+
 UCLASS()
 class MORETIMETODIE_API ASurvivor : public ACharacter
 {
@@ -69,7 +72,7 @@ private:
 	*/
 	void CreateAIController();
 	AMyAIController* MyAIController{};
-	const float Acceptance{ 0.0f };
+	const float Acceptance{ -1.0f };
 	FVector Destination{};
 
 	void MoveToDestination(const FVector& Destination1);
@@ -79,11 +82,25 @@ private:
 	*/
 	ESurvivorMoveState MoveState = ESurvivorMoveState::ESMS_NONE;
 	ESurvivorWorkState WorkState = ESurvivorWorkState::ESWS_NONE;
+	ESurvivorGeneralState GeneralState = ESurvivorGeneralState::ESGS_NONE;
 
 	/*
 		TASKS
 	*/
 	FVector TaskDestination{};
+	FRotator LookAtTaskRotation{};
+	bool bHasReachedToTask{};
+
+	void StartDoingTask();
+	FTimerHandle FocusTaskTimer{};
+
+	/*
+		ANIMATION
+	*/
+	USurvivorAnimInstance* SurvivorAnimInstance{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TaskMontage{};
 
 public:
 
