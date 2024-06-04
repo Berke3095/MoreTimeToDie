@@ -33,17 +33,6 @@ void USurvivorAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 		if (Survivor)
 		{
-			if (Speed == 0)
-			{
-				if (MoveState != ESurvivorMoveState::ESMS_NONE) { Survivor->SetSurvivorMoveState(ESurvivorMoveState::ESMS_NONE); }
-				if (!Survivor->GetCapsuleComponent()->CanEverAffectNavigation()) { Survivor->GetCapsuleComponent()->SetCanEverAffectNavigation(true); }
-			}
-			else
-			{
-				if (MoveState != ESurvivorMoveState::ESMS_Walking) { Survivor->SetSurvivorMoveState(ESurvivorMoveState::ESMS_Walking); }
-				if (Survivor->GetCapsuleComponent()->CanEverAffectNavigation()) { Survivor->GetCapsuleComponent()->SetCanEverAffectNavigation(false); }
-			}
-
 			MoveState = Survivor->GetSurvivorMoveState();
 			WorkState = Survivor->GetSurvivorWorkState();
 			GeneralState = Survivor->GetSurvivorGeneralState();

@@ -216,28 +216,34 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 	{
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
 
-		if (GameManager)
+		if (GameManager && MyAIController->GetPathFollowingComponent()->DidMoveReachGoal())
 		{
-			if (MyAIController->GetPathFollowingComponent()->DidMoveReachGoal() && Destination1 == TaskDestination && GameManager->GetAllTasks().Num() > 0)
+			if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
+			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
+
+			if (Destination1 == TaskDestination && GameManager->GetAllTasks().Num() > 0)
 			{
 				FVector LookAtDirection = GameManager->GetAllTasks()[0]->GetActorLocation() - GetActorLocation();
 				LookAtTaskRotation = LookAtDirection.Rotation();
 
 				bHasReachedToTask = true;
 			}
-			else
+		}
+		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
+		else
+		{
+			if (MoveState != ESurvivorMoveState::ESMS_Walking) { MoveState = ESurvivorMoveState::ESMS_Walking; }
+			if (CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(false); }
+
+			if (WorkState != ESurvivorWorkState::ESWS_NONE)
 			{
-				if (WorkState != ESurvivorWorkState::ESWS_NONE)
-				{
-					WorkState = ESurvivorWorkState::ESWS_NONE;
-				}
-				if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
-				{
-					GeneralState = ESurvivorGeneralState::ESGS_NONE;
-				}
+				WorkState = ESurvivorWorkState::ESWS_NONE;
+			}
+			if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
+			{
+				GeneralState = ESurvivorGeneralState::ESGS_NONE;
 			}
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
