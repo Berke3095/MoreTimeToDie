@@ -242,6 +242,10 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				{
 					WorkState = ESurvivorWorkState::ESWS_NONE;
 				}
+				if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
+				{
+					GeneralState = ESurvivorGeneralState::ESGS_NONE;
+				}
 			}
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
