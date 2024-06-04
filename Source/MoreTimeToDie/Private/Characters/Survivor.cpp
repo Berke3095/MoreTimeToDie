@@ -187,8 +187,28 @@ void ASurvivor::StartDoingTask()
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
 	bIsDrafted = bIsDrafted1;
-	if (bIsDrafted){ DraftedImage->SetVisibility(ESlateVisibility::Visible); }
-	else { DraftedImage->SetVisibility(ESlateVisibility::Hidden); }
+
+	if (bIsDrafted)
+	{
+		DraftedImage->SetVisibility(ESlateVisibility::Visible);
+
+		if (WorkState != ESurvivorWorkState::ESWS_NONE)
+		{
+			WorkState = ESurvivorWorkState::ESWS_NONE;
+		}
+		if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
+		{
+			GeneralState = ESurvivorGeneralState::ESGS_NONE;
+		}
+	}
+	else
+	{
+		if (GameManager && GameManager->GetAllTasks().Num() > 0)
+		{
+			DraftedImage->SetVisibility(ESlateVisibility::Hidden);
+			GameManager->SetSurroundDestinations(GameManager->GetAllTasks()[0]);
+		}
+	}
 }
 
 void ASurvivor::MoveToDestination(const FVector& Destination1)
