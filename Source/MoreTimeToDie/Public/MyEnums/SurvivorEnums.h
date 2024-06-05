@@ -21,3 +21,11 @@ enum class ESurvivorGeneralState : uint8
 	ESGS_NONE UMETA(DisplayName = "NONE")
 };
 
+UENUM(BlueprintType)
+enum class ESurvivorTaskState : uint8
+{
+	ESTS_Performing UMETA(DisplayName = "Performing"),
+	ESTS_Preparing UMETA(DisplayName = "Preparing"),
+	ESTS_NONE UMETA(DisplayName = "NONE")
+};
+

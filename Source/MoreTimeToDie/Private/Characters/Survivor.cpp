@@ -63,7 +63,7 @@ void ASurvivor::Tick(float DeltaTime)
 				SetActorRotation(Rotation);
 				if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
 				{
-					GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 0.3f, false);
+					GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 1.5f, false);
 				}
 			}
 		}
@@ -161,22 +161,13 @@ void ASurvivor::CreateAIController()
 
 void ASurvivor::StartDoingTask()
 {
-	if (GeneralState != ESurvivorGeneralState::ESGS_Tasking)
+	bHasReachedToTask = false;
+	GetWorldTimerManager().ClearTimer(FocusTaskTimer);
+
+	if (TaskState != ESurvivorTaskState::ESTS_Performing)
 	{
-		GeneralState = ESurvivorGeneralState::ESGS_Tasking;
-		bHasReachedToTask = false;
-		GetWorldTimerManager().ClearTimer(FocusTaskTimer);
-		if (GeneralState == ESurvivorGeneralState::ESGS_Tasking)
-		{
-			if (GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
-			{
-				if (WorkState != ESurvivorWorkState::ESWS_Mining)
-				{
-					WorkState = ESurvivorWorkState::ESWS_Mining;
-				}
-			}
-		}
-	}	
+		TaskState = ESurvivorTaskState::ESTS_Performing;
+	}
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
@@ -228,6 +219,22 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				LookAtTaskRotation = LookAtDirection.Rotation();
 
 				bHasReachedToTask = true;
+				if (GeneralState != ESurvivorGeneralState::ESGS_Tasking)
+				{
+					GeneralState = ESurvivorGeneralState::ESGS_Tasking;
+				}
+				if (TaskState != ESurvivorTaskState::ESTS_Preparing)
+				{
+					TaskState = ESurvivorTaskState::ESTS_Preparing;
+				}
+
+				if (GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
+				{
+					if (WorkState != ESurvivorWorkState::ESWS_Mining)
+					{
+						WorkState = ESurvivorWorkState::ESWS_Mining;
+					}
+				}	
 			}
 		}
 		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }

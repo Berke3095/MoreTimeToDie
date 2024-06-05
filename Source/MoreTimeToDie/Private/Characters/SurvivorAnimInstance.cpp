@@ -33,9 +33,9 @@ void USurvivorAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 		if (Survivor)
 		{
-			MoveState = Survivor->GetSurvivorMoveState();
 			WorkState = Survivor->GetSurvivorWorkState();
 			GeneralState = Survivor->GetSurvivorGeneralState();
+			TaskState = Survivor->GetSurvivorTaskState();
 		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("USurvivorAnimInstance::NativeInitializeAnimation - SurvivorMovement is null.")); }
