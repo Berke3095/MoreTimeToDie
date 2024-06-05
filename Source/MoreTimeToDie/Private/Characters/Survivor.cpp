@@ -5,7 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Button.h"
-#include "Components/Image.h" 
+#include "Components/Image.h"
+#include "Engine/SkeletalMeshSocket.h" 
 
 #include "MyAIController.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -170,6 +171,14 @@ void ASurvivor::StartDoingTask()
 	}
 }
 
+void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)
+{
+	UStaticMeshComponent* ToolMesh = ToolInstance1->FindComponentByClass<UStaticMeshComponent>();
+
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	ToolMesh->AttachToComponent(InParent1, TransformRules, InSocketName1);
+}
+
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
 	bIsDrafted = bIsDrafted1;
@@ -187,6 +196,11 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 		if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
 		{
 			GeneralState = ESurvivorGeneralState::ESGS_NONE;
+		}
+
+		if (ToolInstance)
+		{
+			ToolInstance->Destroy();
 		}
 	}
 	else
@@ -234,6 +248,24 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 					{
 						WorkState = ESurvivorWorkState::ESWS_Mining;
 					}
+
+					if (PickaxeClass)
+					{
+						const USkeletalMeshSocket* ToolSocket = MeshComponent->GetSocketByName(FName("ToolSocket"));
+
+						FTransform SocketTransform{};
+						if (ToolSocket) { SocketTransform = ToolSocket->GetSocketTransform(MeshComponent); }
+						else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolSocket is null")); }
+						
+						
+						ToolInstance = GetWorld()->SpawnActor<AActor>(PickaxeClass, SocketTransform.GetLocation(), SocketTransform.GetRotation().Rotator());
+						if (ToolInstance)
+						{
+							Equip(ToolInstance, MeshComponent, "ToolSocket");
+						}
+						else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolInstance is null")); }
+					}
+						
 				}	
 			}
 		}
@@ -250,6 +282,11 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 			if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
 			{
 				GeneralState = ESurvivorGeneralState::ESGS_NONE;
+			}
+
+			if (ToolInstance)
+			{
+				ToolInstance->Destroy();
 			}
 		}
 	}

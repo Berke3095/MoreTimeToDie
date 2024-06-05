@@ -96,6 +96,16 @@ private:
 	void StartDoingTask();
 	FTimerHandle FocusTaskTimer{};
 
+	/*
+		TOOLS
+	*/
+	void Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1);
+
+	AActor* ToolInstance{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tools")
+	TSubclassOf<AActor> PickaxeClass{};
+
 public:
 
 	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
