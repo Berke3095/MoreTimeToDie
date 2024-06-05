@@ -123,7 +123,7 @@ void AMyGameManager::SetSurroundDestinations(AHarvestable* Harvestable1)
 		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetSurroundDestinations - Navigation system is null.")); return; }
 
 		FVector CenterPoint = Harvestable1->GetActorLocation();
-		float Radius = 130.0f;
+		float Radius = 125.0f;
 		TArray<ASurvivor*> CurrentSurvivors{};
 		if (PortraitWidget)
 		{
