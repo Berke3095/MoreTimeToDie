@@ -89,12 +89,23 @@ private:
 	/*
 		TASKS
 	*/
+	AHarvestable* CurrentTask{};
 	FVector TaskDestination{};
+
+	TArray<AHarvestable*> TasksArray{};
+	TArray<FVector> TaskDestinationsArray{};
+
+	void CalculateTaskDestination(AHarvestable* Harvestable1);
+
 	FRotator LookAtTaskRotation{};
 	bool bHasReachedToTask{};
 
 	void StartDoingTask();
 	FTimerHandle FocusTaskTimer{};
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Tasks")
+	bool bCanMineStone{ true };
+	bool bCanCutTree{ true };
 
 	/*
 		TOOLS
@@ -103,8 +114,13 @@ private:
 
 	AActor* ToolInstance{};
 
+	void SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Tools")
 	TSubclassOf<AActor> PickaxeClass{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tools")
+	TSubclassOf<AActor> AxeClass{};
 
 public:
 
@@ -126,7 +142,10 @@ public:
 	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
 	FORCEINLINE const ESurvivorTaskState GetSurvivorTaskState() const { return TaskState; }
 
-	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
-
 	void SetbCanMove(bool Value1) { bCanMove = Value1; }
+
+	void SetTask(AHarvestable* Harvestable1);
+
+	FORCEINLINE const bool GetbCanMineStone() const { return bCanMineStone; }
+	FORCEINLINE const bool GetbCanCutTree() const { return bCanCutTree; }
 };

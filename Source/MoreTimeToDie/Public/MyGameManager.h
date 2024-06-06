@@ -54,6 +54,7 @@ private:
 		TASKS
 	*/
 	TArray<AHarvestable*> AllTasks{};
+	TArray<FVector> ReservedDestinations{};
 	TArray<AHarvestable*> StoneTasks{};
 
 public:
@@ -71,10 +72,10 @@ public:
 	void DestroyHarvestWidgets();
 
 	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); AllTasks.AddUnique(Stone1); }
+	void AddToReservedDestinations(FVector& ReservedDestination1) { ReservedDestinations.AddUnique(ReservedDestination1); }
 	FORCEINLINE const TArray<AHarvestable*> GetStoneTasks() const { return StoneTasks; }
 	FORCEINLINE const TArray<AHarvestable*> GetAllTasks() const { return AllTasks; }
 
 	void SetDestinations(FVector& CenterPoint);
-	void SetSurroundDestinations(AHarvestable* Harvestable1);
 };
 

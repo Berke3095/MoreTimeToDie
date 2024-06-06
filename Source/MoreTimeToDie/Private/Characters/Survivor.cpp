@@ -10,6 +10,7 @@
 
 #include "MyAIController.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "NavigationSystem.h"
 
 #include "Widgets/PortraitWidget.h"
 #include "MyHUD.h"
@@ -54,7 +55,7 @@ void ASurvivor::Tick(float DeltaTime)
 	}
 	else
 	{
-		if (GameManager && GameManager->GetAllTasks().Num() > 0)
+		if (CurrentTask)
 		{
 			MoveToDestination(TaskDestination);
 
@@ -171,12 +172,77 @@ void ASurvivor::StartDoingTask()
 	}
 }
 
+void ASurvivor::SetTask(AHarvestable* Harvestable1)
+{
+	if (Harvestable1)
+	{
+		CalculateTaskDestination(Harvestable1);
+	}
+	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetSurroundDestination - Harvestable1 is null.")); }
+}
+
+void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
+{
+	if (Harvestable1)
+	{
+		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetSurroundDestination - Navigation system is null.")); return; }
+
+		FVector CenterPoint = Harvestable1->GetActorLocation();
+		float Radius = 125.0f;
+
+		float Angle = FMath::DegreesToRadians(FMath::FRandRange(0.0f, 360.0f));
+		FVector Offset = FVector(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius, 0.0f);
+		FVector TaskDestination = CenterPoint + Offset;
+
+		FNavLocation ProjectedLocation{};
+		if (NavSys->ProjectPointToNavigation(TaskDestination, ProjectedLocation))
+		{
+			TasksArray.AddUnique(Harvestable1);
+			TaskDestinationsArray.AddUnique(ProjectedLocation.Location);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::CalculateTaskDestination - Couldn't add Harvestable1")); }
+
+		if (TasksArray[0] == Harvestable1)
+		{
+			CurrentTask = Harvestable1;
+			TaskDestination = ProjectedLocation.Location;
+		}
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::CalculateTaskDestination - Harvestable1 is null.")); }
+}
+
 void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)
 {
 	UStaticMeshComponent* ToolMesh = ToolInstance1->FindComponentByClass<UStaticMeshComponent>();
 
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ToolMesh->AttachToComponent(InParent1, TransformRules, InSocketName1);
+}
+
+void ASurvivor::SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1)
+{
+	if (WorkState != WorkState1)
+	{
+		WorkState = WorkState1;
+	}
+
+	if (PickaxeClass)
+	{
+		const USkeletalMeshSocket* ToolSocket = MeshComponent->GetSocketByName(FName("ToolSocket"));
+
+		FTransform SocketTransform{};
+		if (ToolSocket) { SocketTransform = ToolSocket->GetSocketTransform(MeshComponent); }
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolSocket is null")); }
+
+
+		ToolInstance = GetWorld()->SpawnActor<AActor>(Tool1, SocketTransform.GetLocation(), SocketTransform.GetRotation().Rotator());
+		if (ToolInstance)
+		{
+			Equip(ToolInstance, MeshComponent, "ToolSocket");
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolInstance is null")); }
+	}
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
@@ -206,7 +272,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	else
 	{
 		DraftedImage->SetVisibility(ESlateVisibility::Hidden);
-		if (GameManager && GameManager->GetAllTasks().Num() > 0)
+		if (CurrentTask)
 		{
 			bCanMove = true;
 		}
@@ -227,9 +293,9 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
 			bCanMove = false;
 
-			if (Destination1 == TaskDestination && GameManager->GetAllTasks().Num() > 0)
+			if (Destination1 == TaskDestination && CurrentTask)
 			{
-				FVector LookAtDirection = GameManager->GetAllTasks()[0]->GetActorLocation() - GetActorLocation();
+				FVector LookAtDirection = CurrentTask->GetActorLocation() - GetActorLocation();
 				LookAtTaskRotation = LookAtDirection.Rotation();
 
 				bHasReachedToTask = true;
@@ -242,31 +308,8 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 					TaskState = ESurvivorTaskState::ESTS_Preparing;
 				}
 
-				if (GameManager->GetAllTasks()[0]->ActorHasTag("Stone"))
-				{
-					if (WorkState != ESurvivorWorkState::ESWS_Mining)
-					{
-						WorkState = ESurvivorWorkState::ESWS_Mining;
-					}
-
-					if (PickaxeClass)
-					{
-						const USkeletalMeshSocket* ToolSocket = MeshComponent->GetSocketByName(FName("ToolSocket"));
-
-						FTransform SocketTransform{};
-						if (ToolSocket) { SocketTransform = ToolSocket->GetSocketTransform(MeshComponent); }
-						else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolSocket is null")); }
-						
-						
-						ToolInstance = GetWorld()->SpawnActor<AActor>(PickaxeClass, SocketTransform.GetLocation(), SocketTransform.GetRotation().Rotator());
-						if (ToolInstance)
-						{
-							Equip(ToolInstance, MeshComponent, "ToolSocket");
-						}
-						else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - ToolInstance is null")); }
-					}
-						
-				}	
+				if (CurrentTask->ActorHasTag("Stone")) { SetTool(PickaxeClass, ESurvivorWorkState::ESWS_MiningStone); }
+				else if (CurrentTask->ActorHasTag("Tree")) { SetTool(AxeClass, ESurvivorWorkState::ESWS_CuttingTree); }
 			}
 		}
 		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }

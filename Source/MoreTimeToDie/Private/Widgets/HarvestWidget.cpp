@@ -6,6 +6,8 @@
 #include "MyGameManager.h"
 #include "MyView.h"
 #include "Harvestables/Harvestable.h"
+#include "Widgets/PortraitWidget.h"
+#include "Characters/Survivor.h"
 
 void UHarvestWidget::NativeConstruct()
 {
@@ -52,11 +54,17 @@ void UHarvestWidget::OnHarvestButton()
         AMyView* MyView = GameManager->GetMyView();
         if (MyView)
         {
-            GameManager->SetSurroundDestinations(MyView->GetHarvestable());
-            if (MyView->GetHarvestable()->ActorHasTag("Stone"))
+            if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
+
+            UPortraitWidget* PortraitWidget = GameManager->GetPortraitWidget();
+            if (PortraitWidget)
             {
-                GameManager->AddToStoneTasks(MyView->GetHarvestable());
+                for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+                {
+                    Survivor->SetTask(MyView->GetHarvestable());
+                }
             }
+            else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
         }
         else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
     }
