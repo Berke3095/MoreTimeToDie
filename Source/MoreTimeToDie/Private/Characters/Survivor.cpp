@@ -193,6 +193,8 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 
 		bool bFoundValidDestination{};
 		FNavLocation ProjectedLocation{};
+		FVector ClosestDestination;
+		float MinDistance = FLT_MAX;
 
 		if (GameManager && PortraitWidget)
 		{
@@ -209,10 +211,16 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 					continue;
 				}
 
-				if (NavSys->ProjectPointToNavigation(GoalDestination, ProjectedLocation))
+				FNavLocation TempProjectedLocation;
+				if (NavSys->ProjectPointToNavigation(GoalDestination, TempProjectedLocation))
 				{
-					bFoundValidDestination = true;
-					break;
+					float Distance = FVector::Dist(GetActorLocation(), TempProjectedLocation.Location);
+					if (Distance < MinDistance)
+					{
+						MinDistance = Distance;
+						ProjectedLocation = TempProjectedLocation;
+						bFoundValidDestination = true;
+					}
 				}
 			}
 		}
