@@ -191,25 +191,55 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 		FVector CenterPoint = Harvestable1->GetActorLocation();
 		float Radius = 125.0f;
 
-		float Angle = FMath::DegreesToRadians(FMath::FRandRange(0.0f, 360.0f));
-		FVector Offset = FVector(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius, 0.0f);
-		FVector TaskDestination = CenterPoint + Offset;
-
+		bool bFoundValidDestination{};
 		FNavLocation ProjectedLocation{};
-		if (NavSys->ProjectPointToNavigation(TaskDestination, ProjectedLocation))
+
+		if (GameManager && PortraitWidget)
+		{
+			float AngleBetweenSurvivors = 360.0f / PortraitWidget->GetCurrentSurvivors().Num();
+
+			for (int32 i = 0; i < PortraitWidget->GetCurrentSurvivors().Num(); i++)
+			{
+				float Angle = FMath::DegreesToRadians(AngleBetweenSurvivors * i);
+				FVector Offset = FVector(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius, 0.0f);
+				FVector GoalDestination = CenterPoint + Offset;
+
+				if (GameManager->GetReservedDestinations().Contains(GoalDestination))
+				{
+					continue;
+				}
+
+				if (NavSys->ProjectPointToNavigation(GoalDestination, ProjectedLocation))
+				{
+					bFoundValidDestination = true;
+					break;
+				}
+			}
+		}
+
+		if (bFoundValidDestination)
 		{
 			TasksArray.AddUnique(Harvestable1);
 			TaskDestinationsArray.AddUnique(ProjectedLocation.Location);
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::CalculateTaskDestination - Couldn't add Harvestable1")); }
 
-		if (TasksArray[0] == Harvestable1)
-		{
-			CurrentTask = Harvestable1;
-			TaskDestination = ProjectedLocation.Location;
+			if (GameManager)
+			{
+				GameManager->AddToReservedDestinations(ProjectedLocation.Location);
+			}
+
+			if (TasksArray[0] == Harvestable1)
+			{
+				CurrentTask = Harvestable1;
+				TaskDestination = ProjectedLocation.Location;
+				
+				if (!bIsDrafted)
+				{
+					bCanMove = true;
+				}
+			}
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::CalculateTaskDestination - Couldn't find a unique destination for Harvestable1.")); }
 	}
-	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::CalculateTaskDestination - Harvestable1 is null.")); }
 }
 
 void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)

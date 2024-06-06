@@ -9,6 +9,7 @@ class AMyGameManager;
 class UPortraitWidget;
 class AMyHUD;
 class AMyAIController;
+class AHarvestable;
 
 class UButton;
 class UImage;

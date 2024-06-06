@@ -72,9 +72,11 @@ public:
 	void DestroyHarvestWidgets();
 
 	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); AllTasks.AddUnique(Stone1); }
-	void AddToReservedDestinations(FVector& ReservedDestination1) { ReservedDestinations.AddUnique(ReservedDestination1); }
 	FORCEINLINE const TArray<AHarvestable*> GetStoneTasks() const { return StoneTasks; }
 	FORCEINLINE const TArray<AHarvestable*> GetAllTasks() const { return AllTasks; }
+
+	void AddToReservedDestinations(FVector& ReservedDestination1) { ReservedDestinations.AddUnique(ReservedDestination1); }
+	FORCEINLINE const TArray<FVector>& GetReservedDestinations() const { return ReservedDestinations; }
 
 	void SetDestinations(FVector& CenterPoint);
 };
