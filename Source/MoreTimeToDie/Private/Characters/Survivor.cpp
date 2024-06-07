@@ -183,7 +183,8 @@ void ASurvivor::CreateAIController()
 
 void ASurvivor::StartDoingTask()
 {
-	bHasReachedToTask = false;
+	if (bHasReachedToTask) { bHasReachedToTask = false; }
+	
 	GetWorldTimerManager().ClearTimer(FocusTaskTimer);
 
 	if (TaskState != ESurvivorTaskState::ESTS_Performing)
@@ -275,52 +276,55 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 
 void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1)
 {
-	int32 HarvestDamage{ 10 };
-	if (NotifyName1 == FName("HarvestHit"))
+	if (CurrentTask)
 	{
-		CurrentTask->ReduceHarvestHealth(HarvestDamage);
-		if (CurrentTask->GetHarvestHealth() <= 0)
+		int32 HarvestDamage{ 10 };
+		if (NotifyName1 == FName("HarvestHit"))
 		{
-			TasksArray.Remove(CurrentTask);
-			TaskDestinationsArray.Remove(TaskDestination);
-
-			if (GameManager) { GameManager->RemoveFromTaskArrays(CurrentTask); }
-
-			CurrentTask->Destroy();
-			StopWorking();
-			AActor* DestroyedActor{ CurrentTask };
-
-			if (TasksArray.Num() == 0)
+			CurrentTask->ReduceHarvestHealth(HarvestDamage);
+			if (CurrentTask->GetHarvestHealth() <= 0)
 			{
-				SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
-			}
-			else
-			{
-				CurrentTask = TasksArray[0];
-				SetTaskDestination(TaskDestinationsArray[0]);
-				SetbCanMove(true);
-			}
+				TasksArray.Remove(CurrentTask);
+				TaskDestinationsArray.Remove(TaskDestination);
 
-			if (PortraitWidget)
-			{
-				for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+				if (GameManager) { GameManager->RemoveFromTaskArrays(CurrentTask); }
+
+				CurrentTask->Destroy();
+				StopWorking();
+				AActor* DestroyedActor{ CurrentTask };
+
+				if (TasksArray.Num() == 0)
 				{
-					if (Survivor != this && Survivor->GetCurrentTask() == DestroyedActor)
+					SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+				}
+				else
+				{
+					CurrentTask = TasksArray[0];
+					SetTaskDestination(TaskDestinationsArray[0]);
+					MoveOnWithTimer();
+				}
+
+				if (PortraitWidget)
+				{
+					for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
 					{
-						Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
-						Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
-						if(GameManager) { GameManager->RemoveFromReservedDestinations(Survivor->GetTaskDestination()); }
-						
-						Survivor->StopWorking();
-						if (Survivor->GetTasksArray().Num() == 0)
+						if (Survivor != this && Survivor->GetCurrentTask() == DestroyedActor)
 						{
-							Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
-						}
-						else
-						{
-							Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
-							Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
-							Survivor->SetbCanMove(true);
+							Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
+							Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
+							if (GameManager) { GameManager->RemoveFromReservedDestinations(Survivor->GetTaskDestination()); }
+
+							Survivor->StopWorking();
+							if (Survivor->GetTasksArray().Num() == 0)
+							{
+								Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+							}
+							else
+							{
+								Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
+								Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
+								Survivor->MoveOnWithTimer();
+							}
 						}
 					}
 				}
@@ -340,6 +344,14 @@ void ASurvivor::StopWorking()
 		AnimInstance->Montage_Stop(BlendOutRate, TaskMontage);
 	}
 	if (ToolInstance) { ToolInstance->Destroy(); }
+}
+
+void ASurvivor::MoveOnWithTimer()
+{
+	if (!GetWorldTimerManager().IsTimerActive(MoveOnTimer))
+	{
+		GetWorld()->GetTimerManager().SetTimer(MoveOnTimer, this, &ASurvivor::MoveOn, 0.5f, false);
+	}
 }
 
 void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)

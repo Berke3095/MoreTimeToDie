@@ -114,7 +114,7 @@ private:
 	void OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1);
 
 	FTimerHandle MoveOnTimer{};
-	void MoveOnToTheNextTask();
+	void MoveOn() { SetbCanMove(true); GetWorldTimerManager().ClearTimer(MoveOnTimer); }
 
 	/*
 		TOOLS
@@ -180,4 +180,6 @@ public:
 	void RemoveFromTaskDestinationsArray(const FVector& TaskDestination1) { TaskDestinationsArray.Remove(TaskDestination1); }
 
 	void StopWorking();
+
+	void MoveOnWithTimer();
 };
