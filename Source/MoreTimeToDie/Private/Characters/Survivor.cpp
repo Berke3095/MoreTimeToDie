@@ -389,43 +389,46 @@ void ASurvivor::SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1
 
 void ASurvivor::PlayTaskAnimation()
 {
-	AnimInstance->Montage_Play(TaskMontage);
-
-	FName SectionName{};
-
-	switch (TaskState)
+	if (GeneralState == ESurvivorGeneralState::ESGS_Tasking)
 	{
-	case ESurvivorTaskState::ESTS_Preparing:
-		switch (WorkState)
-		{
-		case ESurvivorWorkState::ESWS_MiningStone:
-			SectionName = FName("PrepareMiningStone");
-			break;
-		case ESurvivorWorkState::ESWS_CuttingTree:
-			SectionName = FName("PrepareCuttingTree");
-			break;
-		default:
-			break;
-		}
-		break;
-	case ESurvivorTaskState::ESTS_Performing:
-		switch (WorkState)
-		{
-		case ESurvivorWorkState::ESWS_MiningStone:
-			SectionName = FName("MiningStone");
-			break;
-		case ESurvivorWorkState::ESWS_CuttingTree:
-			SectionName = FName("CuttingTree");
-			break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
+		AnimInstance->Montage_Play(TaskMontage);
 
-	AnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
+		FName SectionName{};
+
+		switch (TaskState)
+		{
+		case ESurvivorTaskState::ESTS_Preparing:
+			switch (WorkState)
+			{
+			case ESurvivorWorkState::ESWS_MiningStone:
+				SectionName = FName("PrepareMiningStone");
+				break;
+			case ESurvivorWorkState::ESWS_CuttingTree:
+				SectionName = FName("PrepareCuttingTree");
+				break;
+			default:
+				break;
+			}
+			break;
+		case ESurvivorTaskState::ESTS_Performing:
+			switch (WorkState)
+			{
+			case ESurvivorWorkState::ESWS_MiningStone:
+				SectionName = FName("MiningStone");
+				break;
+			case ESurvivorWorkState::ESWS_CuttingTree:
+				SectionName = FName("CuttingTree");
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+
+		AnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
+	}
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)

@@ -114,7 +114,7 @@ private:
 	void OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1);
 
 	FTimerHandle MoveOnTimer{};
-	void MoveOn() { SetbCanMove(true); GetWorldTimerManager().ClearTimer(MoveOnTimer); }
+	void MoveOn() { SetbCanMove(true); if (bHasReachedToTask) { bHasReachedToTask = false; } GetWorldTimerManager().ClearTimer(MoveOnTimer); }
 
 	/*
 		TOOLS
