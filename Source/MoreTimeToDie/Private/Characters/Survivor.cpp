@@ -16,6 +16,9 @@
 #include "MyHUD.h"
 #include "Harvestables/Harvestable.h"
 
+#include "Animation/AnimMontage.h"
+#include "Characters/SurvivorAnimInstance.h"
+
 ASurvivor::ASurvivor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -49,6 +52,9 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());*/
+
 	if (bIsDrafted)
 	{
 		MoveToDestination(Destination);
@@ -66,6 +72,13 @@ void ASurvivor::Tick(float DeltaTime)
 				if (!GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
 				{
 					GetWorld()->GetTimerManager().SetTimer(FocusTaskTimer, this, &ASurvivor::StartDoingTask, 1.5f, false);
+				}
+			}
+			else if (TaskState == ESurvivorTaskState::ESTS_Performing)
+			{
+				if (AnimInstance && !AnimInstance->Montage_IsPlaying(TaskMontage))
+				{
+					PlayTaskAnimation();
 				}
 			}
 		}
@@ -89,6 +102,13 @@ void ASurvivor::GetReferences()
 		PortraitWidget = GameManager->GetPortraitWidget();
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - GameManager is null.")); }
+
+	AnimInstance = Cast<USurvivorAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &ASurvivor::OnNotifyBegin);
+	}
+	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::GetReferences - AnimInstance is null.")); }
 }
 
 /*
@@ -170,6 +190,8 @@ void ASurvivor::StartDoingTask()
 	{
 		TaskState = ESurvivorTaskState::ESTS_Performing;
 	}
+
+	PlayTaskAnimation();
 }
 
 void ASurvivor::SetTask(AHarvestable* Harvestable1)
@@ -250,6 +272,67 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 	}
 }
 
+void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1)
+{
+	int32 HarvestDamage{ 10 };
+	if (NotifyName1 == FName("HarvestHit"))
+	{
+		CurrentTask->ReduceHarvestHealth(HarvestDamage);
+		if (CurrentTask->GetHarvestHealth() <= 0)
+		{
+			TasksArray.Remove(CurrentTask);
+			TaskDestinationsArray.Remove(TaskDestination);
+			StopWorking();
+			if (TaskDestinationsArray.Num() == 0)
+			{
+				TaskDestination = FVector(0.0f, 0.0f, 0.0f);
+			}
+			CurrentTask->Destroy();
+
+			if (PortraitWidget)
+			{
+				for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+				{
+					if (Survivor->GetCurrentTask() == CurrentTask)
+					{
+						Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
+						Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
+						Survivor->StopWorking();
+						if (Survivor->GetTasksArray().Num() == 0)
+						{
+							Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void ASurvivor::StopWorking()
+{
+	if (WorkState != ESurvivorWorkState::ESWS_NONE)
+	{
+		WorkState = ESurvivorWorkState::ESWS_NONE;
+	}
+	if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
+	{
+		GeneralState = ESurvivorGeneralState::ESGS_NONE;
+	}
+	if (TaskState != ESurvivorTaskState::ESTS_NONE)
+	{
+		TaskState = ESurvivorTaskState::ESTS_NONE;
+	}
+	if (AnimInstance && TaskMontage && AnimInstance->Montage_IsPlaying(TaskMontage))
+	{
+		AnimInstance->Montage_Stop(0.5f, TaskMontage);
+	}
+	if (ToolInstance)
+	{
+		ToolInstance->Destroy();
+	}
+}
+
 void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)
 {
 	UStaticMeshComponent* ToolMesh = ToolInstance1->FindComponentByClass<UStaticMeshComponent>();
@@ -283,6 +366,47 @@ void ASurvivor::SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1
 	}
 }
 
+void ASurvivor::PlayTaskAnimation()
+{
+	AnimInstance->Montage_Play(TaskMontage);
+
+	FName SectionName{};
+
+	switch (TaskState)
+	{
+	case ESurvivorTaskState::ESTS_Preparing:
+		switch (WorkState)
+		{
+		case ESurvivorWorkState::ESWS_MiningStone:
+			SectionName = FName("PrepareMiningStone");
+			break;
+		case ESurvivorWorkState::ESWS_CuttingTree:
+			SectionName = FName("PrepareCuttingTree");
+			break;
+		default:
+			break;
+		}
+		break;
+	case ESurvivorTaskState::ESTS_Performing:
+		switch (WorkState)
+		{
+		case ESurvivorWorkState::ESWS_MiningStone:
+			SectionName = FName("MiningStone");
+			break;
+		case ESurvivorWorkState::ESWS_CuttingTree:
+			SectionName = FName("CuttingTree");
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	AnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
+}
+
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
 	bIsDrafted = bIsDrafted1;
@@ -290,22 +414,10 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	if (bIsDrafted)
 	{
 		DraftedImage->SetVisibility(ESlateVisibility::Visible);
-		SetDestination(FVector(0.0f, 0.0f, 0.0f));
+		Destination = FVector(0.0f, 0.0f, 0.0f);
 		if (MyAIController) { MyAIController->StopMovement(); }
 
-		if (WorkState != ESurvivorWorkState::ESWS_NONE)
-		{
-			WorkState = ESurvivorWorkState::ESWS_NONE;
-		}
-		if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
-		{
-			GeneralState = ESurvivorGeneralState::ESGS_NONE;
-		}
-
-		if (ToolInstance)
-		{
-			ToolInstance->Destroy();
-		}
+		StopWorking();
 	}
 	else
 	{
@@ -348,6 +460,8 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 
 				if (CurrentTask->ActorHasTag("Stone")) { SetTool(PickaxeClass, ESurvivorWorkState::ESWS_MiningStone); }
 				else if (CurrentTask->ActorHasTag("Tree")) { SetTool(AxeClass, ESurvivorWorkState::ESWS_CuttingTree); }
+
+				PlayTaskAnimation();
 			}
 		}
 		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
@@ -356,19 +470,7 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 			if (MoveState != ESurvivorMoveState::ESMS_Walking) { MoveState = ESurvivorMoveState::ESMS_Walking; }
 			if (CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(false); }
 
-			if (WorkState != ESurvivorWorkState::ESWS_NONE)
-			{
-				WorkState = ESurvivorWorkState::ESWS_NONE;
-			}
-			if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
-			{
-				GeneralState = ESurvivorGeneralState::ESGS_NONE;
-			}
-
-			if (ToolInstance)
-			{
-				ToolInstance->Destroy();
-			}
+			StopWorking();
 		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }

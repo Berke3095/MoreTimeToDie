@@ -15,6 +15,7 @@ class UButton;
 class UImage;
 
 class USurvivorAnimInstance;
+class UAnimMontage;
 
 UCLASS()
 class MORETIMETODIE_API ASurvivor : public ACharacter
@@ -108,6 +109,9 @@ private:
 	bool bCanMineStone{ true };
 	bool bCanCutTree{ true };
 
+	UFUNCTION()
+	void OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1);
+
 	/*
 		TOOLS
 	*/
@@ -122,6 +126,16 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tools")
 	TSubclassOf<AActor> AxeClass{};
+
+	/*
+		ANIMATION
+	*/
+	USurvivorAnimInstance* AnimInstance{};
+
+	void PlayTaskAnimation();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TaskMontage{};
 
 public:
 
@@ -149,4 +163,16 @@ public:
 
 	FORCEINLINE const bool GetbCanMineStone() const { return bCanMineStone; }
 	FORCEINLINE const bool GetbCanCutTree() const { return bCanCutTree; }
+
+	FORCEINLINE AHarvestable* GetCurrentTask() const { return CurrentTask ? CurrentTask : nullptr; }
+	FORCEINLINE const FVector& GetTaskDestination() const { return TaskDestination; }
+	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
+
+	FORCEINLINE const TArray<AHarvestable*> GetTasksArray() { return TasksArray; }
+	FORCEINLINE const TArray<FVector>& GetTaskDestinationsArray() { return TaskDestinationsArray; }
+
+	void RemoveFromTasksArray(AHarvestable* Harvestable1) { TasksArray.Remove(Harvestable1); }
+	void RemoveFromTaskDestinationsArray(const FVector& TaskDestination1) { TaskDestinationsArray.Remove(TaskDestination1); }
+
+	void StopWorking();
 };

@@ -2,7 +2,7 @@
 
 AHarvestable::AHarvestable()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add("Selectable");
 
@@ -21,4 +21,6 @@ void AHarvestable::BeginPlay()
 void AHarvestable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	/*UE_LOG(LogTemp, Warning, TEXT("HarvestHealth: %d"), HarvestHealth);*/
 }

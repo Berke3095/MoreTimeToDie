@@ -25,12 +25,13 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* HarvestableMesh{};
 
-	int32 StoneHealth{ 300 };
+	int32 HarvestHealth{ 100 };
 
 public:
 
 	FORCEINLINE const int32 GetCurrentResource() const { return CurrentResource; }
 	void SetCurrentResource(int32 CurrentResource1) { CurrentResource = CurrentResource1; }
 
-	void ReduceStoneHealth(int32 Damage1) { StoneHealth - Damage1; }
+	void ReduceHarvestHealth(int32 Damage1) { HarvestHealth -= Damage1; }
+	FORCEINLINE const int32 GetHarvestHealth() const { return HarvestHealth; }
 };
