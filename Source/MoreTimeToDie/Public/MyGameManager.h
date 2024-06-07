@@ -81,7 +81,7 @@ public:
 	void RemoveFromTaskArrays(AHarvestable* Harvestable1);
 
 	void AddToReservedDestinations(const FVector& ReservedDestination1) { ReservedDestinations.AddUnique(ReservedDestination1); }
-	void RemoveFromReservedDestinations(const FVector& ReservedDestination1) { ReservedDestinations.Remove(ReservedDestination1); }
+	void RemoveFromReservedDestinations(const FVector& ReservedDestination1);
 	FORCEINLINE const TArray<FVector>& GetReservedDestinations() const { return ReservedDestinations; }
 
 	void SetDestinations(const FVector& CenterPoint);

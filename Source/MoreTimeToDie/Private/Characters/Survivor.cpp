@@ -52,8 +52,8 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());*/
+	UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());
 
 	if (bIsDrafted)
 	{
@@ -81,7 +81,6 @@ void ASurvivor::Tick(float DeltaTime)
 					PlayTaskAnimation();
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Survivor Tasking"));
 		}
 		else if (!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
@@ -287,37 +286,16 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 			CurrentTask->ReduceHarvestHealth(HarvestDamage);
 			if (CurrentTask->GetHarvestHealth() <= 0)
 			{
-				TasksArray.Remove(CurrentTask);
-				TaskDestinationsArray.Remove(TaskDestination);
-
-				if (GameManager) { GameManager->RemoveFromTaskArrays(CurrentTask); }
-
-				CurrentTask->Destroy();
-				StopWorking();
 				AActor* DestroyedActor{ CurrentTask };
-
-				if (TasksArray.Num() == 0)
-				{
-					SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
-					CurrentTask = nullptr;
-				}
-				else
-				{
-					CurrentTask = TasksArray[0];
-					SetTaskDestination(TaskDestinationsArray[0]);
-					MoveOnWithTimer();
-				}
+				if (GameManager) { GameManager->RemoveFromTaskArrays(CurrentTask); }
+				CurrentTask->Destroy();
 
 				if (PortraitWidget)
 				{
 					for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
 					{
-						if (Survivor != this && Survivor->GetCurrentTask() == DestroyedActor)
+						if (Survivor->GetCurrentTask() == DestroyedActor)
 						{
-							Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
-							Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
-							if (GameManager) { GameManager->RemoveFromReservedDestinations(Survivor->GetTaskDestination()); }
-
 							Survivor->StopWorking();
 							if (Survivor->GetTasksArray().Num() == 0)
 							{
@@ -326,6 +304,7 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 							}
 							else
 							{
+								Survivor->LineUpTasks();
 								Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
 								Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
 								Survivor->MoveOnWithTimer();

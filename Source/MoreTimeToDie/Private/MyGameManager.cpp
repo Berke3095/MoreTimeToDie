@@ -38,9 +38,9 @@ void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
+	UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
 	UE_LOG(LogTemp, Warning, TEXT("StoneTasks length: %d"), StoneTasks.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());*/
+	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());
 }
 
 void AMyGameManager::GetReferences()
@@ -70,6 +70,45 @@ void AMyGameManager::RemoveFromTaskArrays(AHarvestable* Harvestable1)
 
 	if (StoneTasks.Contains(Harvestable1)) { StoneTasks.Remove(Harvestable1); }
 	else if (TreeTasks.Contains(Harvestable1)) { TreeTasks.Remove(Harvestable1); }
+
+	if (PortraitWidget)
+	{
+		TArray<FVector> RemovedDestinations;
+
+		for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+		{
+			if (Survivor->GetTasksArray().Contains(Harvestable1))
+			{
+				int32 TaskIndex = Survivor->GetTasksArray().Find(Harvestable1);
+				if (TaskIndex != INDEX_NONE)
+				{
+					RemovedDestinations.Add(Survivor->GetTaskDestinationsArray()[TaskIndex]);
+				}
+				Survivor->RemoveFromTasksArray(Harvestable1);
+			}
+		}
+
+		for (const FVector& RemovedDestination : RemovedDestinations)
+		{
+			RemoveFromReservedDestinations(RemovedDestination);
+		}
+	}
+}
+
+void AMyGameManager::RemoveFromReservedDestinations(const FVector& ReservedDestination1)
+{
+	ReservedDestinations.Remove(ReservedDestination1);
+
+	if (PortraitWidget)
+	{
+		for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+		{
+			if (Survivor->GetTaskDestinationsArray().Contains(ReservedDestination1))
+			{
+				Survivor->RemoveFromTaskDestinationsArray(ReservedDestination1);
+			}
+		}
+	}
 }
 
 void AMyGameManager::SetDestinations(const FVector& CenterPoint)
