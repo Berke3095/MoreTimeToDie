@@ -16,7 +16,7 @@ AMyGameManager* AMyGameManager::Instance = nullptr;
 
 AMyGameManager::AMyGameManager()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	Instance = this;
 	SetActorHiddenInGame(true);
 }
@@ -37,6 +37,10 @@ void AMyGameManager::BeginPlay()
 void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
+	UE_LOG(LogTemp, Warning, TEXT("StoneTasks length: %d"), StoneTasks.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());
 }
 
 void AMyGameManager::GetReferences()
@@ -60,7 +64,15 @@ void AMyGameManager::GetReferences()
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::GetReferences - GameMode is null.")); }
 }
 
-void AMyGameManager::SetDestinations(FVector& CenterPoint)
+void AMyGameManager::RemoveFromTaskArrays(AHarvestable* Harvestable1)
+{
+	if (AllTasks.Contains(Harvestable1)) { AllTasks.Remove(Harvestable1); }
+
+	if (StoneTasks.Contains(Harvestable1)) { StoneTasks.Remove(Harvestable1); }
+	else if (TreeTasks.Contains(Harvestable1)) { TreeTasks.Remove(Harvestable1); }
+}
+
+void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 {
 	TArray<ASurvivor*> MoveableSurvivors{};
 	if (MyHUD)
@@ -138,10 +150,8 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 				HarvestWidget->SetPositionInViewport(ScreenPosition);
 
 				AActor* HoveredActor = PlayerController->GetHoveredActor();
-				if (HoveredActor && HoveredActor->Tags.Contains("Stone"))
-				{
-					HarvestWidget->SetButtonText("Mine", "Stop Mining");
-				}
+				if (HoveredActor && HoveredActor->Tags.Contains("Stone")) { HarvestWidget->SetButtonText("Mine", "Stop Mining"); }
+				else if (HoveredActor && HoveredActor->Tags.Contains("Tree")) { HarvestWidget->SetButtonText("Cut", "Stop Cutting"); }
 			}
 			else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - PlayerController is null.")); }
 		}

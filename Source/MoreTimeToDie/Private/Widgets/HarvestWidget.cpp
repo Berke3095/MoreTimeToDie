@@ -56,6 +56,7 @@ void UHarvestWidget::OnHarvestButton()
         if (MyView && PortraitWidget)
         {
             if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
+            else if(MyView->GetHarvestable()->ActorHasTag("Tree")) { GameManager->AddToTreeTasks(MyView->GetHarvestable()); }
 
             for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
             {

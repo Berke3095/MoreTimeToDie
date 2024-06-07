@@ -52,8 +52,8 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());*/
+	UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());
 
 	if (bIsDrafted)
 	{
@@ -282,12 +282,20 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 		{
 			TasksArray.Remove(CurrentTask);
 			TaskDestinationsArray.Remove(TaskDestination);
+
+			if (GameManager) { GameManager->RemoveFromTaskArrays(CurrentTask); }
+
+			CurrentTask->Destroy();
 			StopWorking();
-			if (TaskDestinationsArray.Num() == 0)
+			if (TasksArray.Num() == 0)
 			{
 				TaskDestination = FVector(0.0f, 0.0f, 0.0f);
 			}
-			CurrentTask->Destroy();
+			else
+			{
+				CurrentTask = TasksArray[0];
+				TaskDestination = TaskDestinationsArray[0];
+			}
 
 			if (PortraitWidget)
 			{
@@ -297,10 +305,17 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 					{
 						Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
 						Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
+						if(GameManager) { GameManager->RemoveFromReservedDestinations(Survivor->GetTaskDestination()); }
+						
 						Survivor->StopWorking();
 						if (Survivor->GetTasksArray().Num() == 0)
 						{
 							Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+						}
+						else
+						{
+							Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
+							Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
 						}
 					}
 				}

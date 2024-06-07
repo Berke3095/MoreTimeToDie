@@ -165,6 +165,7 @@ public:
 	FORCEINLINE const bool GetbCanCutTree() const { return bCanCutTree; }
 
 	FORCEINLINE AHarvestable* GetCurrentTask() const { return CurrentTask ? CurrentTask : nullptr; }
+	void SetCurrentTask(AHarvestable* CurrentTask1) { CurrentTask = CurrentTask1; }
 	FORCEINLINE const FVector& GetTaskDestination() const { return TaskDestination; }
 	void SetTaskDestination(const FVector& TaskDestination1) { TaskDestination = TaskDestination1; }
 
