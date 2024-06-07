@@ -211,7 +211,8 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetSurroundDestination - Navigation system is null.")); return; }
 
 		FVector CenterPoint = Harvestable1->GetActorLocation();
-		float Radius = 125.0f;
+		if(Harvestable1->ActorHasTag("Stone")) { HarvestRadius = 125.0f; }
+		else if (Harvestable1->ActorHasTag("Tree")) { HarvestRadius = 140.0f; }
 
 		bool bFoundValidDestination{};
 		FNavLocation ProjectedLocation{};
@@ -225,7 +226,7 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 			for (int32 i = 0; i < PortraitWidget->GetCurrentSurvivors().Num(); i++)
 			{
 				float Angle = FMath::DegreesToRadians(AngleBetweenSurvivors * i);
-				FVector Offset = FVector(FMath::Cos(Angle) * Radius, FMath::Sin(Angle) * Radius, 0.0f);
+				FVector Offset = FVector(FMath::Cos(Angle) * HarvestRadius, FMath::Sin(Angle) * HarvestRadius, 0.0f);
 				FVector GoalDestination = CenterPoint + Offset;
 
 				if (GameManager->GetReservedDestinations().Contains(GoalDestination))
@@ -260,7 +261,7 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 			if (TasksArray[0] == Harvestable1)
 			{
 				CurrentTask = Harvestable1;
-				TaskDestination = ProjectedLocation.Location;
+				SetTaskDestination(ProjectedLocation.Location);
 				
 				if (!bIsDrafted)
 				{
@@ -287,21 +288,24 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 
 			CurrentTask->Destroy();
 			StopWorking();
+			AActor* DestroyedActor{ CurrentTask };
+
 			if (TasksArray.Num() == 0)
 			{
-				TaskDestination = FVector(0.0f, 0.0f, 0.0f);
+				SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
 			}
 			else
 			{
 				CurrentTask = TasksArray[0];
-				TaskDestination = TaskDestinationsArray[0];
+				SetTaskDestination(TaskDestinationsArray[0]);
+				SetbCanMove(true);
 			}
 
 			if (PortraitWidget)
 			{
 				for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
 				{
-					if (Survivor->GetCurrentTask() == CurrentTask)
+					if (Survivor != this && Survivor->GetCurrentTask() == DestroyedActor)
 					{
 						Survivor->RemoveFromTasksArray(Survivor->GetCurrentTask());
 						Survivor->RemoveFromTaskDestinationsArray(Survivor->GetTaskDestination());
@@ -316,6 +320,7 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 						{
 							Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
 							Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
+							Survivor->SetbCanMove(true);
 						}
 					}
 				}
@@ -331,7 +336,8 @@ void ASurvivor::StopWorking()
 	if (TaskState != ESurvivorTaskState::ESTS_NONE) { TaskState = ESurvivorTaskState::ESTS_NONE; }
 	if (AnimInstance && TaskMontage && AnimInstance->Montage_IsPlaying(TaskMontage))
 	{
-		AnimInstance->Montage_Stop(0.5f, TaskMontage);
+		float BlendOutRate{0.5f};
+		AnimInstance->Montage_Stop(BlendOutRate, TaskMontage);
 	}
 	if (ToolInstance) { ToolInstance->Destroy(); }
 }
@@ -417,7 +423,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	if (bIsDrafted)
 	{
 		DraftedImage->SetVisibility(ESlateVisibility::Visible);
-		Destination = FVector(0.0f, 0.0f, 0.0f);
+		SetDestination(FVector(0.0f, 0.0f, 0.0f));
 		if (MyAIController) { MyAIController->StopMovement(); }
 
 		StopWorking();
@@ -444,7 +450,7 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 		{
 			if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
 			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
-			bCanMove = false;
+			SetbCanMove(false);
 
 			if (Destination1 == TaskDestination && CurrentTask)
 			{

@@ -98,6 +98,7 @@ private:
 	TArray<FVector> TaskDestinationsArray{};
 
 	void CalculateTaskDestination(AHarvestable* Harvestable1);
+	float HarvestRadius{};
 
 	FRotator LookAtTaskRotation{};
 	bool bHasReachedToTask{};
@@ -111,6 +112,9 @@ private:
 
 	UFUNCTION()
 	void OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1);
+
+	FTimerHandle MoveOnTimer{};
+	void MoveOnToTheNextTask();
 
 	/*
 		TOOLS
