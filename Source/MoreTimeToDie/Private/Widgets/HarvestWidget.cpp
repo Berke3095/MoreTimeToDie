@@ -52,21 +52,18 @@ void UHarvestWidget::OnHarvestButton()
     if (GameManager)
     {
         AMyView* MyView = GameManager->GetMyView();
-        if (MyView)
+        UPortraitWidget* PortraitWidget = GameManager->GetPortraitWidget();
+        if (MyView && PortraitWidget)
         {
             if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
 
-            UPortraitWidget* PortraitWidget = GameManager->GetPortraitWidget();
-            if (PortraitWidget)
+            for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
             {
-                for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
-                {
-                    Survivor->SetTask(MyView->GetHarvestable());
-                }
+                Survivor->SetTask(MyView->GetHarvestable());
             }
-            else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
         }
-        else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
+        else if(!MyView) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
+        else if(!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
     }
     else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - GameManager is null.")); }
 }
