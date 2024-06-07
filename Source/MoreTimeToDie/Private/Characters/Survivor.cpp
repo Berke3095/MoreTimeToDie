@@ -326,26 +326,14 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 
 void ASurvivor::StopWorking()
 {
-	if (WorkState != ESurvivorWorkState::ESWS_NONE)
-	{
-		WorkState = ESurvivorWorkState::ESWS_NONE;
-	}
-	if (GeneralState != ESurvivorGeneralState::ESGS_NONE)
-	{
-		GeneralState = ESurvivorGeneralState::ESGS_NONE;
-	}
-	if (TaskState != ESurvivorTaskState::ESTS_NONE)
-	{
-		TaskState = ESurvivorTaskState::ESTS_NONE;
-	}
+	if (WorkState != ESurvivorWorkState::ESWS_NONE) { WorkState = ESurvivorWorkState::ESWS_NONE; }
+	if (GeneralState != ESurvivorGeneralState::ESGS_NONE) { GeneralState = ESurvivorGeneralState::ESGS_NONE; }
+	if (TaskState != ESurvivorTaskState::ESTS_NONE) { TaskState = ESurvivorTaskState::ESTS_NONE; }
 	if (AnimInstance && TaskMontage && AnimInstance->Montage_IsPlaying(TaskMontage))
 	{
 		AnimInstance->Montage_Stop(0.5f, TaskMontage);
 	}
-	if (ToolInstance)
-	{
-		ToolInstance->Destroy();
-	}
+	if (ToolInstance) { ToolInstance->Destroy(); }
 }
 
 void ASurvivor::Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1)
@@ -463,15 +451,10 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				FVector LookAtDirection = CurrentTask->GetActorLocation() - GetActorLocation();
 				LookAtTaskRotation = LookAtDirection.Rotation();
 
-				bHasReachedToTask = true;
-				if (GeneralState != ESurvivorGeneralState::ESGS_Tasking)
-				{
-					GeneralState = ESurvivorGeneralState::ESGS_Tasking;
-				}
-				if (TaskState != ESurvivorTaskState::ESTS_Preparing)
-				{
-					TaskState = ESurvivorTaskState::ESTS_Preparing;
-				}
+				if (!bHasReachedToTask) { bHasReachedToTask = true; }
+				
+				if (GeneralState != ESurvivorGeneralState::ESGS_Tasking) { GeneralState = ESurvivorGeneralState::ESGS_Tasking; }
+				if (TaskState != ESurvivorTaskState::ESTS_Preparing) { TaskState = ESurvivorTaskState::ESTS_Preparing; }
 
 				if (CurrentTask->ActorHasTag("Stone")) { SetTool(PickaxeClass, ESurvivorWorkState::ESWS_MiningStone); }
 				else if (CurrentTask->ActorHasTag("Tree")) { SetTool(AxeClass, ESurvivorWorkState::ESWS_CuttingTree); }
