@@ -52,8 +52,8 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());
+	/*UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());*/
 
 	if (bIsDrafted)
 	{
@@ -81,6 +81,7 @@ void ASurvivor::Tick(float DeltaTime)
 					PlayTaskAnimation();
 				}
 			}
+			UE_LOG(LogTemp, Warning, TEXT("Survivor Tasking"));
 		}
 		else if (!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
 	}
@@ -296,6 +297,7 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 				if (TasksArray.Num() == 0)
 				{
 					SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+					CurrentTask = nullptr;
 				}
 				else
 				{
@@ -318,6 +320,7 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 							if (Survivor->GetTasksArray().Num() == 0)
 							{
 								Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
+								Survivor->SetCurrentTask(nullptr);
 							}
 							else
 							{
@@ -389,46 +392,43 @@ void ASurvivor::SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1
 
 void ASurvivor::PlayTaskAnimation()
 {
-	if (GeneralState == ESurvivorGeneralState::ESGS_Tasking)
+	AnimInstance->Montage_Play(TaskMontage);
+
+	FName SectionName{};
+
+	switch (TaskState)
 	{
-		AnimInstance->Montage_Play(TaskMontage);
-
-		FName SectionName{};
-
-		switch (TaskState)
+	case ESurvivorTaskState::ESTS_Preparing:
+		switch (WorkState)
 		{
-		case ESurvivorTaskState::ESTS_Preparing:
-			switch (WorkState)
-			{
-			case ESurvivorWorkState::ESWS_MiningStone:
-				SectionName = FName("PrepareMiningStone");
-				break;
-			case ESurvivorWorkState::ESWS_CuttingTree:
-				SectionName = FName("PrepareCuttingTree");
-				break;
-			default:
-				break;
-			}
+		case ESurvivorWorkState::ESWS_MiningStone:
+			SectionName = FName("PrepareMiningStone");
 			break;
-		case ESurvivorTaskState::ESTS_Performing:
-			switch (WorkState)
-			{
-			case ESurvivorWorkState::ESWS_MiningStone:
-				SectionName = FName("MiningStone");
-				break;
-			case ESurvivorWorkState::ESWS_CuttingTree:
-				SectionName = FName("CuttingTree");
-				break;
-			default:
-				break;
-			}
+		case ESurvivorWorkState::ESWS_CuttingTree:
+			SectionName = FName("PrepareCuttingTree");
 			break;
 		default:
 			break;
 		}
-
-		AnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
+		break;
+	case ESurvivorTaskState::ESTS_Performing:
+		switch (WorkState)
+		{
+		case ESurvivorWorkState::ESWS_MiningStone:
+			SectionName = FName("MiningStone");
+			break;
+		case ESurvivorWorkState::ESWS_CuttingTree:
+			SectionName = FName("CuttingTree");
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
 	}
+
+	AnimInstance->Montage_JumpToSection(SectionName, TaskMontage);
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)

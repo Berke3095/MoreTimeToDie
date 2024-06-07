@@ -38,9 +38,9 @@ void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
+	/*UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
 	UE_LOG(LogTemp, Warning, TEXT("StoneTasks length: %d"), StoneTasks.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());
+	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());*/
 }
 
 void AMyGameManager::GetReferences()
