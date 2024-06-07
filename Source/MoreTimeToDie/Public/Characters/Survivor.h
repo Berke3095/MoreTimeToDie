@@ -116,6 +116,8 @@ private:
 	FTimerHandle MoveOnTimer{};
 	void MoveOn() { SetbCanMove(true); if (bHasReachedToTask) { bHasReachedToTask = false; } GetWorldTimerManager().ClearTimer(MoveOnTimer); }
 
+	void LineUpTasks();
+
 	/*
 		TOOLS
 	*/

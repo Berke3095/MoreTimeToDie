@@ -260,6 +260,8 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 				GameManager->AddToReservedDestinations(ProjectedLocation.Location);
 			}
 
+			LineUpTasks();
+
 			if (TasksArray[0] == Harvestable1)
 			{
 				CurrentTask = Harvestable1;
@@ -334,6 +336,43 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 			}
 		}
 	}
+}
+
+void ASurvivor::LineUpTasks()
+{
+	if (TasksArray.Num() != TaskDestinationsArray.Num())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ASurvivor::LineUpTasks - Task arrays and task destinations array are not the same length."));
+		return;
+	}
+
+	TArray<int32> Indices{};
+	Indices.SetNum(TasksArray.Num());
+	for (int32 i = 0; i < Indices.Num(); i++)
+	{
+		Indices[i] = i;
+	}
+
+	Indices.Sort([this](int32 AIndex, int32 BIndex)
+	{
+		float DistanceA = FVector::Dist(GetActorLocation(), TasksArray[AIndex]->GetActorLocation());
+		float DistanceB = FVector::Dist(GetActorLocation(), TasksArray[BIndex]->GetActorLocation());
+		return DistanceA < DistanceB;
+	});
+
+	TArray<AHarvestable*> SortedTasksArray{};
+	SortedTasksArray.SetNum(TasksArray.Num());
+	TArray<FVector> SortedTaskDestinationsArray{};
+	SortedTaskDestinationsArray.SetNum(TaskDestinationsArray.Num());
+
+	for (int32 i = 0; i < Indices.Num(); ++i)
+	{
+		SortedTasksArray[i] = TasksArray[Indices[i]];
+		SortedTaskDestinationsArray[i] = TaskDestinationsArray[Indices[i]];
+	}
+
+	TasksArray = SortedTasksArray;
+	TaskDestinationsArray = SortedTaskDestinationsArray;
 }
 
 void ASurvivor::StopWorking()
