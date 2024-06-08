@@ -518,7 +518,10 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 	{
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
 
-		if (GameManager && MyAIController->GetPathFollowingComponent()->DidMoveReachGoal() && MoveState != ESurvivorMoveState::ESMS_NONE)
+		UPathFollowingComponent* PathFollowingComponent = MyAIController->GetPathFollowingComponent();
+		if (!PathFollowingComponent) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - PathFollowingComponent is null.")); return; }
+
+		if (GameManager && PathFollowingComponent->DidMoveReachGoal() && MoveState != ESurvivorMoveState::ESMS_NONE)
 		{
 			if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
 			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
@@ -540,7 +543,7 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				PlayTaskAnimation();
 			}
 		}
-		else if (MyAIController->GetPathFollowingComponent()->DidMoveReachGoal())
+		else if (PathFollowingComponent->DidMoveReachGoal())
 		{
 			if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
 			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
