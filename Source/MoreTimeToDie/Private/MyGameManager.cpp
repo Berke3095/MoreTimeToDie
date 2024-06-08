@@ -150,6 +150,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 		{
 			FoundDestinations.AddUnique(ProjectedLocation.Location);
 		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Couldn't set the destination.")); return; }
 	}
 
 	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)

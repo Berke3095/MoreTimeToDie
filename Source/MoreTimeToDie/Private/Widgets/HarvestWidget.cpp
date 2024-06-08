@@ -53,6 +53,11 @@ void UHarvestWidget::OnHarvestButton()
     else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - GameManager is null.")); }
 }
 
+void UHarvestWidget::OnStopHarvestButton()
+{
+
+}
+
 void UHarvestWidget::SetButtonText(FString HarvestText1, FString StopHarvestingText1)
 {
     if (HarvestText)

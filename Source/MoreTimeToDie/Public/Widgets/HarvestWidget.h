@@ -31,6 +31,9 @@ private:
 	UFUNCTION()
 	void OnHarvestButton();
 
+	UFUNCTION()
+	void OnStopHarvestButton();
+
 public:
 
 	void SetButtonText(FString HarvestText1, FString StopHarvestingText1);
