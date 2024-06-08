@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Widgets/MyUserWidget.h"
 #include "PortraitWidget.generated.h"
 
 class UButton;
@@ -15,7 +15,7 @@ class ASurvivor;
 const int32 MaxSurvivorCount{ 7 };
 
 UCLASS()
-class MORETIMETODIE_API UPortraitWidget : public UUserWidget
+class MORETIMETODIE_API UPortraitWidget : public UMyUserWidget
 {
 	GENERATED_BODY()
 	
@@ -118,7 +118,6 @@ public:
 	const float AlphaNormal = 0.5;
 	const float AlphaHovered = 0.8;
 	const float AlphaPressed = 1.0;
-	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
 	FORCEINLINE const TArray<ASurvivor*> GetCurrentSurvivors() const { return CurrentSurvivors; }
 	FORCEINLINE const TArray<ASurvivor*> GetDraftedSurvivors() const { return DraftedSurvivors; }

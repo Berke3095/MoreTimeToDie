@@ -145,7 +145,7 @@ private:
 
 public:
 
-	void SetbIsSelected(bool bIsSelected1) { bIsSelected = bIsSelected1; }
+	void SetbIsSelected(bool bIsSelected1);
 	FORCEINLINE const bool GetbIsSelected() const { return bIsSelected; }
 
 	void SetbIsDrafted(bool bIsDrafted1);
@@ -163,7 +163,7 @@ public:
 	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
 	FORCEINLINE const ESurvivorTaskState GetSurvivorTaskState() const { return TaskState; }
 
-	void SetbCanMove(bool Value1) { bCanMove = Value1; }
+	void SetbCanMove(bool Value1);
 
 	void SetTask(AHarvestable* Harvestable1);
 

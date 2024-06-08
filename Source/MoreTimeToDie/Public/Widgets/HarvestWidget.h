@@ -1,14 +1,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Widgets/MyUserWidget.h"
 #include "HarvestWidget.generated.h"
 
 class UButton;
 class UTextBlock;
 
 UCLASS()
-class MORETIMETODIE_API UHarvestWidget : public UUserWidget
+class MORETIMETODIE_API UHarvestWidget : public UMyUserWidget
 {
 	GENERATED_BODY()
 	
@@ -27,8 +27,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* StopHarvestingText{};
-
-	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
 
 	UFUNCTION()
 	void OnHarvestButton();

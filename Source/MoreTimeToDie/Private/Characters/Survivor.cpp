@@ -82,7 +82,10 @@ void ASurvivor::Tick(float DeltaTime)
 				}
 			}
 		}
-		else if (!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::Tick - GameManager is null.")); }
+		else
+		{
+			MoveToDestination(Destination);
+		}
 	}
 }
 
@@ -195,6 +198,18 @@ void ASurvivor::StartDoingTask()
 	PlayTaskAnimation();
 }
 
+void ASurvivor::SetbCanMove(bool Value1)
+{
+	if (Value1 == true)
+	{
+		if (bCanMove != true) { bCanMove = true; }
+	}
+	else
+	{
+		if (bCanMove != false) { bCanMove = false; }
+	}
+}
+
 void ASurvivor::SetTask(AHarvestable* Harvestable1)
 {
 	if (Harvestable1)
@@ -268,7 +283,7 @@ void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 				
 				if (!bIsDrafted)
 				{
-					bCanMove = true;
+					SetbCanMove(true);
 				}
 			}
 		}
@@ -452,15 +467,36 @@ void ASurvivor::PlayTaskAnimation()
 	}
 }
 
+void ASurvivor::SetbIsSelected(bool bIsSelected1)
+{
+	if (bIsSelected1 == true)
+	{
+		if (bIsSelected != true) { bIsSelected = true; }
+	}
+	else
+	{
+		if (bIsSelected != false) { bIsSelected = false; }
+	}
+}
+
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
-	bIsDrafted = bIsDrafted1;
+	if (bIsDrafted1 == true)
+	{
+		if (bIsDrafted != true) { bIsDrafted = true; }
+	}
+	else
+	{
+		if (bIsDrafted != false) { bIsDrafted = false; }
+	}
 
 	if (bIsDrafted)
 	{
 		DraftedImage->SetVisibility(ESlateVisibility::Visible);
 		SetDestination(FVector(0.0f, 0.0f, 0.0f));
 		if (MyAIController) { MyAIController->StopMovement(); }
+		if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
+		if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
 
 		StopWorking();
 	}
@@ -469,7 +505,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 		DraftedImage->SetVisibility(ESlateVisibility::Hidden);
 		if (CurrentTask)
 		{
-			bCanMove = true;
+			SetbCanMove(true);
 		}
 	}
 }
@@ -503,6 +539,11 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 
 				PlayTaskAnimation();
 			}
+		}
+		else if (MyAIController->GetPathFollowingComponent()->DidMoveReachGoal())
+		{
+			if (MoveState != ESurvivorMoveState::ESMS_NONE) { MoveState = ESurvivorMoveState::ESMS_NONE; }
+			if (!CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(true); }
 		}
 		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
 		else
