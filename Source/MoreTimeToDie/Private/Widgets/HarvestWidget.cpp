@@ -8,6 +8,7 @@
 #include "Harvestables/Harvestable.h"
 #include "Widgets/PortraitWidget.h"
 #include "Characters/Survivor.h"
+#include "MyHUD.h"
 
 void UHarvestWidget::NativeConstruct()
 {
@@ -34,6 +35,12 @@ void UHarvestWidget::OnHarvestButton()
         {
             if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
             else if(MyView->GetHarvestable()->ActorHasTag("Tree")) { GameManager->AddToTreeTasks(MyView->GetHarvestable()); }
+
+            MyView->GetHarvestable()->SetbReadyToBeHarvested(true);
+
+            AMyHUD* MyHUD = GameManager->GetMyHUD();
+            if (MyHUD) { MyHUD->Highlight(MyView->GetHarvestable(), MyHUD->GetHarvestableOverlayMat()); }
+            else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyHUD is null.")); }
 
             for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
             {

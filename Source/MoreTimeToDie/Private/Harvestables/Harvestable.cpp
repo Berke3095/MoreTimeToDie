@@ -24,3 +24,15 @@ void AHarvestable::Tick(float DeltaTime)
 
 	/*UE_LOG(LogTemp, Warning, TEXT("HarvestHealth: %d"), HarvestHealth);*/
 }
+
+void AHarvestable::SetbReadyToBeHarvested(bool Value1)
+{
+	if (Value1)
+	{
+		if (!bReadyToBeHarvested) { bReadyToBeHarvested = true; }
+	}
+	else
+	{
+		if (bReadyToBeHarvested) { bReadyToBeHarvested = false; }
+	}
+}

@@ -29,8 +29,6 @@ private:
 	TArray<ASurvivor*> SelectedSurvivors{};
 	TArray<AHarvestable*> SelectedHarvestables{};
 
-	void Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1);
-
 	UPROPERTY(EditDefaultsOnly, Category = "Highlight Overlays")
 	UMaterialInterface* SurvivorOverlayMat{};
 
@@ -54,4 +52,7 @@ public:
 	void DeselectAll();
 
 	FORCEINLINE const TArray<ASurvivor*> GetSelectedSurvivors() const { return SelectedSurvivors; }
+
+	void Highlight(AActor* SelectedActor1, UMaterialInterface* SelectedOverlayMat1);
+	FORCEINLINE UMaterialInterface* GetHarvestableOverlayMat() const { return HarvestableOverlayMat ? HarvestableOverlayMat : nullptr; }
 };

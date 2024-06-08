@@ -95,13 +95,12 @@ void AMyHUD::Select(AActor* Actor1)
 
 	if (Actor1->ActorHasTag("Selectable"))
 	{
-		SelectedActors.AddUnique(Actor1);
-
-		if (Actor1->IsA<ASurvivor>())
+		if (Actor1->IsA<ASurvivor>() && !MyView->GetbAltHeld())
 		{
 			ASurvivor* Survivor = Cast<ASurvivor>(Actor1);
 			if (Survivor)
 			{
+				SelectedActors.AddUnique(Survivor);
 				Survivor->SetbIsSelected(true);
 				Highlight(Survivor, SurvivorOverlayMat);
 				if (PortraitWidget)
@@ -117,17 +116,17 @@ void AMyHUD::Select(AActor* Actor1)
 					}
 				}
 				else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - PortraitWidget is null.")); }
-
 				SelectedSurvivors.AddUnique(Survivor);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Survivor is null.")); }
 		}
-		else if (Actor1->IsA<AHarvestable>())
+		else if (Actor1->IsA<AHarvestable>() && MyView->GetbAltHeld())
 		{
 			AHarvestable* Harvestable = Cast<AHarvestable>(Actor1);
 			if (Harvestable)
 			{
-				Highlight(Harvestable, HarvestableOverlayMat);
+				SelectedActors.AddUnique(Harvestable);
+				if(!Harvestable->GetbReadyToBeHarvested()){ Highlight(Harvestable, HarvestableOverlayMat); }
 				SelectedHarvestables.AddUnique(Harvestable);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Select - Harvestable is null.")); }
@@ -142,7 +141,6 @@ void AMyHUD::Deselect(AActor* Actor1)
 
 	if (Actor1->ActorHasTag("Selectable"))
 	{
-		Highlight(Actor1, nullptr);
 		SelectedActors.Remove(Actor1);
 
 		if (Actor1->IsA<ASurvivor>())
@@ -152,6 +150,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 			{
 				Survivor->SetbIsSelected(false);
 				SelectedSurvivors.Remove(Survivor);
+				Highlight(Survivor, nullptr);
 
 				if (PortraitWidget)
 				{
@@ -171,6 +170,7 @@ void AMyHUD::Deselect(AActor* Actor1)
 			AHarvestable* Harvestable = Cast<AHarvestable>(Actor1);
 			if (Harvestable)
 			{
+				if (!Harvestable->GetbReadyToBeHarvested()) { Highlight(Harvestable, nullptr); }
 				SelectedHarvestables.Remove(Harvestable);
 			}
 			else { UE_LOG(LogTemp, Warning, TEXT("AMyHUD::Deselect - Harvestable is null.")); }

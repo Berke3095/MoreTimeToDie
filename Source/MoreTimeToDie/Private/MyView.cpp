@@ -99,6 +99,13 @@ void AMyView::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			EnhancedInputComponent->BindAction(RightClickAction, ETriggerEvent::Completed, this, &AMyView::RightClickEnd);
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - RightClickAction is null.")); }
+
+		if (AltAction)
+		{
+			EnhancedInputComponent->BindAction(AltAction, ETriggerEvent::Started, this, &AMyView::AltStart);
+			EnhancedInputComponent->BindAction(AltAction, ETriggerEvent::Completed, this, &AMyView::AltEnd);
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - AltAction is null.")); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetupPlayerInputComponent - EnhancedInputComponent is null.")); }
 }
@@ -331,6 +338,22 @@ void AMyView::HandleHarvestWidget()
 	else
 	{
 		GameManager->DestroyHarvestWidgets();
+	}
+}
+
+void AMyView::AltStart()
+{
+	if (!bAltHeld)
+	{
+		bAltHeld = true;
+	}
+}
+
+void AMyView::AltEnd()
+{
+	if (bAltHeld)
+	{
+		bAltHeld = false;
 	}
 }
 

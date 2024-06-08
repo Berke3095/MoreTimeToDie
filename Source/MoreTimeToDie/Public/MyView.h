@@ -98,6 +98,12 @@ private:
 	void OrderMove();
 	void HandleHarvestWidget();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* AltAction{};
+	void AltStart();
+	void AltEnd();
+	bool bAltHeld{};
+
 	/*
 		VIEW
 	*/
@@ -128,6 +134,7 @@ public:
 	FORCEINLINE const bool GetbMidMouseHeld() const { return bMidMouseHeld; }
 	FORCEINLINE const bool GetbShiftHeld() const { return bShiftHeld; }
 	FORCEINLINE const bool GetbCtrlHeld() const { return bCtrlHeld; }
+	FORCEINLINE const bool GetbAltHeld() const { return bAltHeld; }
 
 	FORCEINLINE const FVector2D& GetStartPointOfRec() const { return StartingRectanglePosition; }
 	FORCEINLINE const FVector2D& GetEndingPointOfRec() const { return EndingRectanglePosition; }

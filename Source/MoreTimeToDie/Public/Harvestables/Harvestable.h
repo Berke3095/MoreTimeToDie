@@ -27,6 +27,8 @@ private:
 
 	int32 HarvestHealth{ 100 };
 
+	bool bReadyToBeHarvested{};
+
 public:
 
 	FORCEINLINE const int32 GetCurrentResource() const { return CurrentResource; }
@@ -34,4 +36,7 @@ public:
 
 	void ReduceHarvestHealth(int32 Damage1) { HarvestHealth -= Damage1; }
 	FORCEINLINE const int32 GetHarvestHealth() const { return HarvestHealth; }
+
+	void SetbReadyToBeHarvested(bool Value1);
+	FORCEINLINE const bool GetbReadyToBeHarvested() const { return bReadyToBeHarvested; }
 };
