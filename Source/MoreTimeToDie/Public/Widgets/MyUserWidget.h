@@ -14,4 +14,5 @@ class MORETIMETODIE_API UMyUserWidget : public UUserWidget
 public:
 
 	void SetTintAlpha(UButton* Button1, float Normal1, float Hovered1, float Pressed1);
+	void SetButtonVisibility(UButton* Button1, bool Visibility1);
 };

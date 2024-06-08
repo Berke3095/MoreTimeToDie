@@ -24,3 +24,19 @@ void UMyUserWidget::SetTintAlpha(UButton* Button1, float Normal1, float Hovered1
     }
     else { UE_LOG(LogTemp, Warning, TEXT("UMyUserWidget::SetTintAlpha - Button1 is null.")); }
 }
+
+void UMyUserWidget::SetButtonVisibility(UButton* Button1, bool Visibility1)
+{
+    if (Button1)
+    {
+        if (Visibility1 && !Button1->IsVisible())
+        {
+            Button1->SetVisibility(ESlateVisibility::Visible);
+        }
+        else if (!Visibility1 && Button1->IsVisible())
+        {
+            Button1->SetVisibility(ESlateVisibility::Hidden);
+        }
+    }
+    else { UE_LOG(LogTemp, Warning, TEXT("UMyUserWidget::SetButtonVisibility - Button1 is null.")); }
+}

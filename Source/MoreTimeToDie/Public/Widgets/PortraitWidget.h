@@ -113,7 +113,6 @@ public:
 	FORCEINLINE UButton* GetDraftButton() const { return Draft ? Draft : nullptr; }
 	FORCEINLINE UButton* GetUnDraftButton() const { return UnDraft ? UnDraft : nullptr; }
 	FORCEINLINE UButton* GetUnDraftAllButton() const { return UnDraftAll ? UnDraftAll : nullptr; }
-	void SetButtonVisibility(UButton* Button1, bool Visibility1);
 
 	const float AlphaNormal = 0.5;
 	const float AlphaHovered = 0.8;

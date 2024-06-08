@@ -200,13 +200,13 @@ void ASurvivor::StartDoingTask()
 
 void ASurvivor::SetbCanMove(bool Value1)
 {
-	if (Value1 == true)
+	if (Value1)
 	{
-		if (bCanMove != true) { bCanMove = true; }
+		if (!bCanMove) { bCanMove = true; }
 	}
 	else
 	{
-		if (bCanMove != false) { bCanMove = false; }
+		if (bCanMove) { bCanMove = false; }
 	}
 }
 
@@ -469,25 +469,25 @@ void ASurvivor::PlayTaskAnimation()
 
 void ASurvivor::SetbIsSelected(bool bIsSelected1)
 {
-	if (bIsSelected1 == true)
+	if (bIsSelected1)
 	{
-		if (bIsSelected != true) { bIsSelected = true; }
+		if (!bIsSelected) { bIsSelected = true; }
 	}
 	else
 	{
-		if (bIsSelected != false) { bIsSelected = false; }
+		if (bIsSelected) { bIsSelected = false; }
 	}
 }
 
 void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 {
-	if (bIsDrafted1 == true)
+	if (bIsDrafted1)
 	{
-		if (bIsDrafted != true) { bIsDrafted = true; }
+		if (!bIsDrafted) { bIsDrafted = true; }
 	}
 	else
 	{
-		if (bIsDrafted != false) { bIsDrafted = false; }
+		if (bIsDrafted) { bIsDrafted = false; }
 	}
 
 	if (bIsDrafted)
