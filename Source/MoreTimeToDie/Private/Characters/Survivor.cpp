@@ -215,7 +215,7 @@ void ASurvivor::SetTask(AHarvestable* Harvestable1)
 		if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetSurroundDestination - Navigation system is null.")); return; }
 
 		FVector CenterPoint = Harvestable1->GetActorLocation();
-		if(Harvestable1->ActorHasTag("Stone")) { HarvestRadius = 125.0f; }
+		if(Harvestable1->ActorHasTag("Stone")) { HarvestRadius = 120.0f; }
 		else if (Harvestable1->ActorHasTag("Tree")) { HarvestRadius = 140.0f; }
 
 		bool bFoundValidDestination{};
