@@ -157,13 +157,42 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 		{
 			FVector Destination = CenterPoint;
 			float Offset = (i - (NumSurvivors - 1) / 2.0f) * Radius;
-			Destination -= Perpendicular * Offset;
+			Destination += Perpendicular * Offset;
 
 			FNavLocation ProjectedLocation{};
 			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
 			{
 				FoundDestinations.AddUnique(ProjectedLocation.Location);
 			}
+		}
+
+		if (FoundDestinations.Num() == NumSurvivors)
+		{
+			float Distance1 = FVector::Dist(MoveableSurvivors[0]->GetActorLocation(), FoundDestinations[0]);
+			float Distance2 = FVector::Dist(MoveableSurvivors[0]->GetActorLocation(), FoundDestinations[1]);
+
+			if (Distance1 <= Distance2)
+			{
+				MoveableSurvivors[0]->SetDestination(FoundDestinations[0]);
+				MoveableSurvivors[0]->SetbCanMove(true);
+
+				MoveableSurvivors[1]->SetDestination(FoundDestinations[1]);
+				MoveableSurvivors[1]->SetbCanMove(true);
+			}
+			else
+			{
+				MoveableSurvivors[0]->SetDestination(FoundDestinations[1]);
+				MoveableSurvivors[0]->SetbCanMove(true);
+
+				MoveableSurvivors[1]->SetDestination(FoundDestinations[0]);
+				MoveableSurvivors[1]->SetbCanMove(true);
+			}
+
+
+			MoveableSurvivors.Empty();
+			FoundDestinations.Empty();
+
+			return;
 		}
 	}
 	else

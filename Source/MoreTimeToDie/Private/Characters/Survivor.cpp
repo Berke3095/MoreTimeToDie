@@ -301,18 +301,8 @@ void ASurvivor::OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayl
 						if (Survivor->GetCurrentTask() == DestroyedActor)
 						{
 							Survivor->StopWorking();
-							if (Survivor->GetTasksArray().Num() == 0)
-							{
-								Survivor->SetTaskDestination(FVector(0.0f, 0.0f, 0.0f));
-								Survivor->SetCurrentTask(nullptr);
-							}
-							else
-							{
-								Survivor->LineUpTasks();
-								Survivor->SetCurrentTask(Survivor->GetTasksArray()[0]);
-								Survivor->SetTaskDestination(Survivor->GetTaskDestinationsArray()[0]);
-								Survivor->MoveOnWithTimer();
-							}
+							Survivor->LineUpTasks();
+							Survivor->ResetPriorities();
 						}
 					}
 				}
@@ -526,10 +516,11 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	}
 	else
 	{
-		/*if (TasksArray.Num() > 1)
+		if (TasksArray.Num() > 1)
 		{
+			LineUpTasks();
 			ResetPriorities();
-		}*/
+		}
 
 		DraftedImage->SetVisibility(ESlateVisibility::Hidden);
 		if (CurrentTask)
