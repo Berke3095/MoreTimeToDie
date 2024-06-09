@@ -73,7 +73,7 @@ void AMyGameManager::RemoveFromTaskArrays(AHarvestable* Harvestable1)
 
 	if (PortraitWidget)
 	{
-		TArray<FVector> RemovedDestinations;
+		TArray<FVector> RemovedDestinations{};
 
 		for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
 		{

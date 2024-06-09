@@ -80,6 +80,8 @@ private:
 
 	bool bCanMove{};
 
+	void StopMovement(bool Value1);
+
 	/*
 		STATES
 	*/
@@ -115,8 +117,6 @@ private:
 
 	FTimerHandle MoveOnTimer{};
 	void MoveOn() { SetbCanMove(true); if (bHasReachedToTask) { bHasReachedToTask = false; } GetWorldTimerManager().ClearTimer(MoveOnTimer); }
-
-	void LineUpTasks();
 
 	/*
 		TOOLS
@@ -182,6 +182,7 @@ public:
 	void RemoveFromTaskDestinationsArray(const FVector& TaskDestination1) { TaskDestinationsArray.Remove(TaskDestination1); }
 
 	void StopWorking();
-
 	void MoveOnWithTimer();
+	void ResetPriorities();
+	void LineUpTasks();
 };

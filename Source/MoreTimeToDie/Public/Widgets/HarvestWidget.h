@@ -7,6 +7,11 @@
 class UButton;
 class UTextBlock;
 
+class AMyGameManager;
+class AMyView;
+class AMyHUD;
+class UPortraitWidget* PortraitWidget{};
+
 UCLASS()
 class MORETIMETODIE_API UHarvestWidget : public UMyUserWidget
 {
@@ -15,6 +20,14 @@ class MORETIMETODIE_API UHarvestWidget : public UMyUserWidget
 private:
 
 	virtual void NativeConstruct() override;
+
+	/*
+		REFERENCES
+	*/
+	AMyGameManager* GameManager{};
+	AMyView* MyView{};
+	AMyHUD* MyHUD{};
+	UPortraitWidget* PortraitWidget{};
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* HarvestButton{};

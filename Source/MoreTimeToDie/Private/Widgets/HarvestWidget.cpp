@@ -14,6 +14,14 @@ void UHarvestWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+    GameManager = AMyGameManager::GetInstance();
+    if (GameManager)
+    {
+        MyView = GameManager->GetMyView();
+        MyHUD = GameManager->GetMyHUD();
+        PortraitWidget = GameManager->GetPortraitWidget();
+    }
+
     const float AlphaNormal = 0.7;
     const float AlphaHovered = 0.9;
     const float AlphaPressed = 1.0;
@@ -22,15 +30,13 @@ void UHarvestWidget::NativeConstruct()
     SetTintAlpha(StopHarvestingButton, AlphaNormal, AlphaHovered, AlphaPressed);
 
     HarvestButton->OnClicked.AddDynamic(this, &UHarvestWidget::OnHarvestButton);
+    StopHarvestingButton->OnClicked.AddDynamic(this, &UHarvestWidget::OnStopHarvestButton);
 }
 
 void UHarvestWidget::OnHarvestButton()
 {
-    AMyGameManager* GameManager = AMyGameManager::GetInstance();
     if (GameManager)
     {
-        AMyView* MyView = GameManager->GetMyView();
-        UPortraitWidget* PortraitWidget = GameManager->GetPortraitWidget();
         if (MyView && PortraitWidget)
         {
             if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
@@ -38,7 +44,7 @@ void UHarvestWidget::OnHarvestButton()
 
             MyView->GetHarvestable()->SetbReadyToBeHarvested(true);
 
-            AMyHUD* MyHUD = GameManager->GetMyHUD();
+            MyHUD = GameManager->GetMyHUD();
             if (MyHUD) { MyHUD->Highlight(MyView->GetHarvestable(), MyHUD->GetHarvestableOverlayMat()); }
             else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyHUD is null.")); }
 
@@ -55,7 +61,46 @@ void UHarvestWidget::OnHarvestButton()
 
 void UHarvestWidget::OnStopHarvestButton()
 {
+    if (GameManager && MyView) 
+    { 
+        TArray<ASurvivor*> AffectedSurvivors{};
+        TArray<ASurvivor*> CurrentlyAffectedSurvivors{};
+        AHarvestable* CancelledHarvest{ MyView->GetHarvestable() };
+        if (PortraitWidget)
+        {
+            for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
+            {
+                if (Survivor->GetTasksArray().Contains(CancelledHarvest))
+                {
+                    AffectedSurvivors.AddUnique(Survivor);
+                    if (Survivor->GetCurrentTask() == CancelledHarvest)
+                    {
+                        CurrentlyAffectedSurvivors.AddUnique(Survivor);
+                    }
+                }
+            }
+        }
 
+        GameManager->RemoveFromTaskArrays(MyView->GetHarvestable()); 
+
+        for (ASurvivor* Survivor : AffectedSurvivors)
+        {
+            Survivor->LineUpTasks();
+            if (CurrentlyAffectedSurvivors.Contains(Survivor))
+            {
+                Survivor->ResetPriorities();
+                Survivor->StopWorking();
+            }
+        }
+
+        if (MyHUD)
+        {
+            MyHUD->Highlight(MyView->GetHarvestable(), nullptr);
+        }
+        else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyHUD is null.")); }
+    }
+    else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - GameManager is null.")); }
+    else if(!MyView){ UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyView is null.")); }
 }
 
 void UHarvestWidget::SetButtonText(FString HarvestText1, FString StopHarvestingText1)
