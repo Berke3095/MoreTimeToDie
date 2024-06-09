@@ -110,34 +110,80 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - MyHUD is null.")); }
 
-	const TArray<FVector> FormationOffsets = {
-		FVector(0.0f, 0.0f, 0.0f),
-		FVector(100.0f, -100.0f, 0.0f),
-		FVector(-100.0f, -100.0f, 0.0f),
-		FVector(-100.0f, 100.0f, 0.0f),
-		FVector(100.0f, 100.0f, 0.0f),
-		FVector(150.0f, 0.0f, 0.0f),
-		FVector(-150.0f, 0.0f, 0.0f)
-	};
-
 	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 	if (!NavSys) { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Navigation system is null.")); return; }
 
-	TArray <FVector> FoundDestinations{};
-	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
-	{
-		FVector OffsetVector = FormationOffsets[i];
-		FVector LeaderDestination = CenterPoint + OffsetVector;
+	TArray<FVector> FoundDestinations{};
+	int32 NumSurvivors = MoveableSurvivors.Num();
 
-		FNavLocation ProjectedLocation{};
-		if (NavSys && NavSys->ProjectPointToNavigation(LeaderDestination, ProjectedLocation))
+	float Radius = 130.0f; 
+	float AngleStep = 360.0f / NumSurvivors;
+
+	if (NumSurvivors > 4 || NumSurvivors == 1)
+	{
+		FNavLocation ProjectedLocation1{};
+		if (NavSys->ProjectPointToNavigation(CenterPoint, ProjectedLocation1))
 		{
-			FoundDestinations.AddUnique(ProjectedLocation.Location);
+			FoundDestinations.AddUnique(ProjectedLocation1.Location);
 		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - Couldn't set the destination.")); return; }
+
+		AngleStep = 360.0f / (NumSurvivors - 1);
+
+		for (int32 i = 1; i < NumSurvivors; i++)
+		{
+			FVector Destination{};
+			if (FoundDestinations.Num() > 0) { Destination = FoundDestinations[0]; }
+			float Angle = FMath::DegreesToRadians(AngleStep * i);
+			Destination.X += Radius * FMath::Cos(Angle);
+			Destination.Y += Radius * FMath::Sin(Angle);
+
+			FNavLocation ProjectedLocation2{};
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2))
+			{
+				FoundDestinations.AddUnique(ProjectedLocation2.Location);
+			}
+		}
+	}
+	else if (NumSurvivors == 2)
+	{
+		FVector ActorLocation1 = MoveableSurvivors[0]->GetActorLocation();
+		FVector ActorLocation2 = MoveableSurvivors[1]->GetActorLocation();
+		FVector Midpoint = (ActorLocation1 + ActorLocation2) / 2.0f;
+
+		FVector Direction = (CenterPoint - Midpoint).GetSafeNormal();
+		FVector Perpendicular = FVector::CrossProduct(Direction, FVector::UpVector).GetSafeNormal();
+
+		for (int32 i = 0; i < NumSurvivors; i++)
+		{
+			FVector Destination = CenterPoint;
+			float Offset = (i - (NumSurvivors - 1) / 2.0f) * Radius;
+			Destination += Perpendicular * Offset;
+
+			FNavLocation ProjectedLocation{};
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
+			{
+				FoundDestinations.AddUnique(ProjectedLocation.Location);
+			}
+		}
+	}
+	else
+	{
+		for (int32 i = 0; i < NumSurvivors; i++)
+		{
+			FVector Destination = CenterPoint;
+			float Angle = FMath::DegreesToRadians(AngleStep * i);
+			Destination.X += Radius * FMath::Cos(Angle);
+			Destination.Y += Radius * FMath::Sin(Angle);
+
+			FNavLocation ProjectedLocation2{};
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2))
+			{
+				FoundDestinations.AddUnique(ProjectedLocation2.Location);
+			}
+		}
 	}
 
-	for (int32 i = 0; i < MoveableSurvivors.Num(); ++i)
+	for (int32 i = 0; i < NumSurvivors; i++)
 	{
 		if (MoveableSurvivors.IsValidIndex(i) && FoundDestinations.IsValidIndex(i))
 		{
