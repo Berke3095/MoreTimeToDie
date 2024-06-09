@@ -516,6 +516,7 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 	}
 	else
 	{
+		SetDestination(FVector(0.0f, 0.0f, 0.0f));
 		if (TasksArray.Num() > 1)
 		{
 			LineUpTasks();
