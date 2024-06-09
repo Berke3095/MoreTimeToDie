@@ -9,5 +9,7 @@ class MORETIMETODIE_API AMyGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
+public:
+
 	AMyGameMode();
 };

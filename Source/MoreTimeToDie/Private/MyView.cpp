@@ -27,16 +27,6 @@ void AMyView::BeginPlay()
 	Super::BeginPlay();
 
 	GetReferences();
-	
-	if (PlayerController)
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(ViewMappingContext, 0);
-		}
-		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - Enh.InputSubsystem is null.")); }
-	}
-	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::BeginPlay - PlayerController is null.")); }
 }
 
 void AMyView::Tick(float DeltaTime)
@@ -116,6 +106,15 @@ void AMyView::GetReferences()
 	if (GameManager)
 	{
 		PlayerController = GameManager->GetMyPlayerController();
+		if (PlayerController)
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+			{
+				Subsystem->AddMappingContext(ViewMappingContext, 0);
+			}
+			else { UE_LOG(LogTemp, Warning, TEXT("AMyView::GetReferences - Enh.InputSubsystem is null.")); }
+		}
+		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::GetReferences - PlayerController is null.")); }
 
 		MyHUD = GameManager->GetMyHUD();
 		if (!MyHUD) { UE_LOG(LogTemp, Warning, TEXT("AMyView::GetReferences - MyHUD is null.")); }
@@ -127,10 +126,7 @@ void AMyView::MoveCamera(const FInputActionValue& InputValue1)
 {
 	const FVector2D MoveValue = InputValue1.Get<FVector2D>();
 
-	if (GameManager)
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
+	if (GameManager) { GameManager->DestroyHarvestWidget(); }
 
 	if (PlayerController)
 	{
@@ -145,7 +141,7 @@ void AMyView::MoveCamera(const FInputActionValue& InputValue1)
 
 void AMyView::MidMouseStart()
 {
-	bMidMouseHeld = true;
+	if (!bMidMouseHeld) { bMidMouseHeld = true; }
 	
 	if (PlayerController)
 	{
@@ -170,10 +166,7 @@ void AMyView::RotateCamera(const FInputActionValue& InputValue1)
 {
 	const FVector2D RotateValue = InputValue1.Get<FVector2D>();
 
-	if (GameManager)
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
+	if (GameManager) { GameManager->DestroyHarvestWidget(); }
 
 	FVector2D YawValue = RotateValue / 8;
 	FVector2D PitchValue = RotateValue / 3;
@@ -198,10 +191,7 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 {
 	const float ZoomValue = InputValue1.Get<float>();
 
-	if (GameManager)
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
+	if (GameManager) { GameManager->DestroyHarvestWidget(); }
 
 	if (PlayerController)
 	{
@@ -217,10 +207,7 @@ void AMyView::ZoomCamera(const FInputActionValue& InputValue1)
 
 void AMyView::LeftClickStart()
 {
-	if (GameManager)
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
+	if (GameManager) { GameManager->DestroyHarvestWidget(); }
 
 	if (PlayerController)
 	{
@@ -232,10 +219,7 @@ void AMyView::LeftClickStart()
 				MyHUD->DeselectAll();
 				MyHUD->Select(HoveredActor);
 			}
-			else
-			{
-				MyHUD->DeselectAll();
-			}
+			else { MyHUD->DeselectAll(); }
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - MyHUD is null.")); }
 
@@ -243,7 +227,7 @@ void AMyView::LeftClickStart()
 		{
 			PlayerController->GetMousePosition(MouseX, MouseY);
 			StartingRectanglePosition = FVector2D(MouseX, MouseY);
-			bCanDraw = true;
+			if (!bCanDraw) { bCanDraw = true; }
 		}
 	}
 	else{ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickStart - PlayerController is null.")); }
@@ -261,29 +245,26 @@ void AMyView::LeftClickTrigger()
 
 void AMyView::LeftClickEnd()
 {
-	if (PlayerController && bCanDraw)
-	{
-		bCanDraw = false;
-	}
+	if (PlayerController && bCanDraw) { bCanDraw = false; }
 	else if (!PlayerController){ UE_LOG(LogTemp, Warning, TEXT("AMyView::LeftClickEnd - PlayerController is null.")); }
 }
 
 void AMyView::ShiftStart()
 {
-	bShiftHeld = true;
+	if(!bShiftHeld) { bShiftHeld = true; }
 }
 
 void AMyView::ShiftEnd()
 {
-	if (bShiftHeld)
-	{
-		bShiftHeld = false;
-	}
+	if (bShiftHeld) { bShiftHeld = false; }
 }
 
 void AMyView::CtrlStart()
 {
-	bCtrlHeld = true;
+	if (!bCtrlHeld)
+	{
+		bCtrlHeld = true;
+	}
 }
 
 void AMyView::CtrlEnd()
@@ -312,15 +293,16 @@ void AMyView::OrderMove()
 		Destination = PlayerController->GetHitResult().ImpactPoint;
 
 		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-		if (NavSys && GameManager)
+		if (NavSys)
 		{
 			FNavLocation ProjectedLocation{};
 			if (!NavSys->ProjectPointToNavigation(Destination, ProjectedLocation)) { return;}
-			else { GameManager->SetDestinations(Destination); }
+			else { if (GameManager) { GameManager->SetDestinations(ProjectedLocation.Location); } }
 		}
 		else { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - Navigation system is null.")); }
 	}
-	else if (!MyHUD || !PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD or PlayerController is null.")); }
+	else if (!MyHUD) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - MyHUD is null.")); }
+	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::OrderMove - PlayerController is null.")); }
 }
 
 void AMyView::HandleHarvestWidget()
@@ -328,33 +310,21 @@ void AMyView::HandleHarvestWidget()
 	if (PlayerController && PlayerController->GetHoveredActor() && PlayerController->GetHoveredActor()->IsA<AHarvestable>())
 	{
 		HarvestableActor = Cast<AHarvestable>(PlayerController->GetHoveredActor());
-		if (HarvestableActor && GameManager)
-		{
-			GameManager->CreateWidgetAtHarvest(HarvestableActor);
-		}
+		if (HarvestableActor && GameManager) { GameManager->CreateWidgetAtHarvest(HarvestableActor); }
 		else if (!GameManager) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - GameManager is null.")); }
 	}
 	else if (!PlayerController) { UE_LOG(LogTemp, Warning, TEXT("AMyView::RightClick - PlayerController is null.")); }
-	else
-	{
-		GameManager->DestroyHarvestWidgets();
-	}
+	else { GameManager->DestroyHarvestWidget(); }
 }
 
 void AMyView::AltStart()
 {
-	if (!bAltHeld)
-	{
-		bAltHeld = true;
-	}
+	if (!bAltHeld) { bAltHeld = true; }
 }
 
 void AMyView::AltEnd()
 {
-	if (bAltHeld)
-	{
-		bAltHeld = false;
-	}
+	if (bAltHeld) { bAltHeld = false; }
 }
 
 /*

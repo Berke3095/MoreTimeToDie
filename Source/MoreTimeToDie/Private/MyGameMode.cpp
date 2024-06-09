@@ -1,6 +1,3 @@
 #include "MyGameMode.h"
 
-AMyGameMode::AMyGameMode()
-{
-
-}
+AMyGameMode::AMyGameMode(){}

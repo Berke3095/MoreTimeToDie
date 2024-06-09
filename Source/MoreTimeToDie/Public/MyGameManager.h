@@ -70,16 +70,12 @@ public:
 	UHarvestWidget* GetHarvestWidget() const { return HarvestWidget ? HarvestWidget : nullptr; }
 
 	void CreateWidgetAtHarvest(AActor* Harvest1);
-	void DestroyHarvestWidgets();
+	void DestroyHarvestWidget();
 
 	void AddToStoneTasks(AHarvestable* Stone1) { StoneTasks.AddUnique(Stone1); AllTasks.AddUnique(Stone1); }
 	void AddToTreeTasks(AHarvestable* Tree1) { TreeTasks.AddUnique(Tree1); AllTasks.AddUnique(Tree1); }
-	/*FORCEINLINE const TArray<AHarvestable*> GetStoneTasks() const { return StoneTasks; }
-	FORCEINLINE const TArray<AHarvestable*> GetTreeTasks() const { return TreeTasks; }
-	FORCEINLINE const TArray<AHarvestable*> GetAllTasks() const { return AllTasks; }*/
 
 	void RemoveFromTaskArrays(AHarvestable* Harvestable1);
-
 	void AddToReservedDestinations(const FVector& ReservedDestination1) { ReservedDestinations.AddUnique(ReservedDestination1); }
 	void RemoveFromReservedDestinations(const FVector& ReservedDestination1);
 	FORCEINLINE const TArray<FVector>& GetReservedDestinations() const { return ReservedDestinations; }

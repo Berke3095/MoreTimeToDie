@@ -27,20 +27,13 @@ void AMyGameManager::BeginPlay()
 	
 	GetReferences();
 
-	if (PortraitWidget)
-	{
-		PortraitWidget->AddToViewport();
-	}
+	if (PortraitWidget) { PortraitWidget->AddToViewport(); }
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::BeginPlay - PortraitWidget is null.")); }
 }
 
 void AMyGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*UE_LOG(LogTemp, Warning, TEXT("AllTasks length: %d"), AllTasks.Num());
-	UE_LOG(LogTemp, Warning, TEXT("StoneTasks length: %d"), StoneTasks.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TreeTasks length: %d"), TreeTasks.Num());*/
 }
 
 void AMyGameManager::GetReferences()
@@ -80,18 +73,11 @@ void AMyGameManager::RemoveFromTaskArrays(AHarvestable* Harvestable1)
 			if (Survivor->GetTasksArray().Contains(Harvestable1))
 			{
 				int32 TaskIndex = Survivor->GetTasksArray().Find(Harvestable1);
-				if (TaskIndex != INDEX_NONE)
-				{
-					RemovedDestinations.Add(Survivor->GetTaskDestinationsArray()[TaskIndex]);
-				}
+				if (TaskIndex != INDEX_NONE) { RemovedDestinations.Add(Survivor->GetTaskDestinationsArray()[TaskIndex]); }
 				Survivor->RemoveFromTasksArray(Harvestable1);
 			}
 		}
-
-		for (const FVector& RemovedDestination : RemovedDestinations)
-		{
-			RemoveFromReservedDestinations(RemovedDestination);
-		}
+		for (const FVector& RemovedDestination : RemovedDestinations) { RemoveFromReservedDestinations(RemovedDestination); }
 	}
 }
 
@@ -109,6 +95,7 @@ void AMyGameManager::RemoveFromReservedDestinations(const FVector& ReservedDesti
 			}
 		}
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::RemoveFromReservedDestinations - PortraitWidget is null.")); }
 }
 
 void AMyGameManager::SetDestinations(const FVector& CenterPoint)
@@ -118,10 +105,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 	{
 		for (ASurvivor* Survivor : MyHUD->GetSelectedSurvivors())
 		{
-			if (Survivor->GetbIsDrafted())
-			{
-				MoveableSurvivors.AddUnique(Survivor);
-			}
+			if (Survivor->GetbIsDrafted()) { MoveableSurvivors.AddUnique(Survivor); }
 		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyView::SetDestinations - MyHUD is null.")); }
@@ -171,7 +155,7 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 {
 	if (HarvestWidgetClass)
 	{
-		if (HarvestWidget) { DestroyHarvestWidgets(); }
+		if (HarvestWidget) { DestroyHarvestWidget(); }
 
 		HarvestWidget = CreateWidget<UHarvestWidget>(GetWorld(), HarvestWidgetClass);
 		if (HarvestWidget)
@@ -200,7 +184,7 @@ void AMyGameManager::CreateWidgetAtHarvest(AActor* Harvest1)
 	else { UE_LOG(LogTemp, Warning, TEXT("AMyGameManager::CreateWidgetAtActor - HarvestWidgetClass is null.")); }
 }
 
-void AMyGameManager::DestroyHarvestWidgets()
+void AMyGameManager::DestroyHarvestWidget()
 {
 	if (HarvestWidget)
 	{

@@ -20,6 +20,7 @@ void AMyPlayerController::BeginPlay()
 		MyView = GameManager->GetMyView();
 		if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("AMyPlayerController::BeginPlay - MyView is null.")); }
 	}
+	else { UE_LOG(LogTemp, Warning, TEXT("AMyPlayerController::BeginPlay - GameManager is null.")); }
 }
 
 void AMyPlayerController::Tick(float DeltaTime)
@@ -39,7 +40,7 @@ void AMyPlayerController::SetupInputComponent()
 */
 void AMyPlayerController::DrawTraceFromMouse(FHitResult& TraceHitResult1)
 {
-	if (GetWorld() && !MyView->GetbMidMouseHeld())
+	if (GetWorld() && MyView && !MyView->GetbMidMouseHeld())
 	{
 		FVector WorldLocation{}, WorldDirection{};
 		DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
@@ -70,11 +71,9 @@ void AMyPlayerController::DrawTraceFromMouse(FHitResult& TraceHitResult1)
 			);
 
 			AActor* HitActor = TraceHitResult1.GetActor();
-			if (HitActor)
-			{
-				HoveredActor = HitActor;
-			}
+			if (HitActor) { HoveredActor = HitActor; }
 		}
 	}
+	else if(!MyView) { UE_LOG(LogTemp, Warning, TEXT("AMyPlayerController::DrawTraceFromMouse - MyView is null.")); }
 }
 
