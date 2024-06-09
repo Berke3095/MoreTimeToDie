@@ -30,13 +30,6 @@ void USurvivorAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		SurvivorDirection = UKismetAnimationLibrary::CalculateDirection(SurvivorMovement->Velocity, Survivor->GetActorRotation());
 
 		Speed = UKismetMathLibrary::VSizeXY(SurvivorMovement->Velocity);
-
-		if (Survivor)
-		{
-			WorkState = Survivor->GetSurvivorWorkState();
-			GeneralState = Survivor->GetSurvivorGeneralState();
-			TaskState = Survivor->GetSurvivorTaskState();
-		}
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("USurvivorAnimInstance::NativeInitializeAnimation - SurvivorMovement is null.")); }
 }

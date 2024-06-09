@@ -16,7 +16,7 @@ AMyGameManager* AMyGameManager::Instance = nullptr;
 
 AMyGameManager::AMyGameManager()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	Instance = this;
 	SetActorHiddenInGame(true);
 }

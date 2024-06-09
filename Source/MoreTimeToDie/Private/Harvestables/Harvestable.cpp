@@ -2,7 +2,7 @@
 
 AHarvestable::AHarvestable()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Tags.Add("Selectable");
 
@@ -21,18 +21,10 @@ void AHarvestable::BeginPlay()
 void AHarvestable::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*UE_LOG(LogTemp, Warning, TEXT("HarvestHealth: %d"), HarvestHealth);*/
 }
 
 void AHarvestable::SetbReadyToBeHarvested(bool Value1)
 {
-	if (Value1)
-	{
-		if (!bReadyToBeHarvested) { bReadyToBeHarvested = true; }
-	}
-	else
-	{
-		if (bReadyToBeHarvested) { bReadyToBeHarvested = false; }
-	}
+	if (Value1) { if (!bReadyToBeHarvested) { bReadyToBeHarvested = true; } }
+	else { if (bReadyToBeHarvested) { bReadyToBeHarvested = false; } }
 }

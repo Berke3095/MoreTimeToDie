@@ -82,6 +82,10 @@ private:
 
 	void StopMovement(bool Value1);
 
+	FTimerHandle MoveOnTimer{};
+	void MoveOn() { SetbCanMove(true); GetWorldTimerManager().ClearTimer(MoveOnTimer); }
+	void MoveOnWithTimer();
+
 	/*
 		STATES
 	*/
@@ -99,7 +103,6 @@ private:
 	TArray<AHarvestable*> TasksArray{};
 	TArray<FVector> TaskDestinationsArray{};
 
-	void CalculateTaskDestination(AHarvestable* Harvestable1);
 	float HarvestRadius{};
 
 	FRotator LookAtTaskRotation{};
@@ -115,17 +118,13 @@ private:
 	UFUNCTION()
 	void OnNotifyBegin(FName NotifyName1, const FBranchingPointNotifyPayload& BranchingPointPayload1);
 
-	FTimerHandle MoveOnTimer{};
-	void MoveOn() { SetbCanMove(true); if (bHasReachedToTask) { bHasReachedToTask = false; } GetWorldTimerManager().ClearTimer(MoveOnTimer); }
-
 	/*
 		TOOLS
 	*/
 	void Equip(AActor* ToolInstance1, USceneComponent* InParent1, FName InSocketName1);
+	void SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1);
 
 	AActor* ToolInstance{};
-
-	void SetTool(TSubclassOf<AActor> Tool1, ESurvivorWorkState WorkState1);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Tools")
 	TSubclassOf<AActor> PickaxeClass{};
@@ -158,14 +157,12 @@ public:
 	void SetDestination(const FVector& Destination1) { Destination = Destination1; }
 	FORCEINLINE const FVector& GetDestination() const { return Destination; }
 
-	FORCEINLINE const ESurvivorMoveState GetSurvivorMoveState() const { return MoveState; }
-	FORCEINLINE const ESurvivorWorkState GetSurvivorWorkState() const { return WorkState; }
-	FORCEINLINE const ESurvivorGeneralState GetSurvivorGeneralState() const { return GeneralState; }
-	FORCEINLINE const ESurvivorTaskState GetSurvivorTaskState() const { return TaskState; }
-
 	void SetbCanMove(bool Value1);
 
 	void SetTask(AHarvestable* Harvestable1);
+	void LineUpTasks();
+	void ResetPriorities();
+	void StopWorking();
 
 	FORCEINLINE const bool GetbCanMineStone() const { return bCanMineStone; }
 	FORCEINLINE const bool GetbCanCutTree() const { return bCanCutTree; }
@@ -180,9 +177,4 @@ public:
 
 	void RemoveFromTasksArray(AHarvestable* Harvestable1) { TasksArray.Remove(Harvestable1); }
 	void RemoveFromTaskDestinationsArray(const FVector& TaskDestination1) { TaskDestinationsArray.Remove(TaskDestination1); }
-
-	void StopWorking();
-	void MoveOnWithTimer();
-	void ResetPriorities();
-	void LineUpTasks();
 };

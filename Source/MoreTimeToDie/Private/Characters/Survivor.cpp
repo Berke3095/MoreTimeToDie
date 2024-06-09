@@ -52,9 +52,6 @@ void ASurvivor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*UE_LOG(LogTemp, Warning, TEXT("TasksArray length: %d"), TasksArray.Num());
-	UE_LOG(LogTemp, Warning, TEXT("TasksDestination length: %d"), TaskDestinationsArray.Num());*/
-
 	if (bIsDrafted)
 	{
 		MoveToDestination(Destination);
@@ -211,15 +208,6 @@ void ASurvivor::SetbCanMove(bool Value1)
 }
 
 void ASurvivor::SetTask(AHarvestable* Harvestable1)
-{
-	if (Harvestable1)
-	{
-		CalculateTaskDestination(Harvestable1);
-	}
-	else{ UE_LOG(LogTemp, Warning, TEXT("ASurvivor::SetSurroundDestination - Harvestable1 is null.")); }
-}
-
-void ASurvivor::CalculateTaskDestination(AHarvestable* Harvestable1)
 {
 	if (Harvestable1)
 	{
@@ -393,7 +381,7 @@ void ASurvivor::StopWorking()
 	if (WorkState != ESurvivorWorkState::ESWS_NONE) { WorkState = ESurvivorWorkState::ESWS_NONE; }
 	if (GeneralState != ESurvivorGeneralState::ESGS_NONE) { GeneralState = ESurvivorGeneralState::ESGS_NONE; }
 	if (TaskState != ESurvivorTaskState::ESTS_NONE) { TaskState = ESurvivorTaskState::ESTS_NONE; }
-	if (AnimInstance && TaskMontage && AnimInstance->Montage_IsPlaying(TaskMontage))
+	if (TaskMontage && AnimInstance && AnimInstance->Montage_IsPlaying(TaskMontage))
 	{
 		float BlendOutRate{0.5f};
 		AnimInstance->Montage_Stop(BlendOutRate, TaskMontage);
@@ -533,15 +521,15 @@ void ASurvivor::SetbIsDrafted(bool bIsDrafted1)
 		DraftedImage->SetVisibility(ESlateVisibility::Visible);
 		SetDestination(FVector(0.0f, 0.0f, 0.0f));
 		StopMovement(true);
-
 		StopWorking();
+		if (bHasReachedToTask) { bHasReachedToTask = false; }
 	}
 	else
 	{
-		if (TasksArray.Num() > 1)
+		/*if (TasksArray.Num() > 1)
 		{
 			ResetPriorities();
-		}
+		}*/
 
 		DraftedImage->SetVisibility(ESlateVisibility::Hidden);
 		if (CurrentTask)
@@ -562,10 +550,9 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 		UPathFollowingComponent* PathFollowingComponent = MyAIController->GetPathFollowingComponent();
 		if (!PathFollowingComponent) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - PathFollowingComponent is null.")); return; }
 
-		if (GameManager && PathFollowingComponent->DidMoveReachGoal() && MoveState != ESurvivorMoveState::ESMS_NONE)
+		if (PathFollowingComponent->DidMoveReachGoal())
 		{
 			StopMovement(true);
-			SetbCanMove(false);
 
 			if (Destination1 == TaskDestination && CurrentTask)
 			{
@@ -573,7 +560,7 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				LookAtTaskRotation = LookAtDirection.Rotation();
 
 				if (!bHasReachedToTask) { bHasReachedToTask = true; }
-				
+
 				if (GeneralState != ESurvivorGeneralState::ESGS_Tasking) { GeneralState = ESurvivorGeneralState::ESGS_Tasking; }
 				if (TaskState != ESurvivorTaskState::ESTS_Preparing) { TaskState = ESurvivorTaskState::ESTS_Preparing; }
 
@@ -581,17 +568,11 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 				else if (CurrentTask->ActorHasTag("Tree")) { SetTool(AxeClass, ESurvivorWorkState::ESWS_CuttingTree); }
 
 				PlayTaskAnimation();
+
+				SetbCanMove(false);
 			}
 		}
-		else if (PathFollowingComponent->DidMoveReachGoal())
-		{
-			StopMovement(true);
-		}
-		else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - GameManager is null.")); }
-		else
-		{
-			StopMovement(false);
-		}
+		else { StopMovement(false); }
 	}
 	else { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - MyAIController is null")); }
 }
