@@ -21,6 +21,7 @@ void UHarvestWidget::NativeConstruct()
         MyHUD = GameManager->GetMyHUD();
         PortraitWidget = GameManager->GetPortraitWidget();
     }
+    else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::NativeConstruct - GameManager is null.")); }
 
     const float AlphaNormal = 0.7;
     const float AlphaHovered = 0.9;
@@ -35,62 +36,46 @@ void UHarvestWidget::NativeConstruct()
 
 void UHarvestWidget::OnHarvestButton()
 {
-    if (GameManager)
+    if (MyView && PortraitWidget)
     {
-        if (MyView && PortraitWidget)
+        if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
+        else if (MyView->GetHarvestable()->ActorHasTag("Tree")) { GameManager->AddToTreeTasks(MyView->GetHarvestable()); }
+
+        MyView->GetHarvestable()->SetbReadyToBeHarvested(true);
+
+        if (MyHUD) { MyHUD->Highlight(MyView->GetHarvestable(), MyHUD->GetHarvestableOverlayMat()); }
+        else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyHUD is null.")); }
+
+        for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
         {
-            if (MyView->GetHarvestable()->ActorHasTag("Stone")) { GameManager->AddToStoneTasks(MyView->GetHarvestable()); }
-            else if(MyView->GetHarvestable()->ActorHasTag("Tree")) { GameManager->AddToTreeTasks(MyView->GetHarvestable()); }
-
-            MyView->GetHarvestable()->SetbReadyToBeHarvested(true);
-
-            MyHUD = GameManager->GetMyHUD();
-            if (MyHUD) { MyHUD->Highlight(MyView->GetHarvestable(), MyHUD->GetHarvestableOverlayMat()); }
-            else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyHUD is null.")); }
-
-            for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
-            {
-                Survivor->SetTask(MyView->GetHarvestable());
-            }
+            Survivor->SetTask(MyView->GetHarvestable());
         }
-        else if(!MyView) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
-        else if(!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
     }
-    else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - GameManager is null.")); }
+    else if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
+    else if (!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
 }
 
 void UHarvestWidget::OnStopHarvestButton()
 {
-    if (GameManager && MyView) 
+    if (MyView) 
     { 
-        TArray<ASurvivor*> AffectedSurvivors{};
         TArray<ASurvivor*> CurrentlyAffectedSurvivors{};
         AHarvestable* CancelledHarvest{ MyView->GetHarvestable() };
         if (PortraitWidget)
         {
             for (ASurvivor* Survivor : PortraitWidget->GetCurrentSurvivors())
             {
-                if (Survivor->GetTasksArray().Contains(CancelledHarvest))
-                {
-                    AffectedSurvivors.AddUnique(Survivor);
-                    if (Survivor->GetCurrentTask() == CancelledHarvest)
-                    {
-                        CurrentlyAffectedSurvivors.AddUnique(Survivor);
-                    }
-                }
+                if (Survivor->GetCurrentTask() == CancelledHarvest) { CurrentlyAffectedSurvivors.AddUnique(Survivor); }
             }
         }
 
         GameManager->RemoveFromTaskArrays(MyView->GetHarvestable()); 
 
-        for (ASurvivor* Survivor : AffectedSurvivors)
+        for (ASurvivor* Survivor : CurrentlyAffectedSurvivors)
         {
+            Survivor->StopWorking();
             Survivor->LineUpTasks();
-            if (CurrentlyAffectedSurvivors.Contains(Survivor))
-            {
-                Survivor->ResetPriorities();
-                Survivor->StopWorking();
-            }
+            Survivor->ResetPriorities();
         }
 
         if (MyHUD)
@@ -99,8 +84,7 @@ void UHarvestWidget::OnStopHarvestButton()
         }
         else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyHUD is null.")); }
     }
-    else if(!GameManager) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - GameManager is null.")); }
-    else if(!MyView){ UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyView is null.")); }
+    else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyView is null.")); }
 }
 
 void UHarvestWidget::SetButtonText(FString HarvestText1, FString StopHarvestingText1)
