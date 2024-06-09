@@ -21,7 +21,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* HarvestableMesh{};
 
-	int32 HarvestHealth{ 100 };
+	int32 HarvestHealth{ 200 };
 
 	bool bReadyToBeHarvested{};
 

@@ -157,7 +157,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 		{
 			FVector Destination = CenterPoint;
 			float Offset = (i - (NumSurvivors - 1) / 2.0f) * Radius;
-			Destination += Perpendicular * Offset;
+			Destination -= Perpendicular * Offset;
 
 			FNavLocation ProjectedLocation{};
 			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))

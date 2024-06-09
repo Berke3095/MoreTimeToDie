@@ -50,6 +50,8 @@ void UHarvestWidget::OnHarvestButton()
         {
             Survivor->SetTask(MyView->GetHarvestable());
         }
+
+        GameManager->DestroyHarvestWidget();
     }
     else if (!MyView) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - MyView is null.")); }
     else if (!PortraitWidget) { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnHarvestButton - PortraitWidget is null.")); }
@@ -83,6 +85,8 @@ void UHarvestWidget::OnStopHarvestButton()
             MyHUD->Highlight(MyView->GetHarvestable(), nullptr);
         }
         else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyHUD is null.")); }
+
+        GameManager->DestroyHarvestWidget();
     }
     else { UE_LOG(LogTemp, Warning, TEXT("UHarvestWidget::OnStopHarvestButton - MyView is null.")); }
 }
