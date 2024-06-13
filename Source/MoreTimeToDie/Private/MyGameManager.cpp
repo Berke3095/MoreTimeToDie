@@ -116,11 +116,13 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 	TArray<FVector> FoundDestinations{};
 	int32 NumSurvivors = MoveableSurvivors.Num();
 
-	float Radius = 130.0f; 
-	float AngleStep = 360.0f / NumSurvivors;
+	float Radius{ 80.0f };
+	float AngleStep = { 360.0f / NumSurvivors };
 
 	if (NumSurvivors > 4 || NumSurvivors == 1)
 	{
+		Radius = 130.0f;
+
 		FNavLocation ProjectedLocation1{};
 		if (NavSys->ProjectPointToNavigation(CenterPoint, ProjectedLocation1))
 		{
