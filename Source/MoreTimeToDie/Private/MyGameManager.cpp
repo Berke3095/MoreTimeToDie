@@ -124,7 +124,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 		Radius = 130.0f;
 
 		FNavLocation ProjectedLocation1{};
-		if (NavSys->ProjectPointToNavigation(CenterPoint, ProjectedLocation1))
+		if (NavSys->ProjectPointToNavigation(CenterPoint, ProjectedLocation1, FVector(100.0f, 100.0f, 100.0f)))
 		{
 			FoundDestinations.AddUnique(ProjectedLocation1.Location);
 		}
@@ -140,7 +140,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 			Destination.Y += Radius * FMath::Sin(Angle);
 
 			FNavLocation ProjectedLocation2{};
-			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2))
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2, FVector(100.0f, 100.0f, 100.0f)))
 			{
 				FoundDestinations.AddUnique(ProjectedLocation2.Location);
 			}
@@ -162,7 +162,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 			Destination += Perpendicular * Offset;
 
 			FNavLocation ProjectedLocation{};
-			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation))
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation, FVector(100.0f, 100.0f, 100.0f)))
 			{
 				FoundDestinations.AddUnique(ProjectedLocation.Location);
 			}
@@ -207,7 +207,7 @@ void AMyGameManager::SetDestinations(const FVector& CenterPoint)
 			Destination.Y += Radius * FMath::Sin(Angle);
 
 			FNavLocation ProjectedLocation2{};
-			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2))
+			if (NavSys->ProjectPointToNavigation(Destination, ProjectedLocation2, FVector(100.0f, 100.0f, 100.0f)))
 			{
 				FoundDestinations.AddUnique(ProjectedLocation2.Location);
 			}
