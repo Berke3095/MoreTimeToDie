@@ -184,9 +184,12 @@ void ASurvivor::CreateAIController()
 void ASurvivor::StartDoingTask()
 {
 	if (bHasReachedToTask) { bHasReachedToTask = false; }
-	
-	GetWorldTimerManager().ClearTimer(FocusTaskTimer);
 
+	if (GetWorldTimerManager().IsTimerActive(FocusTaskTimer))
+	{
+		GetWorldTimerManager().ClearTimer(FocusTaskTimer);
+	}
+	
 	if (TaskState != ESurvivorTaskState::ESTS_Performing)
 	{
 		TaskState = ESurvivorTaskState::ESTS_Performing;
@@ -358,11 +361,14 @@ void ASurvivor::StopMovement(bool Value1)
 		{
 			MyAIController->StopMovement();
 		}
+		SetDestination(FVector(0.0f, 0.0f, 0.0f));
+		SetbCanMove(false);
 	}
 	else
 	{
 		if (MoveState != ESurvivorMoveState::ESMS_Walking) { MoveState = ESurvivorMoveState::ESMS_Walking; }
 		if (CapsuleComponent->CanEverAffectNavigation()) { CapsuleComponent->SetCanEverAffectNavigation(false); }
+		SetbCanMove(true);
 	}
 }
 
@@ -387,6 +393,15 @@ void ASurvivor::MoveOnWithTimer()
 	if (!GetWorldTimerManager().IsTimerActive(MoveOnTimer))
 	{
 		GetWorld()->GetTimerManager().SetTimer(MoveOnTimer, this, &ASurvivor::MoveOn, 0.5f, false);
+	}
+}
+
+void ASurvivor::StopMovementWithTimer()
+{
+	StopMovement(true);
+	if (GetWorldTimerManager().IsTimerActive(StopMovementTimer))
+	{
+		GetWorldTimerManager().ClearTimer(FocusTaskTimer);
 	}
 }
 
@@ -538,6 +553,25 @@ void ASurvivor::MoveToDestination(const FVector& Destination1)
 	if (MyAIController)
 	{
 		MyAIController->MoveToLocation(Destination1, Acceptance, false, true);
+
+		if (Destination1 == Destination && MoveState != ESurvivorMoveState::ESMS_NONE)
+		{
+			float Distance = FVector::Dist(Destination1, GetActorLocation());
+			if (Distance <= 300.0f)
+			{
+				if (!GetWorldTimerManager().IsTimerActive(StopMovementTimer))
+				{
+					GetWorld()->GetTimerManager().SetTimer(StopMovementTimer, this, &ASurvivor::StopMovementWithTimer, 1.0f, false);
+				}
+			}
+			else
+			{
+				if (GetWorldTimerManager().IsTimerActive(StopMovementTimer))
+				{
+					GetWorldTimerManager().ClearTimer(StopMovementTimer);
+				}
+			}
+		}
 
 		UPathFollowingComponent* PathFollowingComponent = MyAIController->GetPathFollowingComponent();
 		if (!PathFollowingComponent) { UE_LOG(LogTemp, Warning, TEXT("ASurvivor::MoveToDestination - PathFollowingComponent is null.")); return; }

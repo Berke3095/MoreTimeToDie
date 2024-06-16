@@ -86,6 +86,9 @@ private:
 	void MoveOn() { SetbCanMove(true); GetWorldTimerManager().ClearTimer(MoveOnTimer); }
 	void MoveOnWithTimer();
 
+	FTimerHandle StopMovementTimer{};
+	void StopMovementWithTimer();
+
 	/*
 		STATES
 	*/
